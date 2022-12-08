@@ -45,6 +45,8 @@
 <sdef n="per:m_h2" c="second_honorific Apa jAyiye"/>
 <sdef n="per:m_h" c="second_honorific"/>
 <sdef n="per:a" c="third"/>
+<sdef n="per:a_h1" c="third_honorific1"/>
+<sdef n="per:a_h2" c="third_honorific2"/>
 
 <sdef n="tam:adv_we_hue" c="adverbial we hue (no change)"/>
 <sdef n="tam:adj_wA_huA" c="adjective (kqxanwa) Rising sun"/>
@@ -413,10 +415,6 @@
 <e><p><l>I_huI</l><r>ara<s n="cat:v"/><s n="gen:f"/><s n="num:p" /><s n="case:d"/><s n="tam:adj_yA_huA"/></r></p></e>
 <e><p><l>I_huI</l><r>ara<s n="cat:v"/><s n="gen:f"/><s n="num:s" /><s n="case:o"/><s n="tam:adj_yA_huA"/></r></p></e>
 <e><p><l>I_huI</l><r>ara<s n="cat:v"/><s n="gen:f"/><s n="num:p" /><s n="case:o"/><s n="tam:adj_yA_huA"/></r></p></e>
-
-
-
-
 
  <e><p><l>arawe_hue</l><r>ara<s n="cat:v"/><s n="gen:m"/><s n="num:s"/><s n="per:u"/><s n="tam:adv_we_hue"/></r></p></e>
  <e><p><l>arawe_hue</l><r>ara<s n="cat:v"/><s n="gen:m"/><s n="num:s"/><s n="per:m"/><s n="tam:adv_we_hue"/></r></p></e>

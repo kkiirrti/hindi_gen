@@ -81,7 +81,7 @@ def getVerbGNP(tam, depend_data, processed_nouns, processed_pronouns):
     if(casedata == False):
         log('Something went wrong. Cannot determine GNP for verb.','ERROR')
         sys.exit()
-    return casedata[4], casedata[5], casedata[6]
+    return casedata[4], casedata[5], casedata[6][0] #only first character of the person - to handle m_hx kind of case
 
 def read_file(file_path):
     '''Returns array of lines for data given in file'''
@@ -199,7 +199,7 @@ def check_indeclinable(word_data):
     """ Check if word is in indeclinable word list."""
 
     indeclinable_words = (
-        'waWA,Ora,paranwu,kinwu,evaM,waWApi,Bale hI,'
+        'aBI,waWA,Ora,paranwu,kinwu,evaM,waWApi,Bale hI,'
         'wo,agara,magara,awaH,cUMki,cUzki,jisa waraha,'
         'jisa prakAra,lekina,waba,waBI,yA,varanA,anyaWA,'
         'wAki,baSarweM,jabaki,yaxi,varana,paraMwu,kiMwu,'
@@ -286,8 +286,10 @@ def process_pronouns(pronouns,processed_nouns):
             if "k2" in pronoun[4] and pronoun[2] in ('anim','per'):
                 case = 'd'
         if pronoun[1] == 'addressee':
-            addr_map = {'respect':'Apa', 'informal':'wU'}
-            word = addr_map.get(pronoun[6].strip().lower(), 'wuma')
+            addr_map = {'respect':'Apa', 'informal':'wU', '':'wU'}
+            pronoun_per = {'respect':'m_h2', 'informal':'m_h0', '':'m_h1'}
+            word = addr_map.get(pronoun[6].strip().lower(), 'wU')
+            person = pronoun_per.get(pronoun[6].strip().lower(), 'm_h1')
         elif pronoun[1] == 'speaker' :
             word = 'mEM'
         elif pronoun[1] == 'vaha' :

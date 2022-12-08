@@ -89,7 +89,7 @@ if __name__ == "__main__":
 
     #for yn_interrogative add kya in the beginning
     if sentence_type == "yn_interrogative":
-        POST_PROCESS_OUTPUT = 'kyA ' + POST_PROCESS_OUTPUT
+        POST_PROCESS_OUTPUT = 'kyA ' + POST_PROCESS_OUTPUT + '?'
 
     hindi_output = collect_hindi_output(POST_PROCESS_OUTPUT)
     write_hindi_text(hindi_output, POST_PROCESS_OUTPUT, OUTPUT_FILE)
