@@ -416,9 +416,8 @@
 <e><p><l>iye</l><r><s n="cat:v"/><s n="gen:m"/><s n="num:p"/><s n="per:m_h2"/><s n="tam:imper"/></r></p></e>
 <e><p><l>iye</l><r><s n="cat:v"/><s n="gen:f"/><s n="num:p"/><s n="per:m_h2"/><s n="tam:imper"/></r></p></e>
 </pardef>
+
 <pardef n="k/ara__v">
-
-
 <!-- verbal noun -->
 <e><p><l>aranA</l><r>aranA<s n="cat:vn"/><s n="case:d"/></r></p></e>
 <e><p><l>arane</l><r>aranA<s n="cat:vn"/><s n="case:o"/></r></p></e>
@@ -1987,6 +1986,7 @@
 <e><p><l>eMge</l><r>a<s n="cat:v"/><s n="gen:m"/><s n="num:p"/><s n="per:u"/><s n="tam:gA"/></r></p></e>
 <e><p><l>eMge</l><r>a<s n="cat:v"/><s n="gen:m"/><s n="num:p"/><s n="per:a"/><s n="tam:gA"/></r></p></e>
 <e><p><l>oge</l><r>a<s n="cat:v"/><s n="gen:m"/><s n="num:p"/><s n="per:m"/><s n="tam:gA"/></r></p></e>
+<e><p><l>oge</l><r>a<s n="cat:v"/><s n="gen:m"/><s n="num:s"/><s n="per:m"/><s n="tam:gA"/></r></p></e>
 <e><p><l>iegA</l><r>a<s n="cat:v"/><s n="gen:m"/><s n="num:p"/><s n="per:m_h"/><s n="tam:gA"/></r></p></e>
 <e><p><l>iyegA</l><r>a<s n="cat:v"/><s n="gen:m"/><s n="num:p"/><s n="per:m_h"/><s n="tam:gA"/></r></p></e>
 <e><p><l>UzgI</l><r>a<s n="cat:v"/><s n="gen:f"/><s n="num:s"/><s n="per:u"/><s n="tam:gA"/></r></p></e>
@@ -3889,6 +3889,7 @@ addition ended by Kirti Garg kirti.garg@gmail.com on 7/12/22-->
 <e lm="nalasAjI"><i>nalasAjI</i><par n="AjAxI/__n"/></e>
 <e lm="xvIpasamUha"><i>xvIpasamUh</i><par n="Gar/a__n"/></e>
 <e lm="xUra"><i>xUra</i><par n="amIra/__adj"/></e>
+<e lm="ganwavya"><i>ganwavya</i><par n="kroXa/__n"/></e>
 <e lm="gumA"><i>gumA</i><par n="KA/__v"/></e>
 <e lm="guma"><i>gum</i><par n="uT/a__v"/></e>
 <e lm="doYktara"><i>doYktar</i><par n="Gar/a__n"/></e> 
@@ -3902,6 +3903,7 @@ addition ended by Kirti Garg kirti.garg@gmail.com on 7/12/22-->
 
 <e lm="wIna"><i>wIn</i><par n="wIn/a__adj"/></e>
 <e lm="xasa"><i>xas</i><par n="wIn/a__adj"/></e>
+
 <!--sdef addition completed by Kirti Garg kirti.garg@gmail.com on Dec 5,2022 for the LC project -->
 
 

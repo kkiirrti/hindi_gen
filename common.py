@@ -11,6 +11,7 @@ def log(mssg, logtype = 'OK'):
     print(f'[{logtype}] : {mssg}')
     if logtype == 'ERROR' :
         path = sys.argv[1]
+        print(path)
         write_hindi_test('Error', mssg,'test.csv',path)
 
 def clean(word, inplace = ''):
@@ -237,8 +238,9 @@ def analyse_words(words_list):
             log(f'{word_data[1]} identified as verb.')
             verbs.append(word_data)
         else:
-            log(f'{word_data[1]} identified as other word.')
-            others.append(word_data)
+            log(f'{word_data[1]} identified as other word, but processed as noun with default GNP.') #treating other words as noun 
+            #others.append(word_data) #modification by Kirti on 12/12 to handle other words
+            nouns.append(word_data)
     return indeclinables,pronouns,nouns,adjectives,verbs,others
 
 def process_indeclinables(indeclinables):
@@ -254,7 +256,11 @@ def process_others(other_words):
 
     processed_others = []
     for word in other_words:
-        processed_others.append( (word[0], clean(word[1]), 'other') )
+        
+        gender = 'm'
+        number = 's'
+        person = 'a'
+        processed_others.append( (word[0], clean(word[1]), 'other', gender, number, person) )
     return processed_others
 
 def extract_gnp(gnp_info):
@@ -287,7 +293,7 @@ def process_pronouns(pronouns,processed_nouns):
                 case = 'd'
         if pronoun[1] == 'addressee':
             addr_map = {'respect':'Apa', 'informal':'wU', '':'wU'}
-            pronoun_per = {'respect':'m_h2', 'informal':'m_h0', '':'m_h1'}
+            pronoun_per = {'respect':'m', 'informal':'m_h0', '':'m_h1'}
             word = addr_map.get(pronoun[6].strip().lower(), 'wU')
             person = pronoun_per.get(pronoun[6].strip().lower(), 'm_h1')
         elif pronoun[1] == 'speaker' :
@@ -352,11 +358,12 @@ def process_adjectives(adjectives, processed_nouns):
         log(f'{adjective[1]} processed as an adjective with case:{case} gen:{gender} num:{number}')
     return processed_adjectives
 
-def process_verbs(verbs, depend_data, processed_nouns, processed_pronouns, processed_others, re= False):
+def process_verbs(verbs, depend_data, processed_nouns, processed_pronouns, processed_others, sentence_type, re= False):
     '''Process verbs as (index, word, category, gender, number, person, tam)'''
     processed_verbs = []
     processed_auxverbs = []
     aux_verbs = []
+
     for verb in verbs:
         if '+' in verb[1]:
             exp_v = verb[1].split('+')
@@ -381,6 +388,10 @@ def process_verbs(verbs, depend_data, processed_nouns, processed_pronouns, proce
         if root == 'hE' and tam in ('pres','past'):
             alt_tam = {'pres':'hE', 'past':'WA'}
             tam = alt_tam[tam]
+        if sentence_type == 'imperative':   #added by Kirti to address imperative tams like KAo
+            tam = 'imper'
+            person = 'm_h1'
+        
         processed_verbs.append( (verb[0],root,category,gender,number,person,tam) )
         log(f'{root} processed as verb with gen:{gender} num:{number} per:{person} tam:{tam}')
 
@@ -393,6 +404,7 @@ def process_verbs(verbs, depend_data, processed_nouns, processed_pronouns, proce
                 aindex = verb[0] + ((i+1)*0.1)
                 processed_auxverbs.append( (aindex,clean(aroot),category,gender,number,person,atam) )
                 log(f'{aroot} processed as auxillary verb with gen:{gender} num:{number} per:{person} tam:{atam}')
+    
     return processed_verbs,processed_auxverbs,processed_others
 
 def collect_processed_data(processed_pronouns,processed_nouns,processed_adjectives,processed_verbs,processed_auxverbs,processed_indeclinables,processed_others):
@@ -648,14 +660,13 @@ def write_hindi_text(hindi_output, POST_PROCESS_OUTPUT, OUTPUT_FILE):
         log('Output data write successfully')
     return "Output data write successfully"
 
-def write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE, path):
+def write_hindi_test( POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE, path):
     """Append the hindi text into the file"""
     OUTPUT_FILE = 'TestResults.csv' #temporary for presenting
     with open(OUTPUT_FILE, 'a') as file:
         file.write(path.strip('verified_sent/')+',')
         file.write(src_sentence.strip('#')+',')
         file.write(POST_PROCESS_OUTPUT+',')
-        file.write(hindi_output)
         file.write('\n')
         log('Output data write successfully')
     return "Output data write successfully"

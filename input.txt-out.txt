@@ -1,3 +1,1 @@
-wU<cat:p><case:o><parsarg:0><gen:m><num:s><per:m>
-^wuma/wU<cat:p><case:o><parsarg:0><gen:m><num:p><per:m>/
-wU<cat:p><case:o><parsarg:0><gen:f><num:p><per:m>$
+^ganwavya/*ganwavya$
