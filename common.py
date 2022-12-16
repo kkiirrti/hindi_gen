@@ -4,6 +4,10 @@ import subprocess
 import constant
 from wxconv import WXC
 
+
+def convert_dZ_to_d_roots(root_word):
+        return root_word.replace('dZ','d')
+
 def log(mssg, logtype = 'OK'):
     '''Generates log message in predefined format.'''
 
@@ -16,7 +20,10 @@ def log(mssg, logtype = 'OK'):
 
 def clean(word, inplace = ''):
     '''Clean concept words by removing numbers and special characters from it using regex.'''
-    clword = re.sub(r'[^a-zA-Z]+', inplace, word)
+    newWord = word
+    if 'dZ' in word:          #handling words with dZ -Kirti - 15/12 
+       newWord = word.replace('dZ','d')
+    clword = re.sub(r'[^a-zA-Z]+', inplace, newWord)
     return clword
 
 def has_tam_ya():
@@ -252,7 +259,7 @@ def process_indeclinables(indeclinables):
     return processed_indeclinables
 
 def process_others(other_words):
-    '''Process other words'''
+    '''Process other words. Right now being processed as noun with default gnp'''
 
     processed_others = []
     for word in other_words:

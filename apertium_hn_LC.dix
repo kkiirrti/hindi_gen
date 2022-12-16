@@ -151,12 +151,14 @@
 <e><p><l></l><r><s n="cat:adj"/><s n="case:d"/><s n="gen:m"/><s n="num:p"/></r></p></e>
 <e><p><l></l><r><s n="cat:adj"/><s n="case:o"/><s n="gen:m"/><s n="num:p"/></r></p></e>
 </pardef>
+
 <pardef n="ajAwI/__adj">
 <e><p><l></l><r><s n="cat:adj"/><s n="case:d"/><s n="gen:f"/><s n="num:s"/></r></p></e>
 <e><p><l></l><r><s n="cat:adj"/><s n="case:o"/><s n="gen:f"/><s n="num:s"/></r></p></e>
 <e><p><l></l><r><s n="cat:adj"/><s n="case:d"/><s n="gen:f"/><s n="num:p"/></r></p></e>
 <e><p><l></l><r><s n="cat:adj"/><s n="case:o"/><s n="gen:f"/><s n="num:p"/></r></p></e>
 </pardef>
+
 <pardef n="kAl/A__adj">
 <e><p><l>A</l><r>A<s n="cat:adj"/><s n="case:d"/><s n="gen:m"/><s n="num:s"/></r></p></e>
 <e><p><l>e</l><r>A<s n="cat:adj"/><s n="case:o"/><s n="gen:m"/><s n="num:s"/></r></p></e>
@@ -421,7 +423,6 @@
 <!-- verbal noun -->
 <e><p><l>aranA</l><r>aranA<s n="cat:vn"/><s n="case:d"/></r></p></e>
 <e><p><l>arane</l><r>aranA<s n="cat:vn"/><s n="case:o"/></r></p></e>
-
 
 
 <e><p><l>arwA_huA</l><r>ara<s n="cat:v"/><s n="gen:m"/><s n="num:s" /><s n="case:d"/><s n="tam:adj_wA_huA"/></r></p></e>
@@ -2153,9 +2154,6 @@
 <e><p><l>gayI_huI</l><r><s n="cat:v"/><s n="gen:f"/><s n="num:p" /><s n="case:o"/><s n="tam:adj_yA_huA"/></r></p></e>
 
 
-
-
-
  <e><p><l>jAwe_hue</l><r>jA<s n="cat:v"/><s n="gen:m"/><s n="num:s"/><s n="per:u"/><s n="tam:adv_we_hue"/></r></p></e>
  <e><p><l>jAwe_hue</l><r>jA<s n="cat:v"/><s n="gen:m"/><s n="num:s"/><s n="per:m"/><s n="tam:adv_we_hue"/></r></p></e>
  <e><p><l>jAwe_hue</l><r>jA<s n="cat:v"/><s n="gen:m"/><s n="num:s"/><s n="per:a"/><s n="tam:adv_we_hue"/></r></p></e>
@@ -2265,8 +2263,8 @@
 </pardef>					
 <pardef n="gudiy/A__n">
 <e><p><l>A</l><r>A<s n="cat:n"/><s n="case:d"/><s n="gen:f"/><s n="num:s"/></r></p></e>
-<e><p><l>Az</l><r>A<s n="cat:n"/><s n="case:d"/><s n="gen:f"/><s n="num:p"/></r></p></e>
 <e><p><l>A</l><r>A<s n="cat:n"/><s n="case:o"/><s n="gen:f"/><s n="num:s"/></r></p></e>
+<e><p><l>Az</l><r>A<s n="cat:n"/><s n="case:d"/><s n="gen:f"/><s n="num:p"/></r></p></e>
 <e><p><l>oM</l><r>A<s n="cat:n"/><s n="case:o"/><s n="gen:f"/><s n="num:p"/></r></p></e>
 </pardef>					
 <pardef n="IrRyA/__n">
@@ -2289,10 +2287,11 @@
 </pardef>					
 <pardef n="ladak/I__n">
 <e><p><l>I</l><r>I<s n="cat:n"/><s n="case:d"/><s n="gen:f"/><s n="num:s"/></r></p></e>
-<e><p><l>iyAz</l><r>I<s n="cat:n"/><s n="case:d"/><s n="gen:f"/><s n="num:p"/></r></p></e>
 <e><p><l>I</l><r>I<s n="cat:n"/><s n="case:o"/><s n="gen:f"/><s n="num:s"/></r></p></e>
+<e><p><l>iyAz</l><r>I<s n="cat:n"/><s n="case:d"/><s n="gen:f"/><s n="num:p"/></r></p></e>
 <e><p><l>iyoM</l><r>I<s n="cat:n"/><s n="case:o"/><s n="gen:f"/><s n="num:p"/></r></p></e>
 </pardef>					
+
 <pardef n="AjAxI/__n">
 <e><p><l></l><r><s n="cat:n"/><s n="case:d"/><s n="gen:f"/><s n="num:s"/></r></p></e>
 <e><p><l></l><r><s n="cat:n"/><s n="case:d"/><s n="gen:f"/><s n="num:p"/></r></p></e>
@@ -2313,9 +2312,9 @@
 </pardef>					
 <pardef n="bah/U__n">
 <e><p><l>U</l><r>U<s n="cat:n"/><s n="case:d"/><s n="gen:f"/><s n="num:s"/></r></p></e>
+<e><p><l>U</l><r>U<s n="cat:n"/><s n="case:o"/><s n="gen:f"/><s n="num:s"/></r></p></e>
 <e><p><l>uez</l><r>U<s n="cat:n"/><s n="case:d"/><s n="gen:f"/><s n="num:p"/></r></p></e>
 <e><p><l>uyeM</l><r>U<s n="cat:n"/><s n="case:d"/><s n="gen:f"/><s n="num:p"/></r></p></e>
-<e><p><l>U</l><r>U<s n="cat:n"/><s n="case:o"/><s n="gen:f"/><s n="num:s"/></r></p></e>
 <e><p><l>uoM</l><r>U<s n="cat:n"/><s n="case:o"/><s n="gen:f"/><s n="num:p"/></r></p></e>
 </pardef>					
 <pardef n="bAlU/__n">
@@ -2538,6 +2537,8 @@
 <e><p><l>inapara</l><r>yaha<s n="cat:p"/><s n="case:o"/><s n="parsarg:para"/><s n="gen:m"/><s n="num:p"/><s n="per:a"/></r></p></e>
 <e><p><l>inapara</l><r>yaha<s n="cat:p"/><s n="case:o"/><s n="parsarg:para"/><s n="gen:f"/><s n="num:p"/><s n="per:a"/></r></p></e>
 </pardef>
+
+
 <pardef n="j/o__p">
 <e><p><l>o</l><r>o<s n="cat:p"/><s n="case:d"/><s n="gen:m"/><s n="num:s"/><s n="per:a"/><s n="tam:0"/></r></p></e>
 <e><p><l>o</l><r>o<s n="cat:p"/><s n="case:d"/><s n="gen:f"/><s n="num:s"/><s n="per:a"/><s n="tam:0"/></r></p></e>
