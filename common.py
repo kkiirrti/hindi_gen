@@ -5,8 +5,6 @@ import constant
 from wxconv import WXC
 
 
-def convert_dZ_to_d_roots(root_word):
-        return root_word.replace('dZ','d')
 
 def log(mssg, logtype = 'OK'):
     '''Generates log message in predefined format.'''
@@ -15,8 +13,7 @@ def log(mssg, logtype = 'OK'):
     print(f'[{logtype}] : {mssg}')
     if logtype == 'ERROR' :
         path = sys.argv[1]
-        print(path)
-        write_hindi_test('Error', mssg,'test.csv',path)
+        write_hindi_test(' ','Error', mssg,'test.csv',path)
 
 def clean(word, inplace = ''):
     '''Clean concept words by removing numbers and special characters from it using regex.'''
@@ -211,7 +208,7 @@ def check_indeclinable(word_data):
         'wo,agara,magara,awaH,cUMki,cUzki,jisa waraha,'
         'jisa prakAra,lekina,waba,waBI,yA,varanA,anyaWA,'
         'wAki,baSarweM,jabaki,yaxi,varana,paraMwu,kiMwu,'
-        'hAlAzki,hAlAMki,va,Aja'
+        'hAlAzki,hAlAMki,va,Aja,nahIM' #added nahiM as indec by Kirti.garg@gmail.com Dec 16
     )
     indeclinable_list = indeclinable_words.split(",")
     if clean(word_data[1]) in indeclinable_list :
@@ -393,7 +390,9 @@ def process_verbs(verbs, depend_data, processed_nouns, processed_pronouns, proce
         
         gender, number, person = getVerbGNP(tam, depend_data, processed_nouns, processed_pronouns)
         if root == 'hE' and tam in ('pres','past'):
-            alt_tam = {'pres':'hE', 'past':'WA'}
+            alt_tam = {'pres':'hE','past':'WA'}
+            alt_root = {'pres':'hE','past':'WA'}
+            root = alt_root[tam] # handling past tense by passing corret root WA
             tam = alt_tam[tam]
         if sentence_type == 'imperative':   #added by Kirti to address imperative tams like KAo
             tam = 'imper'
@@ -667,13 +666,14 @@ def write_hindi_text(hindi_output, POST_PROCESS_OUTPUT, OUTPUT_FILE):
         log('Output data write successfully')
     return "Output data write successfully"
 
-def write_hindi_test( POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE, path):
+def write_hindi_test(hindi_output,POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE, path):
     """Append the hindi text into the file"""
     OUTPUT_FILE = 'TestResults.csv' #temporary for presenting
     with open(OUTPUT_FILE, 'a') as file:
         file.write(path.strip('verified_sent/')+',')
         file.write(src_sentence.strip('#')+',')
         file.write(POST_PROCESS_OUTPUT+',')
+        file.write(hindi_output)
         file.write('\n')
         log('Output data write successfully')
     return "Output data write successfully"

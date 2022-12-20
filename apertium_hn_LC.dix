@@ -1731,9 +1731,8 @@
 <e><p><l>iyegA</l><r><s n="cat:v"/><s n="gen:f"/><s n="num:p"/><s n="per:m_h"/><s n="tam:gA"/></r></p></e>
 <e><p><l>yeMgI</l><r><s n="cat:v"/><s n="gen:f"/><s n="num:p"/><s n="per:a"/><s n="tam:gA"/></r></p></e>
 </pardef>
+
 <pardef n="h/E__v">
-
-
 <!-- verbal noun -->
 <e><p><l>EnA</l><r>EnA<s n="cat:vn"/><s n="case:d"/></r></p></e>
 <e><p><l>Ene</l><r>EnA<s n="cat:vn"/><s n="case:o"/></r></p></e>
@@ -2701,10 +2700,11 @@
 <e><p><l>inhIMmeM_se</l><r>oI<s n="cat:p"/><s n="case:o"/><s n="parsarg:meM_se"/><s n="gen:f"/><s n="num:p"/><s n="per:a"/></r></p></e>
 <e><p><l>inhIMpara</l><r>oI<s n="cat:p"/><s n="case:o"/><s n="parsarg:para"/><s n="gen:m"/><s n="num:p"/><s n="per:a"/></r></p></e>
 <e><p><l>inhIMpara</l><r>oI<s n="cat:p"/><s n="case:o"/><s n="parsarg:para"/><s n="gen:f"/><s n="num:p"/><s n="per:a"/></r></p></e>
-<e><p><l>oI</l><r>oI<s n="cat:p"/><s n="case:o"/><s n="parsarg:0"/><s n="gen:m"/><s n="num:s"/><s n="per:a"/><s n="tam:0"/></r></p></e>
-<e><p><l>oI</l><r>oI<s n="cat:p"/><s n="case:o"/><s n="parsarg:0"/><s n="gen:f"/><s n="num:s"/><s n="per:a"/><s n="tam:0"/></r></p></e>
-<e><p><l>oI</l><r>oI<s n="cat:p"/><s n="case:o"/><s n="parsarg:0"/><s n="gen:m"/><s n="num:p"/><s n="per:a"/><s n="tam:0"/></r></p></e>
-<e><p><l>oI</l><r>oI<s n="cat:p"/><s n="case:o"/><s n="parsarg:0"/><s n="gen:f"/><s n="num:p"/><s n="per:a"/><s n="tam:0"/></r></p></e>
+<e><p><l>oI</l><r>oI<s n="cat:p"/><s n="case:o"/><s n="parsarg:0"/><s n="gen:m"/><s n="num:s"/><s n="per:a"/></r></p></e>
+<e><p><l>oI</l><r>oI<s n="cat:p"/><s n="case:o"/><s n="parsarg:0"/><s n="gen:f"/><s n="num:s"/><s n="per:a"/></r></p></e>
+<e><p><l>oI</l><r>oI<s n="cat:p"/><s n="case:o"/><s n="parsarg:0"/><s n="gen:m"/><s n="num:p"/><s n="per:a"/></r></p></e>
+<e><p><l>oI</l><r>oI<s n="cat:p"/><s n="case:o"/><s n="parsarg:0"/><s n="gen:f"/><s n="num:p"/><s n="per:a"/></r></p></e>
+<!--Remove <s n="tam:0"/> from koI- last 4-->
 </pardef>
 
 <pardef n="/vaha__p">
@@ -28426,6 +28426,7 @@ addition ended by Kirti Garg kirti.garg@gmail.com on 7/12/22-->
 <e lm="SvewAMka"><i>SvewAMk</i><par n="Gar/a__n"/></e>
 <e lm="Svewapawra"><i>Svewapawr</i><par n="Gar/a__n"/></e>
 <e lm="svexa"><i>svex</i><par n="Gar/a__n"/></e>
+<e lm="svIkAra"><i>svIkAr</i><par n="Gar/a__n"/></e>
 <e lm="svIkAra"><i>svIkAr</i><par n="Gar/a__n"/></e>
 <e lm="svIkArAwmaka"><i>svIkArAwmak</i><par n="Gar/a__n"/></e>
 <e lm="svIkArya"><i>svIkAry</i><par n="Gar/a__n"/></e>

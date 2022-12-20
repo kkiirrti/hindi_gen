@@ -93,6 +93,6 @@ if __name__ == "__main__":
 
     hindi_output = collect_hindi_output(POST_PROCESS_OUTPUT)
 
-    #write_hindi_text(hindi_output, POST_PROCESS_OUTPUT, OUTPUT_FILE)
+    write_hindi_text(hindi_output, POST_PROCESS_OUTPUT, OUTPUT_FILE)
     #if testing use the next line code and results are collated in test.csv
-    write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE)
+    #write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE)
