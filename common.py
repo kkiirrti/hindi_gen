@@ -322,11 +322,12 @@ def process_pronouns(pronouns,processed_nouns):
     return processed_pronouns
 
 def process_nouns(nouns):
-    '''Process nouns as (index, word, category, case, gender, number, proper)'''
+    '''Process nouns as (index, word, category, case, gender, number, proper, postposition)'''
     processed_nouns = []
     for noun in nouns:
         category = 'n'
         case = 'o'
+        postposition = None
         gender, number, person = extract_gnp(noun[3])
         proper = False if '_' in noun[1] else True
         if "k1" in noun[4]:
@@ -340,10 +341,10 @@ def process_nouns(nouns):
             dnouns = noun[1].split('+')
             for k in range(len(dnouns)):
                 index = noun[0] + (k*0.1)
-                processed_nouns.append( (index,clean(dnouns[k]),category, case, gender, number, person, proper) )
+                processed_nouns.append( (index,clean(dnouns[k]),category, case, gender, number, person, proper, postposition) )
         else:
-            processed_nouns.append( (noun[0], clean(noun[1]), category, case, gender, number, person, proper) )
-        log(f'{noun[1]} processed as noun with case:{case} gen:{gender} num:{number} proper:{proper}.')
+            processed_nouns.append( (noun[0], clean(noun[1]), category, case, gender, number, person, proper, postposition) )
+        log(f'{noun[1]} processed as noun with case:{case} gen:{gender} num:{number} proper:{proper} postposition:{postposition}.')
     return processed_nouns
 
 def process_adjectives(adjectives, processed_nouns):
@@ -564,7 +565,9 @@ def preprocess_postposition(processed_words, words_info,processed_verbs):
             temp[7] = ppost if ppost != '' else 0
             data = tuple(temp)
         if data[2] == 'n' or data[2] == 'other':
-            # data[1] = data[1] + ' ' + ppost
+            temp = list(data)
+            temp[8] = ppost if ppost != '' else None
+            data = tuple(temp)
             PPdata[data[0]] = ppost
         new_processed_words.append(data)
     return new_processed_words,PPdata
