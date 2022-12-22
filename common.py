@@ -412,9 +412,10 @@ def process_verbs(verbs, depend_data, processed_nouns, processed_pronouns, proce
     # Do verb agreement
 
     # Identify auxiliary verb
-
-    # if found, append
-
+            # if found, add the aux verb to the aux list
+    #identify TAM, GNP, etc info for verb. 
+    # add to verb list
+    
     processed_verbs = []
     processed_auxverbs = []
     aux_verbs = []
