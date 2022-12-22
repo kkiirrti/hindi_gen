@@ -4,8 +4,6 @@ import subprocess
 import constant
 from wxconv import WXC
 
-
-
 def log(mssg, logtype = 'OK'):
     '''Generates log message in predefined format.'''
 
@@ -18,8 +16,11 @@ def log(mssg, logtype = 'OK'):
 def clean(word, inplace = ''):
     '''Clean concept words by removing numbers and special characters from it using regex.'''
     newWord = word
-    if 'dZ' in word:          #handling words with dZ -Kirti - 15/12 
+    if 'dZ' in word:          #handling words with dZ/jZ -Kirti - 15/12 
        newWord = word.replace('dZ','d')
+    elif 'jZ' in word:
+        newWord = word.replace('jZ','j')
+    
     clword = re.sub(r'[^a-zA-Z]+', inplace, newWord)
     return clword
 
@@ -81,12 +82,19 @@ def getVerbGNP(tam, depend_data, processed_nouns, processed_pronouns):
     searchList = processed_nouns + processed_pronouns
     if tam == 'yA':
         searchIndex = k2exists if k2exists != False else k1exists
-    
+
     casedata = getDataByIndex(searchIndex,searchList)
     if(casedata == False):
         log('Something went wrong. Cannot determine GNP for verb.','ERROR')
         sys.exit()
     return casedata[4], casedata[5], casedata[6][0] #only first character of the person - to handle m_hx kind of case
+
+def verb_agreement(concept, verb):
+    concept[4] = verb[4]
+    concept[4] = verb[4]
+    concept[4] = verb[4]
+    return concept, verb #not sure what to return
+
 
 def read_file(file_path):
     '''Returns array of lines for data given in file'''
@@ -319,12 +327,13 @@ def process_pronouns(pronouns,processed_nouns):
     return processed_pronouns
 
 def process_nouns(nouns):
-    '''Process nouns as (index, word, category, case, gender, number, proper)'''
+    '''Process nouns as (index, word, category, case, gender, number, proper/noun type= proper or CP_noun)'''
     processed_nouns = []
     for noun in nouns:
         category = 'n'
         case = 'o'
         gender, number, person = extract_gnp(noun[3])
+        noun_type = 'common' if '_' in noun[1] else 'proper'
         proper = False if '_' in noun[1] else True
         if "k1" in noun[4]:
                 case = "d" 
@@ -337,10 +346,10 @@ def process_nouns(nouns):
             dnouns = noun[1].split('+')
             for k in range(len(dnouns)):
                 index = noun[0] + (k*0.1)
-                processed_nouns.append( (index,clean(dnouns[k]),category, case, gender, number, person, proper) )
+                processed_nouns.append( (index,clean(dnouns[k]),category, case, gender, number, person, noun_type) )
         else:
-            processed_nouns.append( (noun[0], clean(noun[1]), category, case, gender, number, person, proper) )
-        log(f'{noun[1]} processed as noun with case:{case} gen:{gender} num:{number} proper:{proper}.')
+            processed_nouns.append( (noun[0], clean(noun[1]), category, case, gender, number, person, noun_type) )
+        log(f'{noun[1]} processed as noun with case:{case} gen:{gender} num:{number} noun_type:{noun_type}.')
     return processed_nouns
 
 def process_adjectives(adjectives, processed_nouns):
@@ -368,12 +377,16 @@ def process_verbs(verbs, depend_data, processed_nouns, processed_pronouns, proce
     processed_auxverbs = []
     aux_verbs = []
 
-    for verb in verbs:
+    for verb in verbs: 
         if '+' in verb[1]:
             exp_v = verb[1].split('+')
             if not re: #If it is not in reprocessing stage
-                cp_word = exp_v[0]
-                processed_others.append( (verb[0]- 0.1,clean(cp_word),'other') )
+                cp_word = clean(exp_v[0])                  #handle CP
+                #index, word, category, case, gender, number, proper
+                processed_nouns.append( (verb[0]- 0.1, cp_word,'n','d','m','s','a', 'CP_noun') )
+                log(f'{cp_word} from CP, processed as noun with m,s,a') #default male, can get modified during reprocessing
+                #processed_others.append( (verb[0]- 0.1,clean(cp_word),'other') )
+                verb_agreement(cp_word, verb)  # CP_Noun verb agreement
             temp = list(verb)
             temp[1] = exp_v[1]
             verb = tuple(temp)
@@ -381,22 +394,27 @@ def process_verbs(verbs, depend_data, processed_nouns, processed_pronouns, proce
         category = 'v'
         v = verb[1].split('-')
         root = clean(v[0])
+
+
         w = v[1].split('_')
         tam = w[0]
 
         for aux in w[1:]:
             if aux.isalpha():
                 aux_verbs.append(aux)
-        
+
+    
         gender, number, person = getVerbGNP(tam, depend_data, processed_nouns, processed_pronouns)
         if root == 'hE' and tam in ('pres','past'):
             alt_tam = {'pres':'hE','past':'WA'}
             alt_root = {'pres':'hE','past':'WA'}
             root = alt_root[tam] # handling past tense by passing corret root WA
             tam = alt_tam[tam]
-        if sentence_type == 'imperative':   #added by Kirti to address imperative tams like KAo
-            tam = 'imper'
-            person = 'm_h1'
+        #if sentence_type == 'imperative':   #added by Kirti to address imperative tams like KAo
+        #    tam = 'imper'
+        #    person = 'm_h1'
+        #if depend_data[indexno] =='rsv'
+        #    tam = 'we_huye'
         
         processed_verbs.append( (verb[0],root,category,gender,number,person,tam) )
         log(f'{root} processed as verb with gen:{gender} num:{number} per:{person} tam:{tam}')
@@ -513,7 +531,7 @@ def nextNounData(fromIndex,word_info):
                     index = int(data[4][0])
     return False
 
-def preprocess_postposition(processed_words, words_info,processed_verbs):
+def preprocess_postposition(processed_words, words_info, processed_verbs):
     '''Calculates postposition to words wherever applicable according to rules.'''
     PPdata = {}
     new_processed_words = []
@@ -535,16 +553,24 @@ def preprocess_postposition(processed_words, words_info,processed_verbs):
                         temp = list(data)
                         temp[3] = 'o'
                         data = tuple(temp)
-        elif data_case in ('k3','k5'):
+        elif data_case in ('k3','k5', 'K5prk'):
             ppost = 'se'
-        elif data_case in ('k4','k7t','jk1'):
+        elif data_case in ('k4','k4a', 'k7t','jk1'):
             ppost = 'ko'
         elif data_case in ('k7','k7p'):
             ppost = 'meM'
-        elif (data_case == 'k2') and data_info[2] in ("anim", "per"):
+        elif data_case in ('k2g', 'k2') and data_info[2] in ("anim", "per"):
             ppost = 'ko'
         elif data_case == 'rt':
             ppost = 'ke lie'
+        elif data_case in ('rsm', 'rsma'):
+            ppost = 'ke pAsa'   
+        elif data_case == 'rsk':
+            ppost = 'hue'
+        elif data_case == 'ru':
+            ppost = 'jEsI'     
+        elif data_case == 'rv':
+            ppost = 'kI tulanA meM'            
         elif data_case == 'r6':
             ppost = 'kI' if data[4] == 'f' else 'kA'
             nn_data = nextNounData(data[0],words_info)
@@ -566,9 +592,9 @@ def preprocess_postposition(processed_words, words_info,processed_verbs):
             # data[1] = data[1] + ' ' + ppost
             PPdata[data[0]] = ppost
         new_processed_words.append(data)
-    return new_processed_words,PPdata
+    return new_processed_words, PPdata
 
-def process_postposition(transformed_fulldata, words_info,processed_verbs):
+def process_postposition(transformed_fulldata, words_info, processed_verbs):
     '''Adds postposition to words wherever applicable according to rules.'''
     PPFulldata = []
     
@@ -616,7 +642,7 @@ def join_compounds(transformed_data):
     for data in sorted(transformed_data):
         if int(data[0]) == previndex and data[2] == 'n' :
             temp = list(data)
-            temp[1] = prevword + temp[1]
+            temp[1] = prevword + ' ' + temp[1]
             data = tuple(temp)
             resultant_data.pop()
         resultant_data.append(data)
