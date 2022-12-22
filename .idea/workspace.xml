@@ -5,35 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3c9d6df7-8c25-48f8-9b1f-d23db64e8609" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/Test_data/1.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/Test_data/103.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/Test_data/104.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/Test_data/134.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/Test_data/1_wu.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/Test_data/221.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/Test_data/309.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/Test_data/59_cAra.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/Test_data/66.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/Test_data/input.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/Test_data/input.txt-out.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/compile_dict.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/constant.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/dictionary/apertium_hn.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/dictionary/apertium_hn_LC.dix" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/dictionary/auxillary_mapping.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/dictionary/hi_expanded_LC" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/dictionary/tam_mapping.dat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/get_canonical_dic.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/input.txt-out.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/morph_generator_hn/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/morph_generator_hn/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/refs/ir_no@" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/refs/utf8_wx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/temporary/1.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/temporary/1_wu.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/temporary/221.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hindi_gen_refactored/temporary/59_cAra.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apertium_hn_LC.dix" beforeDir="false" afterPath="$PROJECT_DIR$/apertium_hn_LC.dix" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generate_input_modularize_new.py" beforeDir="false" afterPath="$PROJECT_DIR$/generate_input_modularize_new.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hi.gen_LC.bin" beforeDir="false" afterPath="$PROJECT_DIR$/hi.gen_LC.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hi.morfLC.bin" beforeDir="false" afterPath="$PROJECT_DIR$/hi.morfLC.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hi_expanded_LC" beforeDir="false" afterPath="$PROJECT_DIR$/hi_expanded_LC" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,7 +19,10 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2Injyv4omAgQqeZFp00BEuYyIvb" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -55,6 +36,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "/Users/kirti/Documents/MEITY/tools/hindi_gen",
     "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
   }
 }]]></component>
@@ -73,5 +55,16 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/hindi_generator" />
     </ignored-roots>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/common.py</url>
+          <line>190</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
