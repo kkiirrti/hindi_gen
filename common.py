@@ -1,8 +1,40 @@
+import os
 import sys
 import re
 import subprocess
 import constant
 from wxconv import WXC
+
+
+def get_first_form(morph_forms):
+    """
+    >>> get_first_form("^mAz/mA<cat:n><case:d><gen:f><num:p>/mAz<cat:n><case:d><gen:f><num:s>/mAz<cat:n><case:o><gen:f><num:s>$")
+    'mA<cat:n><case:d><gen:f><num:p>'
+    """
+    return morph_forms.split("/")[1]
+
+
+def parse_morph_tags(morph_form):
+    """
+    >>> parse_morph_tags("mA<cat:n><case:d><gen:f><num:p>")
+    {'cat': 'n', 'case': 'd', 'gen': 'f', 'num': 'p', 'form': 'mA'}
+    """
+    form = morph_form.split("<")[0]
+    matches = re.findall("<(.*?):(.*?)>", morph_form)
+    result = {match[0]: match[1] for match in matches}
+    result["form"] = form
+    return result
+
+
+# function to run morph analyzer and get gnp
+def find_tags_from_dix(word):
+    """
+    >>> find_tags_from_dix("mAz")
+    {'cat': 'n', 'case': 'd', 'gen': 'f', 'num': 'p', 'form': 'mA'}
+    """
+    dix_command = "echo {} | apertium-destxt | lt-proc -ac hi.morfLC.bin | apertium-retxt".format(word)
+    morph_forms = os.popen(dix_command).read()
+    return parse_morph_tags(get_first_form(morph_forms))
 
 
 def log(mssg, logtype='OK'):
@@ -96,15 +128,24 @@ def getVerbGNP(tam, depend_data, processed_nouns, processed_pronouns):
 
 
 def verb_agreement(concept, verb):
+    """
+    get index of verb from processed verb list
+    get index of corresponding
+    """
     concept[4] = verb[4]
     concept[4] = verb[4]
     concept[4] = verb[4]
     return concept, verb  # not sure what to return
 
 
-def setGNP(concept):  # returns GNP only if Complex predicate found
+def setGNP(concept, verb):# returns GNP only if Complex predicate found
     if concept[7] == 'CP_noun':
-        return concept[4], concept[5], concept[6][0]
+        verb[4] = concept[4]
+        verb[5] = concept[5]
+        verb[6] = concept[6]
+        #return concept[4], concept[5], concept[6][0]
+        return verb
+
 
 
 def read_file(file_path):
@@ -198,7 +239,7 @@ def check_pronoun(word_data):
 
     try:
         if clean(word_data[1]) in (
-        'addressee', 'speaker', 'kyA', 'Apa', 'jo', 'koI', 'kOna', 'mEM', 'saba', 'vaha', 'wU', 'wuma', 'yaha'):
+                'addressee', 'speaker', 'kyA', 'Apa', 'jo', 'koI', 'kOna', 'mEM', 'saba', 'vaha', 'wU', 'wuma', 'yaha'):
             return True
         elif 'coref' in word_data[5]:
             return True
@@ -405,17 +446,15 @@ def process_adjectives(adjectives, processed_nouns):
 def process_verbs(verbs, depend_data, processed_nouns, processed_pronouns, processed_others, sentence_type, re=False):
     '''Process verbs as (index, word, category, gender, number, person, tam)'''
 
-    # Check for complex predicates
-
-    # If found, append noun part to noun list
-
+    # Check for presence of complex predicates
+    # If a CP is found, add it to noun list
     # Do verb agreement
 
     # Identify auxiliary verb
-            # if found, add the aux verb to the aux list
-    #identify TAM, GNP, etc info for verb. 
-    # add to verb list
-    
+    # if found, add the aux verb to the aux list
+    # identify TAM, GNP, etc info for verb.
+    # add info to the verb list
+
     processed_verbs = []
     processed_auxverbs = []
     aux_verbs = []
@@ -426,11 +465,17 @@ def process_verbs(verbs, depend_data, processed_nouns, processed_pronouns, proce
             if not re:  # If it is not in reprocessing stage
                 cp_word = clean(exp_v[0])  # handle CP
                 # index, word, category, case, gender, number, proper
+                #tags = find_tags_from_dix(cp_word)  # getting tags from morph analyzer to assign gender and number for agreement
                 CP_noun = [verb[0] - 0.1, cp_word, 'n', 'd', 'm', 's', 'a', 'CP_noun']
-                processed_nouns.append((verb[0] - 0.1, cp_word, 'n', 'd', 'm', 's', 'a', 'CP_noun'))
-                gender, number, person = setGNP(CP_noun)
+                #CP_noun = [verb[0] - 0.1, cp_word, 'n', 'd', tags['gen'], tags['num'], 'a', 'CP_noun']
+                #processed_nouns.append((verb[0] - 0.1, cp_word, 'n', 'd', tags['gen'], tags['num'], 'a', 'CP_noun'))
+                processed_nouns.append((verb[0] - 0.1, cp_word, 'n', 'd','m', 's', 'a', 'CP_noun'))
+                #gender = tags['gen']
+                #number = tags['num']
+                #person = 'a'
+                verb = setGNP(CP_noun, verb)
                 is_GNP_identified = True  # CP_Noun verb agreement
-                log(f'{cp_word} from CP, processed as noun with {gender}, {number}, {person} after agreement')  # default male, can get modified during reprocessing
+                log(f'{cp_word} from CP, processed as noun with {verb[4]}, {verb[5]}, {verb[6]} after agreement')  # default male, can get modified during reprocessing
                 # processed_others.append( (verb[0]- 0.1,clean(cp_word),'other') )
 
             temp = list(verb)
@@ -453,7 +498,7 @@ def process_verbs(verbs, depend_data, processed_nouns, processed_pronouns, proce
         if root == 'hE' and tam in ('pres', 'past'):  # process TAM
             alt_tam = {'pres': 'hE', 'past': 'WA'}
             alt_root = {'pres': 'hE', 'past': 'WA'}
-            root = alt_root[tam]  # handling past tense by passing corret root WA
+            root = alt_root[tam]  # handling past tense by passing correct root WA
             tam = alt_tam[tam]
         # if sentence_type == 'imperative':   #added by Kirti to address imperative tams like KAo
         #    tam = 'imper'
@@ -555,7 +600,7 @@ def analyse_output_data(output_data, morph_input):
 
 
 def handle_unprocessed(outputData, processed_nouns):
-    '''swapping gender info that do not exists in dictionary.'''
+    '''swapping gender info that does not exist in dictionary.'''
     output_data = outputData.strip().split(" ")
     has_changes = False
     dataIndex = 0  # temporary [to know index value of generated word from sentence]

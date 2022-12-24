@@ -1,4 +1,3 @@
-import sys
 from common import *
 
 if __name__ == "__main__":
@@ -64,8 +63,9 @@ if __name__ == "__main__":
     # Output from morph generator is read.
     outputData = read_output_data(OUTPUT_FILE)
     
-    # Check for any ungenerated words (mainly noun) & change the gender for ungenerated words
-    has_changes,processed_nouns = handle_unprocessed(outputData, processed_nouns)
+    # Check for any non-generated words (mainly noun) & change the gender for non-generated words
+    has_changes, processed_nouns = handle_unprocessed(outputData, processed_nouns)
+    # handle unprocessed_verbs also with verb agreement
     
     # If any changes is done in gender for any word.
     # Adjectives and verbs are re-processed as they might be dependent on it.
