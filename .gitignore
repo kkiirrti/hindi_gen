@@ -14,3 +14,5 @@ apertium_hn.dix
 apertium_hn_in_canonical_form.dix
 verified_sent_old
 verified_sent
+__pycache__
+.idea
