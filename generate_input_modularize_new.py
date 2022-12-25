@@ -85,7 +85,9 @@ if __name__ == "__main__":
     # compound words and post-positions are joined.
     transformed_data = join_compounds(transformed_data)
     PP_fulldata = add_postposition(transformed_data,processed_postpositions)
-    POST_PROCESS_OUTPUT = rearrange_sentence(PP_fulldata)  # rearrange by index number
+
+    
+    POST_PROCESS_OUTPUT = rearrange_sentence(PP_fulldata)  # reaarange by index number
 
     # for yn_interrogative add kya in the beginning
     if sentence_type == "yn_interrogative":
@@ -94,5 +96,6 @@ if __name__ == "__main__":
     hindi_output = collect_hindi_output(POST_PROCESS_OUTPUT)
 
     write_hindi_text(hindi_output, POST_PROCESS_OUTPUT, OUTPUT_FILE)
+
     # if testing use the next line code and results are collated in test.csv
     # write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE)

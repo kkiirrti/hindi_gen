@@ -397,11 +397,12 @@ def process_pronouns(pronouns, processed_nouns):
 
 
 def process_nouns(nouns):
-    '''Process nouns as (index, word, category, case, gender, number, proper/noun type= proper or CP_noun)'''
+    '''Process nouns as (index, word, category, case, gender, number, proper/noun type= proper or CP_noun, postposition)'''
     processed_nouns = []
     for noun in nouns:
         category = 'n'
         case = 'o'
+        postposition = None
         gender, number, person = extract_gnp(noun[3])
         noun_type = 'common' if '_' in noun[1] else 'proper'
         proper = False if '_' in noun[1] else True
@@ -416,10 +417,10 @@ def process_nouns(nouns):
             dnouns = noun[1].split('+')
             for k in range(len(dnouns)):
                 index = noun[0] + (k * 0.1)
-                processed_nouns.append((index, clean(dnouns[k]), category, case, gender, number, person, noun_type))
+                processed_nouns.append((index, clean(dnouns[k]), category, case, gender, number, person, noun_type, postposition))
         else:
-            processed_nouns.append((noun[0], clean(noun[1]), category, case, gender, number, person, noun_type))
-        log(f'{noun[1]} processed as noun with case:{case} gen:{gender} num:{number} noun_type:{noun_type}.')
+            processed_nouns.append((noun[0], clean(noun[1]), category, case, gender, number, person, noun_type, postposition))
+        log(f'{noun[1]} processed as noun with case:{case} gen:{gender} num:{number} noun_type:{noun_type} postposition: {postposition}.')
     return processed_nouns
 
 
@@ -691,7 +692,9 @@ def preprocess_postposition(processed_words, words_info, processed_verbs):
             temp[7] = ppost if ppost != '' else 0
             data = tuple(temp)
         if data[2] == 'n' or data[2] == 'other':
-            # data[1] = data[1] + ' ' + ppost
+            temp = list(data)
+            temp[8] = ppost if ppost != '' else None
+            data = tuple(temp)
             PPdata[data[0]] = ppost
         new_processed_words.append(data)
     return new_processed_words, PPdata
