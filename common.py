@@ -5,6 +5,9 @@ import subprocess
 import constant
 from wxconv import WXC
 
+from verb import Verb
+from concept import Concept
+
 
 def get_first_form(morph_forms):
     """
@@ -48,7 +51,15 @@ def log(mssg, logtype='OK'):
 
 
 def clean(word, inplace=''):
-    '''Clean concept words by removing numbers and special characters from it using regex.'''
+    """
+    Clean concept words by removing numbers and special characters from it using regex.
+    >>> clean("kara_1-yA_1")
+    'karayA'
+    >>> clean("kara_1")
+    'kara'
+    >>> clean("padZa_1")
+    'pada'
+    """
     newWord = word
     if 'dZ' in word:  # handling words with dZ/jZ -Kirti - 15/12
         newWord = word.replace('dZ', 'd')
@@ -60,7 +71,7 @@ def clean(word, inplace=''):
 
 
 def has_tam_ya():
-    '''Check if USR has verb with TAM "yA". 
+    '''Check if USR has verb with TAM "yA".
         It sets the global variable HAS_TAM to true
     '''
     global HAS_TAM
@@ -101,7 +112,7 @@ def findValue(value: int, searchList: list, index=0):
 
 def getVerbGNP(tam, depend_data, processed_nouns, processed_pronouns):
     ''' Return GNP information of processed_noun/processed_pronoun which
-    has k1 in dependency row. But if verb has tam = yA , then GNP information 
+    has k1 in dependency row. But if verb has tam = yA , then GNP information
     is given of that processed_noun/processed_pronoun which has k2 in dependency row.
     '''
     k1exists = False
@@ -140,12 +151,7 @@ def verb_agreement(concept, verb):
 
 def setGNP(concept, verb):# returns GNP only if Complex predicate found
     if concept[7] == 'CP_noun':
-        verb[4] = concept[4]
-        verb[5] = concept[5]
-        verb[6] = concept[6]
-        #return concept[4], concept[5], concept[6][0]
-        return verb
-
+        return list(verb[:4]) + concept[4:7] + ['']
 
 
 def read_file(file_path):
@@ -290,7 +296,7 @@ def check_indeclinable(word_data):
 
 
 def analyse_words(words_list):
-    '''Checks word for its type to process accordingly and 
+    '''Checks word for its type to process accordingly and
     add that word to its corresponnding list.'''
 
     indeclinables = []
@@ -443,47 +449,184 @@ def process_adjectives(adjectives, processed_nouns):
         log(f'{adjective[1]} processed as an adjective with case:{case} gen:{gender} num:{number}')
     return processed_adjectives
 
+def is_complex_predicate(concept):
+    return "+" in concept
+
+
+def identify_case(verb, dependency_data, processed_nouns, processed_pronouns):
+    return getVerbGNP(verb.tam, dependency_data, processed_nouns, processed_pronouns)
+
+
+def get_TAM(term, tam):
+    """
+    >>> get_TAM('hE', 'pres')
+    'hE'
+    >>> get_TAM('hE', 'past')
+    'WA'
+    """
+    if term == 'hE' and tam in ('pres', 'past'):
+        alt_tam = {'pres': 'hE', 'past': 'WA'}
+        return alt_tam[tam]
+
+
+def identify_main_verb(concept_term):
+    """
+    >>> identify_main_verb("kara_1-wA_hE_1")
+    'kara'
+    """
+    return clean(concept_term.split("-")[0])
+
+
+def identify_default_tam_for_main_verb(concept_term):
+    """
+    >>> identify_default_tam_for_main_verb("kara_1-wA_hE_1")
+    'wA'
+    >>> identify_default_tam_for_main_verb("kara_1-0_rahA_hE_1")
+    '0'
+    """
+    return concept_term.split("-")[1].split("_")[0]
+
+
+def identify_auxillary_verb_terms(term):
+    """
+    >>> identify_auxillary_verb_terms("kara_1-wA_hE_1")
+    ['hE']
+    >>> identify_auxillary_verb_terms("kara_1-0_rahA_hE_1")
+    ['rahA', 'hE']
+    """
+    aux_verb_terms = term.split("-")[1].split("_")[1:]
+    cleaned_terms = map(clean, aux_verb_terms)
+    return list(filter(lambda x: x != '', cleaned_terms))           # Remove empty strings after cleaning
+
+
+def is_CP(term):
+    """
+    >>> is_CP('varRA+ho_1-gA_1')
+    True
+    >>> is_CP("kara_1-wA_hE_1")
+    False
+    """
+    return "+" in term
+
+
+def process_main_CP(index, term):
+    """
+    >>> process_main_CP(2,'varRA+ho_1-gA_1')
+    [1.9, 'varRA', 'n', 'd', 'f', 's', 'a', 'CP_noun']
+    """
+    # index, word, category, case, gender, number, noun_type
+    CP_term = clean(term.split('+')[0])
+    CP_index = index - 0.1
+    tags = find_tags_from_dix(CP_term)  # getting tags from morph analyzer to assign gender and number for agreement
+    gender = tags['gen']
+    number = tags['num']
+    person = 'a'
+    #CP_noun = [verb[0] - 0.1, cp_word, 'n', 'd', 'm', 's', 'a', 'CP_noun']
+    CP_noun = [CP_index, CP_term, 'n', 'd',gender, number, person, 'CP_noun']
+    return CP_noun
+
+
+def verb_agreement_with_CP(verb, CP):
+    """
+    >>> verb_agreement_with_CP(Verb(index=2, gender='m', number='s', person='a'), [1.9, 'varRA', 'n', 'd', 'f', 's', 'a', 'CP_noun'])
+    ('f', 's', 'a')
+    """
+    #iterate over processed_nouns list to find right noun
+
+    if ((verb.index - 0.1 == CP[0]) and CP[7] == "CP_noun"):  # setting corrsepondence between CP noun and verb
+        return CP[4], CP[5], CP[6]
+    else:
+        return verb.gender, verb.number, verb.person
+
+
+
+def process_main_verb(concept: Concept, dependency_data, processed_nouns, processed_pronouns, reprocessing=False):
+    verb = Verb()
+    verb.category = 'v'
+    verb.type = "main" if "main:0" in concept.dependency else "regular"
+    verb.term = identify_main_verb(concept.term)
+    verb.index = concept.index
+    verb.tam = identify_default_tam_for_main_verb(concept.term)
+    verb.tam = get_TAM(verb.term, verb.tam)
+    verb.case = ''
+    verb.gender, verb.number, verb.person = getVerbGNP(verb.tam, dependency_data, processed_nouns, processed_pronouns)
+
+    if not reprocessing and is_CP(concept.term):
+        CP = process_main_CP(concept.index, concept.term)
+        log(f'{CP[1]} processed as noun with index {CP[0]} case:d gen:{CP[4]} num:{CP[5]} per:{CP[6]}, type as CP_Noun ')
+        processed_nouns.append(CP)
+        verb.gender, verb.number, verb.person = verb_agreement_with_CP(verb, CP)  # verb agreement
+
+
+def process_auxiliary_verbs(verb: Verb, concept: Concept, dependency_data, processed_nouns, processed_pronouns):
+    aux_verb_terms = identify_auxillary_verb_terms(concept.term)
+    pass
+
+
+def process_verb(concept: Concept, dependency_data, processed_nouns, processed_pronouns):
+    """
+    concept pattern: 'main_verb' - 'TAM for main verb' _Aux_verb+tam...
+
+    Example 1:
+    kara_1-wA_hE_1
+    main verb - kara,  main verb tam: wA, Aux -hE with TAM hE (identified from tam mapping file)
+
+    Example 2:
+    kara_1-yA_1
+    main verb - kara,  main verb tam: yA,
+
+    Example 3:
+    kara_1-0_rahA_hE_1
+    main verb - kara,  main verb tam: 0, Aux verb -rahA with TAM hE, Aux -hE with TAM hE (identified from tam mapping file)
+
+    Example 4:
+    kara_1-0_sakawA_hE_1
+    main verb - kara,  main verb tam: 0, Aux verb -saka with TAM wA, Aux -hE with TAM hE (identified from tam mapping file)
+
+    *Aux root and Aux TAM identified from auxillary mapping File
+    """
+    verb = process_main_verb(concept, dependency_data, processed_nouns, processed_pronouns)
+    auxiliary_verbs = process_auxiliary_verbs(verb, concept, dependency_data, processed_nouns, processed_pronouns)
+    return [verb] + auxiliary_verbs
+    # gender
+    # number
+    # person
+
+    # case
+    # identify_case(verb, dependency_data, processed_nouns, processed_pronouns)      # case
+
 
 def process_verbs(verbs, depend_data, processed_nouns, processed_pronouns, processed_others, sentence_type, re=False):
     '''Process verbs as (index, word, category, gender, number, person, tam)'''
-
-    # Check for presence of complex predicates
-    # If a CP is found, add it to noun list
-    # Do verb agreement
-
-    # Identify auxiliary verb
-    # if found, add the aux verb to the aux list
-    # identify TAM, GNP, etc info for verb.
-    # add info to the verb list
+    #processed_verbs = [process_verb(verb, depend_data, processed_nouns, processed_pronouns) for verb in verbs]
+    #for verb in processed_verbs:
+    #    if not re and is_complex_predicate(verb):
+    #        handle_complex_predicate(processed_verbs, processed_nouns)
+    #do_verb_agreement(processed_verbs, processed_nouns)
+    #return processed_verbs
 
     processed_verbs = []
     processed_auxverbs = []
     aux_verbs = []
     is_GNP_identified = False
     for verb in verbs:
-        if '+' in verb[1]:
-            exp_v = verb[1].split('+')
-            if not re:  # If it is not in reprocessing stage
+        if not re:
+            if is_complex_predicate(verb[1]):
+                exp_v = verb[1].split('+')
                 cp_word = clean(exp_v[0])  # handle CP
-                # index, word, category, case, gender, number, proper
-                #tags = find_tags_from_dix(cp_word)  # getting tags from morph analyzer to assign gender and number for agreement
-                CP_noun = [verb[0] - 0.1, cp_word, 'n', 'd', 'm', 's', 'a', 'CP_noun']
-                #CP_noun = [verb[0] - 0.1, cp_word, 'n', 'd', tags['gen'], tags['num'], 'a', 'CP_noun']
-                #processed_nouns.append((verb[0] - 0.1, cp_word, 'n', 'd', tags['gen'], tags['num'], 'a', 'CP_noun'))
-                processed_nouns.append((verb[0] - 0.1, cp_word, 'n', 'd','m', 's', 'a', 'CP_noun'))
-                #gender = tags['gen']
-                #number = tags['num']
-                #person = 'a'
-                verb = setGNP(CP_noun, verb)
                 is_GNP_identified = True  # CP_Noun verb agreement
-                log(f'{cp_word} from CP, processed as noun with {verb[4]}, {verb[5]}, {verb[6]} after agreement')  # default male, can get modified during reprocessing
-                # processed_others.append( (verb[0]- 0.1,clean(cp_word),'other') )
+                processed_nouns.append([verb[0] - 0.1, cp_word, 'n', 'd', 'm','s','a', "CP_noun"])
+                log(f'{cp_word} from CP, processed as noun with {verb[4]}, {verb[5]}, {verb[6]} after agreement')
 
-            temp = list(verb)
-            temp[1] = exp_v[1]
-            verb = tuple(temp)
+                # if not re:  # If it is not in reprocessing stage
+                #     is_GNP_identified, verb = process_complex_predicate(exp_v, is_GNP_identified, processed_nouns, verb)
+
+        temp = list(verb)
+        temp[1] = exp_v[1]
+        verb = tuple(temp)
 
         category = 'v'
+
         v = verb[1].split('-')
         root = clean(v[0])
 
@@ -521,6 +664,9 @@ def process_verbs(verbs, depend_data, processed_nouns, processed_pronouns, proce
                 log(f'{aroot} processed as auxillary verb with gen:{gender} num:{number} per:{person} tam:{atam}')
 
     return processed_verbs, processed_auxverbs, processed_others
+
+
+
 
 
 def collect_processed_data(processed_pronouns, processed_nouns, processed_adjectives, processed_verbs,

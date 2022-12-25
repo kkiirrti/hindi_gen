@@ -1031,6 +1031,7 @@
 <e><p><l>oMge</l><r>o<s n="cat:v"/><s n="gen:m"/><s n="num:p"/><s n="per:a"/><s n="tam:gA"/></r></p></e>
 <e><p><l>oUzgI</l><r>o<s n="cat:v"/><s n="gen:f"/><s n="num:s"/><s n="per:u"/><s n="tam:gA"/></r></p></e>
 <e><p><l>ogI</l><r>o<s n="cat:v"/><s n="gen:f"/><s n="num:s"/><s n="per:m"/><s n="tam:gA"/></r></p></e>
+<e><p><l>ogI</l><r>o<s n="cat:v"/><s n="gen:f"/><s n="num:s"/><s n="per:a"/><s n="tam:gA"/></r></p></e>
 <e><p><l>oiyegA</l><r>o<s n="cat:v"/><s n="gen:f"/><s n="num:s"/><s n="per:m_h"/><s n="tam:gA"/></r></p></e>
 <e><p><l>oiegA</l><r>o<s n="cat:v"/><s n="gen:f"/><s n="num:s"/><s n="per:m_h"/><s n="tam:gA"/></r></p></e>
 <e><p><l>ogI</l><r>o<s n="cat:v"/><s n="gen:f"/><s n="num:s"/><s n="per:a"/><s n="tam:gA"/></r></p></e>
@@ -4673,6 +4674,7 @@ addition ended by Kirti Garg kirti.garg@gmail.com on 7/12/22-->
 <e lm="aja"><i>aj</i><par n="Gar/a__n"/></e>
 <e lm="ajajIva"><i>ajajIv</i><par n="Gar/a__n"/></e>
 <e lm="Ajakala"><i>Ajakala</i><par n="kroXa/__n"/></e>
+<e lm="kala"><i>kala</i><par n="kroXa/__n"/></e>
 <e lm="ajAKAnA"><i>ajAKAn</i><par n="regular__adj-noun"/></e>
 <e lm="ajakarNa"><i>ajakarN</i><par n="Gar/a__n"/></e>
 <e lm="ajakarNaka"><i>ajakarNak</i><par n="Gar/a__n"/></e>
@@ -30157,7 +30159,7 @@ addition ended by Kirti Garg kirti.garg@gmail.com on 7/12/22-->
 <e lm="varRAgama"><i>varRAgama</i><par n="kroXa/__n"/></e>
 <e lm="vArRa"><i>vArRa</i><par n="amIra/__adj"/></e>
 <e lm="varRA"><i>varRA</i><par n="IrRyA/__n"/></e>
-<e lm="varRa"><i>varR</i><par n="Gar/a__n"/></e>
+<!--<e lm="varRa"><i>varR</i><par n="Gar/a__n"/></e>-->
 <e lm="varRAkAla"><i>varRAkAla</i><par n="kroXa/__n"/></e>
 <e lm="varRApriya"><i>varRApriya</i><par n="kroXa/__n"/></e>
 <e lm="varRASana"><i>varRASana</i><par n="kroXa/__n"/></e>

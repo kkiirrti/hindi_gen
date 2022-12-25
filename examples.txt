@@ -1,0 +1,40 @@
+
+
+pattern: 
+'main_verb' - 'TAM for main verb' _Aux_verb+tam...
+
+Ex: 
+kara_1-wA_hE_1
+main verb - kara,  main verb tam: wA, Aux -hE with TAM hE (identified from tam mapping file)
+
+kara_1-yA_1
+main verb - kara,  main verb tam: yA,
+
+kara_1-0_rahA_hE_1
+main verb - kara,  main verb tam: 0, Aux verb -rahA with TAM hE, Aux -hE with TAM hE (identified from tam mapping file)
+
+kara_1-0_sakawA_hE_1
+main verb - kara,  main verb tam: 0, Aux verb -saka with TAM wA, Aux -hE with TAM hE (identified from tam mapping file)
+
+*Aux root and Aux TAM identified from auxillary mapping File
+
+
+
+process_verb_concept(verb_info):
+
+identify_main_verb()
+identify_default_tam_for main_verb
+identify_auxillary_verbs
+process_aux_verbs()
+process_main_verb()
+    identify CP_if_any()
+    if CP: 
+        process_main_CP()   
+    else:
+        getVerbGNP
+            verb_agreement_with_CP(3, 2.9) #traverse and find the right index
+    identify_case_for_verb()
+    update_TAM_for_main_verb()
+
+
+
