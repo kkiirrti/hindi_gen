@@ -18,6 +18,37 @@ main verb - kara,  main verb tam: 0, Aux verb -saka with TAM wA, Aux -hE with TA
 
 *Aux root and Aux TAM identified from auxillary mapping File
 
+142: rAma yaha kAma kara sakawA hE
+concept: (index = 4, term = 'kara_17-0_sakawA_hE_1', '', '', '0:main', '', '', '')
+dep: ['4:k1', '3:dem', '4:k2', '0:main']
+processed_nouns: [(1, 'rAma', 'n', 'd', 'm', 's', 'a', 'proper', None), (3, 'kAma', 'n', 'd', 'm', 's', 'a', 'common', None)]
+processed_pronouns: [(2, 'yaha', 'p', 'o', 'm', 's', 'a', 0, None)]
+
+
+
+CP agreement not happening -
+287:KaragoSa_1,kaCuA_1,KillI+udZA_1-yA_1
+
+
+-> Compound_noun
+head is the last noun (given).
+ Ex: given by addA
+ basa -> get default gender m , if not generated, then use f.
+no agreement required.
+agreement betweeen adj if any and first noun.
+
+#usane basa addA xeKA.
+vaha,basa_1+addA_1,xeKa_1-yA_1
+1,2,3
+anim,,
+[m sg a],[- sg a],
+3:k1,2.2/2.1:rt 3:k2,0:main
+,,
+,def,
+,,
+affirmative
+
+
 
 
 process_verb_concept(verb_info):

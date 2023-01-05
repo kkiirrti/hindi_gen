@@ -30,10 +30,9 @@ if __name__ == "__main__":
                     gnp_data, depend_data, discourse_data, spkview_data, scope_data)
     
     # Categorising words as Nound/Pronouns/Adjectives/..etc.
-    indeclinables_data,pronouns_data,nouns_data,adjectives_data,verbs_data,others_data = analyse_words(words_info)
+    indeclinables_data, pronouns_data, nouns_data, adjectives_data, verbs_data, others_data = analyse_words(words_info)
     
     #  Processing Stage
-
     processed_indeclinables = process_indeclinables(indeclinables_data)
     processed_nouns = process_nouns(nouns_data)
     processed_pronouns = process_pronouns(pronouns_data,processed_nouns)
@@ -45,15 +44,16 @@ if __name__ == "__main__":
     # Todo : process nouns / adjectives got from verbs and add to processed_noun / processed_adjectives
 
     # processing postposition for pronouns only as it is required for parsarg info.
-    processed_pronouns,_ = preprocess_postposition(processed_pronouns, words_info, processed_verbs)
+    processed_pronouns,_ = preprocess_postposition(processed_pronouns, words_info, processed_verbs) # to get parsarg
 
     # Every word is collected into one and sorted by index number.
     processed_words = collect_processed_data(processed_pronouns,processed_nouns,processed_adjectives,
-                                            processed_verbs,processed_auxverbs,processed_indeclinables,processed_others)
+                                            processed_verbs, processed_auxverbs,processed_indeclinables,processed_others)
     
     # calculating postpositions for words if applicable.
-    processed_words,processed_postpositions = preprocess_postposition(processed_words, words_info,processed_verbs)
-
+    processed_words, processed_postpositions = preprocess_postposition(processed_words, words_info,processed_verbs)
+    #masked_processed_words = masked_postposition(processed_words, words_info, processed_verbs)
+    masked_pp_list = masked_postposition(processed_words, words_info,processed_verbs)
     # Input for morph generator is generated and fed into it.
     # Generator outputs the result in a file named morph_input.txt-out.txt
     OUTPUT_FILE = generate_morph(processed_words)
@@ -64,7 +64,10 @@ if __name__ == "__main__":
     outputData = read_output_data(OUTPUT_FILE)
     
     # Check for any non-generated words (mainly noun) & change the gender for non-generated words
-    has_changes, processed_nouns = handle_unprocessed(outputData, processed_nouns)
+    has_changes, reprocess_list, processed_nouns = handle_unprocessed_all(outputData, processed_nouns)
+    print(reprocess_list)
+    #has_changes, processed_nouns = handle_unprocessed(outputData, processed_nouns)
+
     # handle unprocessed_verbs also with verb agreement
     
     # If any changes is done in gender for any word.
@@ -72,30 +75,35 @@ if __name__ == "__main__":
     if has_changes:
         # Reprocessing adjectives and verbs based on new noun info
         processed_adjectives = process_adjectives(adjectives_data, processed_nouns)
-        processed_verbs, processed_auxverbs, processed_others = process_verbs(verbs_data, depend_data, processed_nouns, processed_pronouns, processed_others, sentence_type, re = True)
+        processed_verbs, processed_auxverbs, processed_others = process_verbs(verbs_data, depend_data, processed_nouns, processed_pronouns, processed_others, sentence_type, True)
         
         # Sentence is generated again
         processed_words = collect_processed_data(processed_pronouns,processed_nouns,processed_adjectives,processed_verbs,processed_auxverbs,processed_indeclinables,processed_others)
         OUTPUT_FILE = generate_morph(processed_words)
+
     
     # Post-Processing Stage
     outputData = read_output_data(OUTPUT_FILE)
-    # generated words and word-info data is combined
+    # generated words and word-info data is combined #pp data not yet added
     transformed_data = analyse_output_data(outputData, processed_words)
+
     # compound words and post-positions are joined.
     transformed_data = join_compounds(transformed_data)
+    #post-positions are joined.
     PP_fulldata = add_postposition(transformed_data,processed_postpositions)
-
+    masked_pp_fulldata = add_postposition(transformed_data,masked_pp_list)
     
     POST_PROCESS_OUTPUT = rearrange_sentence(PP_fulldata)  # reaarange by index number
-
+    arranged_masked_output = rearrange_sentence(masked_pp_fulldata)
     # for yn_interrogative add kya in the beginning
     if sentence_type == "yn_interrogative":
         POST_PROCESS_OUTPUT = 'kyA ' + POST_PROCESS_OUTPUT + '?'
 
-    hindi_output = collect_hindi_output(POST_PROCESS_OUTPUT)
 
-    write_hindi_text(hindi_output, POST_PROCESS_OUTPUT, OUTPUT_FILE)
+    hindi_output = collect_hindi_output(POST_PROCESS_OUTPUT)
+    masked_hindi_data = collect_hindi_output(arranged_masked_output)
+    #write_hindi_text(hindi_output, POST_PROCESS_OUTPUT, OUTPUT_FILE)
+    write_masked_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, masked_hindi_data, OUTPUT_FILE, path)
 
     # if testing use the next line code and results are collated in test.csv
     # write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE)

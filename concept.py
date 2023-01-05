@@ -1,5 +1,6 @@
 class Concept:
-    def __init__(self, term, index, semantic_cat, GNP, dependency, discourse_info, speaker_view, scope, sentence_type):
+    def __init__(self, term=None, index=None, semantic_cat=None, GNP=None, dependency=None, discourse_info=None,
+                 speaker_view=None, scope=None, sentence_type=None):
         self.term = term
         self.index = index
         self.semantic_cat = semantic_cat
