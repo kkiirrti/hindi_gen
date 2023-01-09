@@ -1,5 +1,6 @@
 word,root,tam
 rahA,raha,yA
+gayA,jA,yA
 rahegA,raha,gA
 huA,ho,yA
 hogA,ho,gA
