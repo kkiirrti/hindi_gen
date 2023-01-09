@@ -337,29 +337,29 @@ def analyse_words(words_list):
         elif check_adjective(word_data):
             log(f'{word_data[1]} identified as adjective.')
             adjectives.append(word_data)
-        elif check_nonfinite_verb(word_data):  # will behave like indeclinable. So add verb_kara and add to indec list
+        elif check_nonfinite_verb(word_data):  # will behave like indeclinable. So add verb+kara and add to nonfinite list
             log(f'{word_data[1]} identified as non-finite verb.')
             nonfinite.append(word_data)
         elif check_verb(word_data):
             log(f'{word_data[1]} identified as verb.')
             verbs.append(word_data)
-
         else:
             log(f'{word_data[1]} identified as other word, but processed as noun with default GNP.')  # treating other words as noun
             # others.append(word_data) #modification by Kirti on 12/12 to handle other words
             nouns.append(word_data)
-    return indeclinables, pronouns, nouns, adjectives, verbs, others
+    return indeclinables, pronouns, nouns, adjectives, verbs, nonfinite, others
 
-def process_infinite_verbs():
+def process_nonfinite_verbs(nonfinite_list):
     '''
-    >>> process_infinite_verbs('jA_1')
-    'jAkara'
+    >>> process_nonfinite_verbs([(3, 'jA_1', '', '', '5:rpk', '', '', '')])
+    ('3, jAkara', 'nonfinite')
     '''
-    processed_infinite = []
+    processed_nonfinite_verbs = []
     for nonfinite in nonfinite_list:
-        processed_infinite.append(nonfinite[0], clean(inf_verb) + 'kara', 'indec')
-
-    return processed_infinite
+        nonfinite_form = clean(nonfinite[1]) + 'kara'
+        processed_nonfinite_verbs.append((nonfinite[0], nonfinite_form, 'nonfinite'))
+        log(f'{nonfinite[1]} processed as nonfinite verb with form:{nonfinite_form} ')
+    return processed_nonfinite_verbs
 
 def process_indeclinables(indeclinables):
     '''Processes indeclinable words'''
@@ -676,13 +676,6 @@ def process_verbs_new(concepts: [tuple], depend_data, processed_nouns, processed
     return processed_verbs, processed_auxverbs, []
 
 
-def process_nonfinite_verb(verbs, depend_data):
-    non_finite = []
-    for verb in verbs:
-        if verb[4] not in ('rpk', 'rbk'):
-            return verb
-
-
 def process_verbs(verbs, depend_data, processed_nouns, processed_pronouns, processed_others, sentence_type, reprocess=False):
     '''Process verbs as (index, word, category, gender, number, person, tam)'''
     processed_verbs = []
@@ -747,10 +740,10 @@ def process_verbs(verbs, depend_data, processed_nouns, processed_pronouns, proce
 
 
 def collect_processed_data(processed_pronouns, processed_nouns, processed_adjectives, processed_verbs,
-                           processed_auxverbs, processed_indeclinables, processed_others):
+                           processed_auxverbs, processed_indeclinables, processed_nonfinites,  processed_others):
     '''collect sort and return processed data.'''
     return sorted(
-        processed_pronouns + processed_nouns + processed_adjectives + processed_verbs + processed_auxverbs + processed_indeclinables + processed_others)
+        processed_pronouns + processed_nouns + processed_adjectives + processed_verbs + processed_auxverbs + processed_indeclinables + processed_nonfinites+ processed_others)
 
 
 def generate_input_for_morph_generator(input_data):
@@ -771,6 +764,8 @@ def generate_input_for_morph_generator(input_data):
         elif data[2] == 'adj':
             morph_data = f'^{data[1]}<cat:{data[2]}><case:{data[3]}><gen:{data[4]}><num:{data[5]}>$'
         elif data[2] == 'indec':
+            morph_data = f'{data[1]}'
+        elif data[2] == 'nonfinite':
             morph_data = f'{data[1]}'
         elif data[2] == 'other':
             morph_data = f'{data[1]}'
