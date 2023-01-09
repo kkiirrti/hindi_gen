@@ -58,12 +58,17 @@ def clean(word, inplace=''):
     'kara'
     >>> clean("padZa_1")
     'pada'
+    >>> clean("caDZa_1")
+    'caDa'
+
     """
     newWord = word
     if 'dZ' in word:  # handling words with dZ/jZ -Kirti - 15/12
         newWord = word.replace('dZ', 'd')
     elif 'jZ' in word:
         newWord = word.replace('jZ', 'j')
+    elif 'DZ' in word:
+        newWord = word.replace('DZ', 'D')
 
     clword = re.sub(r'[^a-zA-Z]+', inplace, newWord)
     return clword
@@ -269,9 +274,19 @@ def check_adjective(word_data):
     return False
 
 
-def check_verb(word_data):
-    '''Check if word is a verb by the USR info'''
+def check_nonfinite_verb(word_data):
+    '''Check if word is a non-fininte verb by the USR info'''
 
+    if word_data[4] != '':
+        rel = word_data[4].strip().split(':')[1]
+        if rel in ('rpk','rbk'):
+            return True
+    return False
+
+
+def check_verb(word_data): #update
+    '''Check if word is a verb by the USR info'''
+    #
     if '-' in word_data[1]:
         rword = word_data[1].split('-')[0]
         if rword in extract_tamdict_hin():
@@ -308,6 +323,7 @@ def analyse_words(words_list):
     adjectives = []
     verbs = []
     others = []
+    nonfinite = []
     for word_data in words_list:
         if check_indeclinable(word_data):
             log(f'{word_data[1]} identified as indiclinable.')
@@ -321,15 +337,29 @@ def analyse_words(words_list):
         elif check_adjective(word_data):
             log(f'{word_data[1]} identified as adjective.')
             adjectives.append(word_data)
+        elif check_nonfinite_verb(word_data):  # will behave like indeclinable. So add verb_kara and add to indec list
+            log(f'{word_data[1]} identified as non-finite verb.')
+            nonfinite.append(word_data)
         elif check_verb(word_data):
             log(f'{word_data[1]} identified as verb.')
             verbs.append(word_data)
+
         else:
             log(f'{word_data[1]} identified as other word, but processed as noun with default GNP.')  # treating other words as noun
             # others.append(word_data) #modification by Kirti on 12/12 to handle other words
             nouns.append(word_data)
     return indeclinables, pronouns, nouns, adjectives, verbs, others
 
+def process_infinite_verbs():
+    '''
+    >>> process_infinite_verbs('jA_1')
+    'jAkara'
+    '''
+    processed_infinite = []
+    for nonfinite in nonfinite_list:
+        processed_infinite.append(nonfinite[0], clean(inf_verb) + 'kara', 'indec')
+
+    return processed_infinite
 
 def process_indeclinables(indeclinables):
     '''Processes indeclinable words'''
@@ -375,8 +405,8 @@ def process_pronouns(pronouns, processed_nouns):
         parsarg = 0
         fnum = None
         gender, number, person = extract_gnp(pronoun[3])
-        if "k1" in pronoun[4]:
-            if clean(pronoun[1]) in ('kOna', 'kyA', 'vaha') and pronoun[2] != 'per':
+        if "k1" in pronoun[4] or 'dem' in pronoun[4]:
+            if clean(pronoun[1]) in ('kOna', 'kyA', 'vaha', 'yaha') and pronoun[2] != 'per':
                 #if findValue('yA', processed_verbs, index=6)[0]: TAM not 'yA'
                     case = "d"
         else:
@@ -423,11 +453,12 @@ def process_nouns(nouns):
             if "k2" in noun[4] and 'anim' not in noun[2]:
                 case = 'd'
 
-        # For compound words
+        # For Noun compound words
         if '+' in noun[1]:
             dnouns = noun[1].split('+')
             for k in range(len(dnouns)):
                 index = noun[0] + (k * 0.1)
+                noun_type = 'NC'
                 processed_nouns.append((index, clean(dnouns[k]), category, case, gender, number, person, noun_type, postposition))
         else:
             processed_nouns.append((noun[0], clean(noun[1]), category, case, gender, number, person, noun_type, postposition))
@@ -645,6 +676,13 @@ def process_verbs_new(concepts: [tuple], depend_data, processed_nouns, processed
     return processed_verbs, processed_auxverbs, []
 
 
+def process_nonfinite_verb(verbs, depend_data):
+    non_finite = []
+    for verb in verbs:
+        if verb[4] not in ('rpk', 'rbk'):
+            return verb
+
+
 def process_verbs(verbs, depend_data, processed_nouns, processed_pronouns, processed_others, sentence_type, reprocess=False):
     '''Process verbs as (index, word, category, gender, number, person, tam)'''
     processed_verbs = []
@@ -656,7 +694,7 @@ def process_verbs(verbs, depend_data, processed_nouns, processed_pronouns, proce
             exp_v = verb[1].split('+')
             if not reprocess:
                 cp_word = clean(exp_v[0])  # handle CP
-                processed_nouns.append([verb[0] - 0.1, cp_word, 'n', 'd', 'm','s','a', "CP_noun"])
+                processed_nouns.append(tuple([verb[0] - 0.1, cp_word, 'n', 'd', 'm','s','a', "CP_noun", '']))
                 log(f'{cp_word} from CP, processed as noun with {verb[4]}, {verb[5]}, {verb[6]} after agreement')
             temp = list(verb)
             temp[1] = exp_v[1]

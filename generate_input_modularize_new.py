@@ -52,17 +52,14 @@ if __name__ == "__main__":
     
     # calculating postpositions for words if applicable.
     processed_words, processed_postpositions = preprocess_postposition(processed_words, words_info,processed_verbs)
-    #masked_processed_words = masked_postposition(processed_words, words_info, processed_verbs)
-    masked_pp_list = masked_postposition(processed_words, words_info,processed_verbs)
+
     # Input for morph generator is generated and fed into it.
     # Generator outputs the result in a file named morph_input.txt-out.txt
     OUTPUT_FILE = generate_morph(processed_words)
 
     # Re-processing Stage
-
     # Output from morph generator is read.
     outputData = read_output_data(OUTPUT_FILE)
-    
     # Check for any non-generated words (mainly noun) & change the gender for non-generated words
     has_changes, reprocess_list, processed_nouns = handle_unprocessed_all(outputData, processed_nouns)
     print(reprocess_list)
@@ -89,21 +86,26 @@ if __name__ == "__main__":
 
     # compound words and post-positions are joined.
     transformed_data = join_compounds(transformed_data)
+
     #post-positions are joined.
     PP_fulldata = add_postposition(transformed_data,processed_postpositions)
-    masked_pp_fulldata = add_postposition(transformed_data,masked_pp_list)
     
     POST_PROCESS_OUTPUT = rearrange_sentence(PP_fulldata)  # reaarange by index number
-    arranged_masked_output = rearrange_sentence(masked_pp_fulldata)
+
     # for yn_interrogative add kya in the beginning
     if sentence_type == "yn_interrogative":
         POST_PROCESS_OUTPUT = 'kyA ' + POST_PROCESS_OUTPUT + '?'
 
-
     hindi_output = collect_hindi_output(POST_PROCESS_OUTPUT)
-    masked_hindi_data = collect_hindi_output(arranged_masked_output)
-    #write_hindi_text(hindi_output, POST_PROCESS_OUTPUT, OUTPUT_FILE)
-    write_masked_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, masked_hindi_data, OUTPUT_FILE, path)
+    write_hindi_text(hindi_output, POST_PROCESS_OUTPUT, OUTPUT_FILE)
 
-    # if testing use the next line code and results are collated in test.csv
+    # if testing use the next line code and all results are collated in test.csv
     # write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE)
+
+    # for masked input -uncomment the following:
+    # masked_pp_list = masked_postposition(processed_words, words_info, processed_verbs)
+    # masked_pp_fulldata = add_postposition(transformed_data, masked_pp_list)
+    # arranged_masked_output = rearrange_sentence(masked_pp_fulldata)
+    # masked_hindi_data = collect_hindi_output(arranged_masked_output)
+    # write_masked_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, masked_hindi_data, OUTPUT_FILE, path)
+
