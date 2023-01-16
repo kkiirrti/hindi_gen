@@ -279,14 +279,15 @@ def check_nonfinite_verb(word_data):
 
     if word_data[4] != '':
         rel = word_data[4].strip().split(':')[1]
-        if rel in ('rpk','rbk'):
+        if rel in ('rpk','rbk', 'rvks', 'rbks','rsk'):
             return True
     return False
 
 
-def check_verb(word_data): #update
-    '''Check if word is a verb by the USR info'''
-    #
+def check_verb(word_data):
+    '''Check if word is a verb by the USR info. Check for both finite and non-finite verbs.
+    nonfinite verbs checked by dependency. main verb identified by - in it. '''
+
     if '-' in word_data[1]:
         rword = word_data[1].split('-')[0]
         if rword in extract_tamdict_hin():
@@ -294,6 +295,11 @@ def check_verb(word_data): #update
         else:
             log(f'Verb "{rword}" not found in TAM dictionary', 'WARNING')
             return True
+    else:
+        if word_data[4] != '':
+            rel = word_data[4].strip().split(':')[1]
+            if rel in ('rpk','rbk', 'rvks', 'rbks','rsk'):
+                return True
     return False
 
 
@@ -323,10 +329,10 @@ def analyse_words(words_list):
     adjectives = []
     verbs = []
     others = []
-    nonfinite = []
+
     for word_data in words_list:
         if check_indeclinable(word_data):
-            log(f'{word_data[1]} identified as indiclinable.')
+            log(f'{word_data[1]} identified as indeclinable.')
             indeclinables.append(word_data)
         elif check_pronoun(word_data):
             log(f'{word_data[1]} identified as pronoun.')
@@ -337,9 +343,6 @@ def analyse_words(words_list):
         elif check_adjective(word_data):
             log(f'{word_data[1]} identified as adjective.')
             adjectives.append(word_data)
-        elif check_nonfinite_verb(word_data):  # will behave like indeclinable. So add verb+kara and add to nonfinite list
-            log(f'{word_data[1]} identified as non-finite verb.')
-            nonfinite.append(word_data)
         elif check_verb(word_data):
             log(f'{word_data[1]} identified as verb.')
             verbs.append(word_data)
@@ -347,18 +350,70 @@ def analyse_words(words_list):
             log(f'{word_data[1]} identified as other word, but processed as noun with default GNP.')  # treating other words as noun
             # others.append(word_data) #modification by Kirti on 12/12 to handle other words
             nouns.append(word_data)
-    return indeclinables, pronouns, nouns, adjectives, verbs, nonfinite, others
+    return indeclinables, pronouns, nouns, adjectives, verbs, others
 
 def process_nonfinite_verbs(nonfinite_list):
     '''
-    >>> process_nonfinite_verbs([(3, 'jA_1', '', '', '5:rpk', '', '', '')])
-    ('3, jAkara', 'nonfinite')
+    >>> process_nonfinite_verbs_as_indec([(3, 'jA_1', '', '', '5:rpk', '', '', '')])
+    [OK] : jA_1 processed as non-finite verb with form:jAkara
+    [(3, 'jAkara', 'nonfinite')]
     '''
+
     processed_nonfinite_verbs = []
+    nonfinite_form = ''
     for nonfinite in nonfinite_list:
-        nonfinite_form = clean(nonfinite[1]) + 'kara'
+        dep_rel = nonfinite[4].split(':')[1]
+        if dep_rel == 'rpk':
+            nonfinite_form = clean(nonfinite[1]) + 'kara'
+        else:
+            if dep_rel == 'rsk':
+                nonfinite_form = clean(nonfinite[1]) + 'wehue'
+
         processed_nonfinite_verbs.append((nonfinite[0], nonfinite_form, 'nonfinite'))
-        log(f'{nonfinite[1]} processed as nonfinite verb with form:{nonfinite_form} ')
+        log(f'{nonfinite[1]} processed as non-finite verb with form:{nonfinite_form} ')
+    return processed_nonfinite_verbs
+
+def process_nonfinite_verbs_as_verb(nonfinite_list, processed_verbs, processed_nouns, processed_pronouns):
+    '''
+    Process verbs as (index, word, category, gender, number, person, tam)
+    >>> process_nonfinite_verbs_as_verb([(3, 'jA_1', '', '', '5:rpk', '', '', '')])
+    (3, 'jA', 'v, '','','','','nonfinite')
+    '''
+
+    category = 'v'
+    gender = 'm'
+    number = 's'
+    person = 'a'
+    root = ''
+    tam = ''
+    processed_nonfinite_verbs = []
+    nonfinite_form = ''
+    for nonfinite in nonfinite_list:
+        relnoun = int(nonfinite[4].strip().split(':')[0])
+        dep_rel = nonfinite[4].split(':')[1]
+        index = nonfinite[0]
+        root = clean(nonfinite[1])
+
+        if dep_rel == 'rvks':
+            tam = 'wA_huA'
+        elif dep_rel == 'rpk':
+            tam = 'kara'
+        elif dep_rel == 'rsk':
+            tam = 'wA_huA'
+        else:
+            if dep_rel == 'rbks':
+                tam = 'yA_huA'
+
+        relnoun_data = getDataByIndex(relnoun, processed_nouns+ processed_pronouns)
+        if relnoun_data == False:
+            log(f'Associated Noun or pronoun not found for non-finite verb {nonfinite[1]}. Using default GNP')
+        gender = relnoun_data[4]
+        number = relnoun_data[5]
+        person = relnoun_data[6]
+
+        processed_verbs.append((index, root, category, gender, number, person, tam))
+        log(f'{root} nonfinite verb processed as verb with gen:{gender} num:{number} per:{person} tam:{tam}')
+
     return processed_nonfinite_verbs
 
 def process_indeclinables(indeclinables):
@@ -446,7 +501,6 @@ def process_nouns(nouns):
         postposition = None
         gender, number, person = extract_gnp(noun[3])
         noun_type = 'common' if '_' in noun[1] else 'proper'
-        proper = False if '_' in noun[1] else True
         if "k1" in noun[4]:
             case = "d"
         else:
@@ -600,12 +654,19 @@ def process_main_verb(concept: Concept, dependency_data, processed_nouns, proces
     >>>
     """
     verb = Verb()
-    verb.type = "main" if "main:0" in concept.dependency else "regular"
-    verb.term = identify_main_verb(concept.term)
+    verb.type = "main" if "0:main" in concept.dependency else "nonfinite"
     verb.index = concept.index
+    verb.term = identify_main_verb(concept.term)
     verb.tam = identify_default_tam_for_main_verb(concept.term)
     verb.tam = get_TAM(verb.term, verb.tam)
     verb.gender, verb.number, verb.person = getVerbGNP(verb.tam, dependency_data, processed_nouns, processed_pronouns)
+
+    if is_CP(concept.term):
+        CP = process_main_CP(concept.index, concept.term)
+        log(f'{CP[1]} processed as noun with index {CP[0]} case:d gen:{CP[4]} num:{CP[5]} per:{CP[6]}, noun_type:{CP[7]}, default postposition:{CP[8]}.')
+        processed_nouns.append(tuple(CP))
+        verb.gender, verb.number, verb.person = verb_agreement_with_CP(verb, CP)
+
     if reprocessing:
         verb.gender = 'm' if verb.gender == 'f' else 'f'
         log(f'{verb.term} reprocessed as verb with index {verb.index} gen:{verb.gender} num:{verb.number} per:{verb.person} in agreement with CP')
@@ -626,7 +687,7 @@ def create_auxiliary_verb(index, term, main_verb: Verb):
 
 
 def to_tuple(verb: Verb):
-    return (verb.index, verb.term, verb.category, verb.gender, verb.number, verb.person, verb.tam)
+    return (verb.index, verb.term, verb.category, verb.gender, verb.number, verb.person, verb.tam, verb.case, verb.type)
 
 
 def process_auxiliary_verbs(verb: Verb, concept_term: str) -> [Verb]:
@@ -665,23 +726,146 @@ def process_verb(concept: Concept, dependency_data, processed_nouns, processed_p
     return verb, auxiliary_verbs
 
 
-def process_verbs_new(concepts: [tuple], depend_data, processed_nouns, processed_pronouns, processed_others, sentence_type, reprocess=False):
+def is_nonfinite_verb(concept):
+    return concept.type == 'nonfinite'
+
+
+def set_tam_for_nonfinite(dependency):
+    '''
+    >>> set_tam_for_nonfinite('rvks')
+    'adj_wA_huA'
+    >>> set_tam_for_nonfinite('rbks')
+    'yA_huA'
+    >>> set_tam_for_nonfinite('rsk')
+    'wA_huA'
+    >>> set_tam_for_nonfinite('rpk')
+    'kara'
+    '''
+
+    if dependency == 'rvks':
+        tam = 'adj_wA_huA'
+    elif dependency == 'rpk':
+        tam = 'kara'
+    elif dependency == 'rsk':
+        tam = 'adj_wA_huA'
+    else:
+        if dependency == 'rbks':
+            tam = 'adj_yA_huA'
+    return tam
+
+
+def process_nonfinite_verb(concept, depend_data, processed_nouns, processed_pronouns):
+    '''
+    >>>process_nonfinite_verb([], [()],[()])
+    '''
+
+    gender = 'm'
+    number = 's'
+    person = 'a'
+    verb = Verb()
+    verb.index = concept.index
+    verb.term = clean(concept.term)
+    verb.type = 'nonfinite'
+    verb.tam = ''
+    #verb.category = 'v'
+    relation = concept.dependency.strip().split(':')[1]
+    verb.tam = set_tam_for_nonfinite(relation)
+    gender, number, person = getVerbGNP(verb.tam, depend_data, processed_nouns, processed_pronouns)
+    verb.gender = gender
+    verb.number = number
+    verb.person = person
+    verb.case = 'o'
+    log(f'{verb.term} processed as nonfinite verb with index {verb.index} gen:{verb.gender} num:{verb.number} case:{verb.case}, and tam:{verb.tam}')
+    return verb
+
+
+def process_nonfinite_verbs_as_verb(nonfinite_list, processed_verbs, processed_nouns, processed_pronouns):
+    '''
+    Process verbs as (index, word, category, gender, number, person, tam)
+    >>> process_nonfinite_verbs_as_verb([(3, 'jA_1', '', '', '5:rpk', '', '', '')])
+    (3, 'jA', 'v, '','','','','nonfinite')
+    '''
+
+    category = 'v'
+    gender = 'm'
+    number = 's'
+    person = 'a'
+    root = ''
+    tam = ''
+    processed_nonfinite_verbs = []
+    nonfinite_form = ''
+    for nonfinite in nonfinite_list:
+        relnoun = int(nonfinite[4].strip().split(':')[0])
+        dep_rel = nonfinite[4].split(':')[1]
+        index = nonfinite[0]
+        root = clean(nonfinite[1])
+
+        if dep_rel == 'rvks':
+            tam = 'wA_huA'
+        elif dep_rel == 'rpk':
+            tam = 'kara'
+        elif dep_rel == 'rsk':
+            tam = 'wA_huA'
+        else:
+            if dep_rel == 'rbks':
+                tam = 'yA_huA'
+
+        relnoun_data = getDataByIndex(relnoun, processed_nouns+ processed_pronouns)
+        if relnoun_data == False:
+            log(f'Associated Noun or pronoun not found for non-finite verb {nonfinite[1]}. Using default GNP')
+        gender = relnoun_data[4]
+        number = relnoun_data[5]
+        person = relnoun_data[6]
+
+        processed_verbs.append((index, root, category, gender, number, person, tam))
+        log(f'{root} nonfinite verb processed as verb with gen:{gender} num:{number} per:{person} tam:{tam}')
+
+    return processed_nonfinite_verbs
+
+
+
+def process_verbs(concepts: [tuple], depend_data, processed_nouns, processed_pronouns, processed_others, sentence_type, reprocess=False):
     processed_verbs = []
     processed_auxverbs = []
     for concept in concepts:
-        concept = Concept(index=concept[0], term=concept[1], dependency=concept[5])
-        verb, aux_verbs = process_verb(concept, depend_data, processed_nouns, processed_pronouns, reprocess)
-        processed_verbs.append(to_tuple(verb))
-        processed_auxverbs.extend([to_tuple(aux_verb) for aux_verb in aux_verbs])
-    return processed_verbs, processed_auxverbs, []
+        concept = Concept(index=concept[0], term=concept[1], dependency=concept[4])
+        verb_type = identify_verb_type(concept)
+        if verb_type == 'nonfinite':
+            verb = process_nonfinite_verb(concept, depend_data, processed_nouns, processed_pronouns)
+            processed_verbs.append(to_tuple(verb))
+        else:
+            verb, aux_verbs = process_verb(concept, depend_data, processed_nouns, processed_pronouns, reprocess)
+            processed_verbs.append(to_tuple(verb))
+            processed_auxverbs.extend([to_tuple(aux_verb) for aux_verb in aux_verbs])
+
+    return processed_verbs, processed_auxverbs
+
+def identify_verb_type(verb_concept):
+    '''
+    >>>identify_verb_type([])
+
+    '''
+    #dep_rel = verb_concept[4].strip().split(':')[1] #if using with non-OO program
+    dependency = verb_concept.dependency
+    dep_rel = dependency.strip().split(':')[1]
+    v_type = ''
+    if dep_rel == 'main':
+        v_type = "main"
+    elif dep_rel in ('rpk', 'rbk', 'rvks', 'rbks', 'rsk'):
+        v_type = "nonfinite"
+    else:
+        v_type = "undetermined"
+    return v_type
 
 
-def process_verbs(verbs, depend_data, processed_nouns, processed_pronouns, processed_others, sentence_type, reprocess=False):
+
+def process_verbs_old(verbs, depend_data, processed_nouns, processed_pronouns, processed_others, sentence_type, reprocess=False):
     '''Process verbs as (index, word, category, gender, number, person, tam)'''
     processed_verbs = []
     processed_auxverbs = []
     aux_verbs = []
     is_GNP_identified = False
+
     for verb in verbs:
         if is_complex_predicate(verb[1]):
             exp_v = verb[1].split('+')
@@ -696,7 +880,6 @@ def process_verbs(verbs, depend_data, processed_nouns, processed_pronouns, proce
             number = 's'
             person = 'a'
             is_GNP_identified = True  # CP_Noun verb agreement
-
 
         category = 'v'
 
@@ -740,10 +923,10 @@ def process_verbs(verbs, depend_data, processed_nouns, processed_pronouns, proce
 
 
 def collect_processed_data(processed_pronouns, processed_nouns, processed_adjectives, processed_verbs,
-                           processed_auxverbs, processed_indeclinables, processed_nonfinites,  processed_others):
+                           processed_auxverbs, processed_indeclinables, processed_others):
     '''collect sort and return processed data.'''
     return sorted(
-        processed_pronouns + processed_nouns + processed_adjectives + processed_verbs + processed_auxverbs + processed_indeclinables + processed_nonfinites+ processed_others)
+        processed_pronouns + processed_nouns + processed_adjectives + processed_verbs + processed_auxverbs + processed_indeclinables + processed_others)
 
 
 def generate_input_for_morph_generator(input_data):
@@ -759,13 +942,15 @@ def generate_input_for_morph_generator(input_data):
             morph_data = f'{data[1]}'
         elif data[2] == 'n':
             morph_data = f'^{data[1]}<cat:{data[2]}><case:{data[3]}><gen:{data[4]}><num:{data[5]}>$'
-        elif data[2] == 'v':
+        elif data[2] == 'v' and data[8] == 'main':
             morph_data = f'^{data[1]}<cat:{data[2]}><gen:{data[3]}><num:{data[4]}><per:{data[5]}><tam:{data[6]}>$'
+        elif data[2] == 'v' and data[6] == 'kara' and data[8] == 'nonfinite':
+            morph_data = f'^{data[1]}<cat:{data[2]}><gen:{data[3]}><num:{data[4]}><per:{data[5]}><tam:{data[6]}>$'
+        elif data[2] == 'v' and data[8] == 'nonfinite' and data[6] != 'kara':
+            morph_data = f'^{data[1]}<cat:{data[2]}><gen:{data[3]}><num:{data[4]}><case:{data[7]}><tam:{data[6]}>$'
         elif data[2] == 'adj':
             morph_data = f'^{data[1]}<cat:{data[2]}><case:{data[3]}><gen:{data[4]}><num:{data[5]}>$'
         elif data[2] == 'indec':
-            morph_data = f'{data[1]}'
-        elif data[2] == 'nonfinite':
             morph_data = f'{data[1]}'
         elif data[2] == 'other':
             morph_data = f'{data[1]}'
@@ -847,6 +1032,7 @@ def handle_unprocessed_all(outputData, processed_nouns):
                     has_changes = True
                     log(f'{temp[1]} reprocessed as noun with new gen:{temp[4]}.')
     return has_changes, reprocess_list, processed_nouns
+
 def handle_unprocessed(outputData, processed_nouns):
     '''swapping gender info that does not exist in dictionary.'''
     output_data = outputData.strip().split(" ")
@@ -884,7 +1070,6 @@ def nextNounData(fromIndex, word_info):
 def masked_postposition(processed_words, words_info, processed_verbs):
     '''Calculates masked postposition to words wherever applicable according to rules.'''
     masked_PPdata = {}
-    #new_processed_words = []
 
     for data in processed_words:
         if data[2] not in ('p', 'n', 'other'):
@@ -900,7 +1085,7 @@ def masked_postposition(processed_words, words_info, processed_verbs):
             if findValue('yA', processed_verbs, index=6)[0]:  # has TAM "yA"
                 if findValue('k2', words_info, index=4)[0]: # or findValue('k2p', words_info, index=4)[0]:
                     ppost = ppost_value
-        elif data_case in ('r6', 'k3', 'k5', 'K5prk', 'k4', 'k4a', 'k7t', 'jk1','k7', 'k7p' ,'k2g', 'k2','rsk', 'ru' ):
+        elif data_case in ('r6', 'k3', 'k5', 'K5prk', 'k4', 'k4a', 'k7t', 'jk1','k7', 'k7p','k2g', 'k2','rsk', 'ru' ):
             ppost = ppost_value
         elif data_case in ('k2g', 'k2') and data_info[2] in ("anim", "per"):
             ppost = ppost_value #'ko'
@@ -932,7 +1117,7 @@ def masked_postposition(processed_words, words_info, processed_verbs):
             temp[8] = ppost if ppost != '' else None
             data = tuple(temp)
             masked_PPdata[data[0]] = ppost
-    return  masked_PPdata
+    return masked_PPdata
 
 def preprocess_postposition(processed_words, words_info, processed_verbs):
     '''Calculates postposition to words wherever applicable according to rules.'''
@@ -974,6 +1159,10 @@ def preprocess_postposition(processed_words, words_info, processed_verbs):
             ppost = 'jEsI'
         elif data_case == 'rv':
             ppost = 'kI tulanA meM'
+        elif data_case == 'rh':
+            ppost = 'ke_kAraNa'
+        elif data_case == 'rd':
+            ppost = 'kI ora'
         elif data_case == 'r6':
             ppost = 'kI' if data[4] == 'f' else 'kA'
             nn_data = nextNounData(data[0], words_info)

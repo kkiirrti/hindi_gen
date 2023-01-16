@@ -30,16 +30,15 @@ if __name__ == "__main__":
                     gnp_data, depend_data, discourse_data, spkview_data, scope_data)
     
     # Categorising words as Nound/Pronouns/Adjectives/..etc.
-    indeclinables_data, pronouns_data, nouns_data, adjectives_data, verbs_data, nonfiniteverbs_data, others_data = analyse_words(words_info)
+    indeclinables_data, pronouns_data, nouns_data, adjectives_data, verbs_data, others_data = analyse_words(words_info)
     
     #  Processing Stage
     processed_indeclinables = process_indeclinables(indeclinables_data)
-    processed_nonfinites = process_nonfinite_verbs(nonfiniteverbs_data)
     processed_nouns = process_nouns(nouns_data)
     processed_pronouns = process_pronouns(pronouns_data,processed_nouns)
     processed_adjectives = process_adjectives(adjectives_data, processed_nouns)
     processed_others = process_others(others_data)
-    processed_verbs, processed_auxverbs, processed_others = process_verbs(verbs_data, depend_data, processed_nouns, processed_pronouns, processed_others, sentence_type, False)
+    processed_verbs, processed_auxverbs= process_verbs(verbs_data, depend_data, processed_nouns, processed_pronouns, processed_others, sentence_type, False)
     
     # Todo : extract nouns / adjectives from Compound verbs with +
     # Todo : process nouns / adjectives got from verbs and add to processed_noun / processed_adjectives
@@ -49,7 +48,7 @@ if __name__ == "__main__":
 
     # Every word is collected into one and sorted by index number.
     processed_words = collect_processed_data(processed_pronouns,processed_nouns,processed_adjectives,
-                                            processed_verbs, processed_auxverbs,processed_indeclinables, processed_nonfinites, processed_others)
+                                            processed_verbs, processed_auxverbs,processed_indeclinables, processed_others)
     
     # calculating postpositions for words if applicable.
     processed_words, processed_postpositions = preprocess_postposition(processed_words, words_info,processed_verbs)
@@ -73,10 +72,10 @@ if __name__ == "__main__":
     if has_changes:
         # Reprocessing adjectives and verbs based on new noun info
         processed_adjectives = process_adjectives(adjectives_data, processed_nouns)
-        processed_verbs, processed_auxverbs, processed_others = process_verbs(verbs_data, depend_data, processed_nouns, processed_pronouns, processed_others, sentence_type, True)
+        processed_verbs, processed_auxverbs = process_verbs(verbs_data, depend_data, processed_nouns, processed_pronouns, processed_others, sentence_type, True)
         
         # Sentence is generated again
-        processed_words = collect_processed_data(processed_pronouns,processed_nouns,processed_adjectives,processed_verbs,processed_auxverbs,processed_indeclinables,processed_nonfinites, processed_others)
+        processed_words = collect_processed_data(processed_pronouns,processed_nouns,processed_adjectives,processed_verbs,processed_auxverbs,processed_indeclinables,processed_others)
         OUTPUT_FILE = generate_morph(processed_words)
 
     

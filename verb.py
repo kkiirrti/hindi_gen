@@ -4,7 +4,7 @@ class Verb:
         self.index = index
         self.type = type                    # main, auxiliary, regular
         self.category = 'v'                 # v
-        self.case = ''
+        self.case = 'o'
         self.gender = gender                # m, f
         self.number = number                # s, p
         self.person = person                # u, m, a, m_h, m_h0, m_h1, m_h2
