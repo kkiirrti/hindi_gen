@@ -2,7 +2,7 @@ class Verb:
     def __init__(self, term=None, index=None, type=None, case=None, gender=None, number=None, person=None, tam=None):
         self.term = term
         self.index = index
-        self.type = type                    # main, auxiliary, regular
+        self.type = type                    # main, auxiliary, regular, adverb
         self.category = 'v'                 # v
         self.case = 'o'
         self.gender = gender                # m, f

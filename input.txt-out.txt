@@ -1,1 +1,1 @@
-^varRA/varRA<cat:n><case:d><gen:f><num:s>/varRA<cat:n><case:d><gen:f><num:p>/varRA<cat:n><case:o><gen:f><num:s>/varRA<cat:n><case:o><gen:f><num:p>$
+^kroXiwa/kroXiwa<cat:adj><case:d><gen:m><num:s>/kroXiwa<cat:adj><case:d><gen:m><num:p>/kroXiwa<cat:adj><case:d><gen:f><num:s>/kroXiwa<cat:adj><case:d><gen:f><num:p>/kroXiwa<cat:adj><case:o><gen:m><num:s>/kroXiwa<cat:adj><case:o><gen:m><num:p>/kroXiwa<cat:adj><case:o><gen:f><num:s>/kroXiwa<cat:adj><case:o><gen:f><num:p>$

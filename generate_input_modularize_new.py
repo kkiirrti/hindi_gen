@@ -30,7 +30,7 @@ if __name__ == "__main__":
                     gnp_data, depend_data, discourse_data, spkview_data, scope_data)
     
     # Categorising words as Nound/Pronouns/Adjectives/..etc.
-    indeclinables_data, pronouns_data, nouns_data, adjectives_data, verbs_data, others_data = analyse_words(words_info)
+    indeclinables_data, pronouns_data, nouns_data, adjectives_data, verbs_data, adverbs_data, others_data = analyse_words(words_info)
     
     #  Processing Stage
     processed_indeclinables = process_indeclinables(indeclinables_data)
@@ -38,7 +38,8 @@ if __name__ == "__main__":
     processed_pronouns = process_pronouns(pronouns_data,processed_nouns)
     processed_adjectives = process_adjectives(adjectives_data, processed_nouns)
     processed_others = process_others(others_data)
-    processed_verbs, processed_auxverbs= process_verbs(verbs_data, depend_data, processed_nouns, processed_pronouns, processed_others, sentence_type, False)
+    processed_verbs, processed_auxverbs= process_verbs(verbs_data, depend_data, processed_nouns, processed_pronouns, False)
+    process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others)
     
     # Todo : extract nouns / adjectives from Compound verbs with +
     # Todo : process nouns / adjectives got from verbs and add to processed_noun / processed_adjectives
@@ -61,9 +62,9 @@ if __name__ == "__main__":
     # Output from morph generator is read.
     outputData = read_output_data(OUTPUT_FILE)
     # Check for any non-generated words (mainly noun) & change the gender for non-generated words
-    has_changes, reprocess_list, processed_nouns = handle_unprocessed_all(outputData, processed_nouns)
-    print(reprocess_list)
-    #has_changes, processed_nouns = handle_unprocessed(outputData, processed_nouns)
+    #has_changes, reprocess_list, processed_nouns = handle_unprocessed_all(outputData, processed_nouns)
+    #print(reprocess_list)
+    has_changes, processed_nouns = handle_unprocessed(outputData, processed_nouns)
 
     # handle unprocessed_verbs also with verb agreement
     
@@ -72,10 +73,9 @@ if __name__ == "__main__":
     if has_changes:
         # Reprocessing adjectives and verbs based on new noun info
         processed_adjectives = process_adjectives(adjectives_data, processed_nouns)
-        processed_verbs, processed_auxverbs = process_verbs(verbs_data, depend_data, processed_nouns, processed_pronouns, processed_others, sentence_type, True)
-        
+        processed_verbs, processed_auxverbs = process_verbs(verbs_data, depend_data, processed_nouns, processed_pronouns, True)
         # Sentence is generated again
-        processed_words = collect_processed_data(processed_pronouns,processed_nouns,processed_adjectives,processed_verbs,processed_auxverbs,processed_indeclinables,processed_others)
+        processed_words = collect_processed_data(processed_pronouns,processed_nouns,  processed_adjectives, processed_verbs,processed_auxverbs,processed_indeclinables,processed_others)
         OUTPUT_FILE = generate_morph(processed_words)
 
     

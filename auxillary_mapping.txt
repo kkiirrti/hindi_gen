@@ -1,6 +1,6 @@
 word,root,tam
 rahA,raha,yA
-gayA,jA,yA
+gayA,jA,yA1
 rahegA,raha,gA
 huA,ho,yA
 hogA,ho,gA
@@ -12,3 +12,4 @@ cAhiye,cAha,subj
 sakawA,saka,wA
 WA,WA,WA
 calawA, cala, wA
+jAwa, jA, wA
