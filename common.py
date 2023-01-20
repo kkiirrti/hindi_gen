@@ -418,6 +418,7 @@ def process_adverb_as_verb(concept):
     person = 'a'
     category = 'v'
     type = 'adverb'
+    case = 'd'
     tags = find_tags_from_dix_as_list(term)
     for tag in tags:
         if ( tag[0] =='cat' and tag[1] == 'v' ):
@@ -425,7 +426,7 @@ def process_adverb_as_verb(concept):
         else:
 
             log(f'{term} processed as verb with index {index} gen:{gender} num:{number} person:{person}, and tam:{tam}')
-            adverb = (index, term, category, gender, number, person, tam, type)
+            adverb = (index, term, category, gender, number, person, tam, case, type)
             return adverb
     return
 
@@ -787,8 +788,8 @@ def to_tuple(verb: Verb):
 
 def process_auxiliary_verbs(verb: Verb, concept_term: str) -> [Verb]:
     """
-    >>> [to_tuple(aux) for aux in process_auxiliary_verbs(Verb(index=4, term = 'kara', gender='m', number='s', person='a', tam='hE'), concept_term='kara_17-0_sakawA_hE_1')]
-    [(4.1, 'saka', 'v', 'm', 's', 'a', 'wA'), (4.2, 'hE', 'v', 'm', 's', 'a', 'hE')]
+    >>> [to_tuple(aux) for aux in process_auxiliary_verbs(Verb(index=4, term = 'kara', gender='m', number='s', person='a', tam='hE', type= 'Auxillary'), concept_term='kara_17-0_sakawA_hE_1')]
+    [(4.1, 'saka', 'v', 'm', 's', 'a', 'wA', 'Auxillary'), (4.2, 'hE', 'v', 'm', 's', 'a', 'hE',''Auxillary'')]
     """
     auxiliary_verb_terms = identify_auxillary_verb_terms(concept_term)
     return [create_auxiliary_verb(index, term, verb) for index, term in enumerate(auxiliary_verb_terms)]
