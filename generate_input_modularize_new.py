@@ -38,7 +38,7 @@ if __name__ == "__main__":
     processed_pronouns = process_pronouns(pronouns_data,processed_nouns)
     processed_adjectives = process_adjectives(adjectives_data, processed_nouns)
     processed_others = process_others(others_data)
-    processed_verbs, processed_auxverbs= process_verbs(verbs_data, depend_data, processed_nouns, processed_pronouns, False)
+    processed_verbs, processed_auxverbs= process_verbs(verbs_data, seman_data, depend_data, processed_nouns, processed_pronouns, False)
     process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others)
     
     # Todo : extract nouns / adjectives from Compound verbs with +
