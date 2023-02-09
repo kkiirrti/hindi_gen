@@ -13,7 +13,3 @@ sakawA,saka,wA
 WA,WA,WA
 calawA, cala, wA
 jAwa, jA, wA
-pada, pada, 0
-padA, pada, yA
-padegA, pada, gA
-padawA,pada,wA

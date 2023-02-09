@@ -8,21 +8,7 @@ from wxconv import WXC
 from verb import Verb
 from concept import Concept
 
-noun_attribute = dict()
 
-def add_adj_to_noun_attribute(key, value):
-    if key is not None:
-        if key in noun_attribute:
-            noun_attribute[key][0].append(value)
-        else:
-            noun_attribute[key] = [[],[]]
-
-def add_verb_to_noun_attribute(key, value):
-    if key is not None:
-        if key in noun_attribute:
-            noun_attribute[key][1].append(value)
-        else:
-            noun_attribute[key] = [[], []]
 
 def get_all_form(morph_forms):
     """
@@ -154,6 +140,7 @@ def findValue(value: int, searchList: list, index=0):
         return (False, None)
     return (False, None)
 
+
 def getVerbGNP(tam, depend_data, processed_nouns, processed_pronouns):
     ''' Return GNP information of processed_noun/processed_pronoun which
     has k1 in dependency row. But if verb has tam = yA , then GNP information
@@ -181,75 +168,6 @@ def getVerbGNP(tam, depend_data, processed_nouns, processed_pronouns):
         log('Something went wrong. Cannot determine GNP for verb.', 'ERROR')
         sys.exit()
     return casedata[4], casedata[5], casedata[6][0]  # only first character of the person - to handle m_hx kind of case
-
-
-def getComplexPredicateGNP(term):
-
-    CP_term = clean(term.split('+')[0])
-    gender = 'm'
-    number = 's'
-    person = 'a'
-
-    tags = find_tags_from_dix(CP_term)  # getting tags from morph analyzer to assign gender and number for agreement
-    if '*' not in tags['form']:
-        gender = tags['gen']
-        number = tags['num']
-    return gender, number, person
-
-def getVerbGNP_new(verbs_data, seman_data, depend_data, processed_nouns, processed_pronouns):
-    '''
-
-    '''
-    unprocessed_main_verb = verbs_data
-    main_verb = identify_main_verb(unprocessed_main_verb)
-    is_cp = is_CP(unprocessed_main_verb)
-    tam = identify_default_tam_for_main_verb(unprocessed_main_verb)
-    k1exists = False
-    k2exists = False
-    verb_gender, verb_number, verb_person, case= get_default_GNP()
-    searchList = processed_nouns + processed_pronouns
-
-    for cases in depend_data:
-        if cases == '':
-            continue
-        k1exists = (depend_data.index(cases) + 1) if 'k1' == cases[-2:] else k1exists
-        k2exists = (depend_data.index(cases) + 1) if 'k2' == cases[-2:] else k2exists
-
-    if not k1exists and not k2exists:
-        log('When k1exists and k2exists both are false')
-        return verb_gender, verb_number, verb_person
-
-    if tam == 'yA':
-        if is_cp and not k2exists:
-            verb_gender, verb_number, verb_person = getComplexPredicateGNP(unprocessed_main_verb)
-            return verb_gender, verb_number, verb_person[0]
-        else:
-            if not is_cp and k2exists and seman_data[k2exists] != 'anim':
-                casedata = getDataByIndex(k2exists, searchList)
-                if (casedata == False):
-                    log('Something went wrong. Cannot determine GNP for verb.', 'ERROR')
-                    sys.exit()
-                verb_gender, verb_number, verb_person = casedata[4], casedata[5], casedata[6]
-                return verb_gender, verb_number, verb_person[0]
-            if not is_cp and k2exists and seman_data[k2exists] == 'anim':
-                verb_gender = 'm'
-                verb_number = 's'
-                verb_person = 'a'
-                return verb_gender, verb_number, verb_person[0]
-
-    if tam in ('nA_paDa', 'nA_hE', 'nA_tha', 'nA_thI', 'nA_hO', 'nA_chAhie'):
-        verb_gender = 'm'
-        verb_number = 's'
-        verb_person = 'a'
-    else:
-        casedata = getDataByIndex(k1exists, searchList)
-        if (casedata == False):
-            log('Something went wrong. Cannot determine GNP for verb.', 'ERROR')
-            sys.exit()
-        verb_gender, verb_number, verb_person = casedata[4], casedata[5], casedata[6]
-
-    return verb_gender, verb_number, verb_person[0]
-
 
 def setGNP(concept, verb):# returns GNP only if Complex predicate found
     if concept[7] == 'CP_noun':
@@ -669,7 +587,6 @@ def process_pronouns(pronouns, processed_nouns):
 
 def process_nouns(nouns):
     '''Process nouns as (index, word, category, case, gender, number, proper/noun type= proper or CP_noun, postposition)'''
-    #noun_attribute dict to store all nouns as keys
     processed_nouns = []
     for noun in nouns:
         category = 'n'
@@ -689,14 +606,9 @@ def process_nouns(nouns):
             for k in range(len(dnouns)):
                 index = noun[0] + (k * 0.1)
                 noun_type = 'NC'
-                clean_dnouns = clean(dnouns[k])
-                processed_nouns.append((index, clean_dnouns, category, case, gender, number, person, noun_type, postposition))
-                noun_attribute[clean_dnouns] = [[],[]]
-
+                processed_nouns.append((index, clean(dnouns[k]), category, case, gender, number, person, noun_type, postposition))
         else:
-            clean_noun = clean(noun[1])
-            processed_nouns.append((noun[0], clean_noun, category, case, gender, number, person, noun_type, postposition))
-            noun_attribute[clean_noun] = [[], []]
+            processed_nouns.append((noun[0], clean(noun[1]), category, case, gender, number, person, noun_type, postposition))
         log(f'{noun[1]} processed as noun with case:{case} gen:{gender} num:{number} noun_type:{noun_type} postposition: {postposition}.')
     return processed_nouns
 
@@ -724,13 +636,7 @@ def process_adjectives(adjectives, processed_nouns):
             case = relnoun_data[3]
             gender = relnoun_data[4]
             number = relnoun_data[5]
-        adj = clean(adjective[1])
-        noun = relnoun_data[1]
-        add_adj_to_noun_attribute(noun, adj)
-        processed_adjectives.append((adjective[0], adj, category, case, gender, number))
-
-
-
+        processed_adjectives.append((adjective[0], clean(adjective[1]), category, case, gender, number))
         log(f'{adjective[1]} processed as an adjective with case:{case} gen:{gender} num:{number}')
     return processed_adjectives
 
@@ -836,7 +742,7 @@ def verb_agreement_with_CP(verb, CP):
         return verb.gender, verb.number, verb.person
 
 
-def process_main_verb(concept: Concept, seman_data, dependency_data, processed_nouns, processed_pronouns, reprocessing):
+def process_main_verb(concept: Concept, dependency_data, processed_nouns, processed_pronouns, reprocessing):
     """
     >>> to_tuple(process_main_verb(Concept(index=2, term='varRA+ho_1-gA_1', dependency='0:main'), ['2:k7t', '0:main'], [(1, 'kala', 'n', 'o', 'm', 's', 'a', 'common', None)], [], False))
     [OK] : varRA processed as noun with index 1.9 case:d gen:f num:s per:a, noun_type:CP_noun, default postposition:None.
@@ -852,7 +758,7 @@ def process_main_verb(concept: Concept, seman_data, dependency_data, processed_n
     verb.term = identify_main_verb(concept.term)
     verb.tam = identify_default_tam_for_main_verb(concept.term)
     verb.tam = get_TAM(verb.term, verb.tam)
-    verb.gender, verb.number, verb.person = getVerbGNP_new(concept.term, seman_data, dependency_data, processed_nouns, processed_pronouns)
+    verb.gender, verb.number, verb.person = getVerbGNP(verb.tam, dependency_data, processed_nouns, processed_pronouns)
     if is_CP(concept.term):
         if not reprocessing:
             CP = process_main_CP(concept.index, concept.term)
@@ -889,7 +795,7 @@ def process_auxiliary_verbs(verb: Verb, concept_term: str) -> [Verb]:
     return [create_auxiliary_verb(index, term, verb) for index, term in enumerate(auxiliary_verb_terms)]
 
 
-def process_verb(concept: Concept, seman_data, dependency_data, processed_nouns, processed_pronouns, reprocessing):
+def process_verb(concept: Concept, dependency_data, processed_nouns, processed_pronouns, reprocessing):
     """
     concept pattern: 'main_verb' - 'TAM for main verb' _Aux_verb+tam...
 
@@ -911,7 +817,7 @@ def process_verb(concept: Concept, seman_data, dependency_data, processed_nouns,
 
     *Aux root and Aux TAM identified from auxillary mapping File
     """
-    verb = process_main_verb(concept, seman_data, dependency_data, processed_nouns, processed_pronouns, reprocessing)
+    verb = process_main_verb(concept, dependency_data, processed_nouns, processed_pronouns, reprocessing)
     auxiliary_verbs = process_auxiliary_verbs(verb, concept.term)
     return verb, auxiliary_verbs
 
@@ -1014,7 +920,7 @@ def process_nonfinite_verbs_as_verb(nonfinite_list, processed_verbs, processed_n
 
 
 
-def process_verbs(concepts: [tuple], seman_data, depend_data, processed_nouns, processed_pronouns, reprocess=False):
+def process_verbs(concepts: [tuple], depend_data, processed_nouns, processed_pronouns, reprocess=False):
     processed_verbs = []
     processed_auxverbs = []
     for concept in concepts:
@@ -1025,7 +931,7 @@ def process_verbs(concepts: [tuple], seman_data, depend_data, processed_nouns, p
             verb = process_nonfinite_verb(concept, depend_data, processed_nouns, processed_pronouns)
             processed_verbs.append(to_tuple(verb))
         else:
-            verb, aux_verbs = process_verb(concept, seman_data, depend_data, processed_nouns, processed_pronouns, reprocess)
+            verb, aux_verbs = process_verb(concept, depend_data, processed_nouns, processed_pronouns, reprocess)
             processed_verbs.append(to_tuple(verb))
             log(f'{verb.term} processed as main verb with index {verb.index} gen:{verb.gender} num:{verb.number} case:{verb.case}, and tam:{verb.tam}')
             processed_auxverbs.extend([to_tuple(aux_verb) for aux_verb in aux_verbs])
@@ -1508,14 +1414,10 @@ def write_hindi_text(hindi_output, POST_PROCESS_OUTPUT, OUTPUT_FILE):
         log('Output data write successfully')
     return "Output data write successfully"
 
+
 def write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE, path):
     """Append the hindi text into the file"""
-    OUTPUT_FILE = 'TestResults.csv'# temporary for presenting
-    str = path.strip('verified_sent/')
-    if str == '1':
-        with open(OUTPUT_FILE, 'w') as file:
-            file.write("")
-
+    OUTPUT_FILE = 'TestResults.csv'  # temporary for presenting
     with open(OUTPUT_FILE, 'a') as file:
         file.write(path.strip('verified_sent/') + ',')
         file.write(src_sentence.strip('#') + ',')
