@@ -196,7 +196,7 @@ def getComplexPredicateGNP(term):
         number = tags['num']
     return gender, number, person
 
-def getVerbGNP_new(verbs_data, seman_data, depend_data, processed_nouns, processed_pronouns):
+def getVerbGNP_new(verbs_data, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns):
     '''
 
     '''
@@ -215,8 +215,14 @@ def getVerbGNP_new(verbs_data, seman_data, depend_data, processed_nouns, process
         k1exists = (depend_data.index(cases) + 1) if 'k1' == cases[-2:] else k1exists
         k2exists = (depend_data.index(cases) + 1) if 'k2' == cases[-2:] else k2exists
 
+    if sentence_type == 'imperative':
+        verb_gender = 'm'
+        verb_number = 's'
+        verb_person = 'm'
+        return verb_gender, verb_number, verb_person
+
     if not k1exists and not k2exists:
-        log('When k1exists and k2exists both are false')
+        log('k1exists and k2exists both are false')
         return verb_gender, verb_number, verb_person
 
     if tam == 'yA':
@@ -251,7 +257,10 @@ def getVerbGNP_new(verbs_data, seman_data, depend_data, processed_nouns, process
     return verb_gender, verb_number, verb_person[0]
 
 
-def setGNP(concept, verb):# returns GNP only if Complex predicate found
+def setGNP(conce
+
+
+    qpt, verb):# returns GNP only if Complex predicate found
     if concept[7] == 'CP_noun':
         return list(verb[:4]) + concept[4:7] + ['']
 
@@ -836,7 +845,7 @@ def verb_agreement_with_CP(verb, CP):
         return verb.gender, verb.number, verb.person
 
 
-def process_main_verb(concept: Concept, seman_data, dependency_data, processed_nouns, processed_pronouns, reprocessing):
+def process_main_verb(concept: Concept, seman_data, dependency_data, sentence_type, processed_nouns, processed_pronouns, reprocessing):
     """
     >>> to_tuple(process_main_verb(Concept(index=2, term='varRA+ho_1-gA_1', dependency='0:main'), ['2:k7t', '0:main'], [(1, 'kala', 'n', 'o', 'm', 's', 'a', 'common', None)], [], False))
     [OK] : varRA processed as noun with index 1.9 case:d gen:f num:s per:a, noun_type:CP_noun, default postposition:None.
@@ -852,7 +861,7 @@ def process_main_verb(concept: Concept, seman_data, dependency_data, processed_n
     verb.term = identify_main_verb(concept.term)
     verb.tam = identify_default_tam_for_main_verb(concept.term)
     verb.tam = get_TAM(verb.term, verb.tam)
-    verb.gender, verb.number, verb.person = getVerbGNP_new(concept.term, seman_data, dependency_data, processed_nouns, processed_pronouns)
+    verb.gender, verb.number, verb.person = getVerbGNP_new(concept.term, seman_data, dependency_data, sentence_type, processed_nouns, processed_pronouns)
     if is_CP(concept.term):
         if not reprocessing:
             CP = process_main_CP(concept.index, concept.term)
@@ -889,7 +898,7 @@ def process_auxiliary_verbs(verb: Verb, concept_term: str) -> [Verb]:
     return [create_auxiliary_verb(index, term, verb) for index, term in enumerate(auxiliary_verb_terms)]
 
 
-def process_verb(concept: Concept, seman_data, dependency_data, processed_nouns, processed_pronouns, reprocessing):
+def process_verb(concept: Concept, seman_data, dependency_data, sentence_type, processed_nouns, processed_pronouns, reprocessing):
     """
     concept pattern: 'main_verb' - 'TAM for main verb' _Aux_verb+tam...
 
@@ -911,7 +920,7 @@ def process_verb(concept: Concept, seman_data, dependency_data, processed_nouns,
 
     *Aux root and Aux TAM identified from auxillary mapping File
     """
-    verb = process_main_verb(concept, seman_data, dependency_data, processed_nouns, processed_pronouns, reprocessing)
+    verb = process_main_verb(concept, seman_data, dependency_data, sentence_type, processed_nouns, processed_pronouns, reprocessing)
     auxiliary_verbs = process_auxiliary_verbs(verb, concept.term)
     return verb, auxiliary_verbs
 
@@ -1014,7 +1023,7 @@ def process_nonfinite_verbs_as_verb(nonfinite_list, processed_verbs, processed_n
 
 
 
-def process_verbs(concepts: [tuple], seman_data, depend_data, processed_nouns, processed_pronouns, reprocess=False):
+def process_verbs(concepts: [tuple], seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns, reprocess=False):
     processed_verbs = []
     processed_auxverbs = []
     for concept in concepts:
@@ -1025,7 +1034,7 @@ def process_verbs(concepts: [tuple], seman_data, depend_data, processed_nouns, p
             verb = process_nonfinite_verb(concept, depend_data, processed_nouns, processed_pronouns)
             processed_verbs.append(to_tuple(verb))
         else:
-            verb, aux_verbs = process_verb(concept, seman_data, depend_data, processed_nouns, processed_pronouns, reprocess)
+            verb, aux_verbs = process_verb(concept, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns, reprocess)
             processed_verbs.append(to_tuple(verb))
             log(f'{verb.term} processed as main verb with index {verb.index} gen:{verb.gender} num:{verb.number} case:{verb.case}, and tam:{verb.tam}')
             processed_auxverbs.extend([to_tuple(aux_verb) for aux_verb in aux_verbs])
