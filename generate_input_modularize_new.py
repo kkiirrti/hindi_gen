@@ -39,7 +39,7 @@ if __name__ == "__main__":
     processed_adjectives = process_adjectives(adjectives_data, processed_nouns)
     processed_others = process_others(others_data)
     processed_verbs, processed_auxverbs= process_verbs(verbs_data, depend_data, processed_nouns, processed_pronouns, False)
-    process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others)
+    process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_indeclinables)
     
     # Todo : extract nouns / adjectives from Compound verbs with +
     # Todo : process nouns / adjectives got from verbs and add to processed_noun / processed_adjectives
@@ -102,10 +102,10 @@ if __name__ == "__main__":
     # if testing use the next line code and all results are collated in test.csv
     # write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE)
 
-    # for masked input -uncomment the following:
-    # masked_pp_list = masked_postposition(processed_words, words_info, processed_verbs)
-    # masked_pp_fulldata = add_postposition(transformed_data, masked_pp_list)
-    # arranged_masked_output = rearrange_sentence(masked_pp_fulldata)
-    # masked_hindi_data = collect_hindi_output(arranged_masked_output)
-    # write_masked_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, masked_hindi_data, OUTPUT_FILE, path)
+    #for masked input -uncomment the following:
+    masked_pp_list = masked_postposition(processed_words, words_info, processed_verbs)
+    masked_pp_fulldata = add_postposition(transformed_data, masked_pp_list)
+    arranged_masked_output = rearrange_sentence(masked_pp_fulldata)
+    masked_hindi_data = collect_hindi_output(arranged_masked_output)
+    write_masked_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, masked_hindi_data, OUTPUT_FILE, path)
 
