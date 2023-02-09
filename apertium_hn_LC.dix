@@ -2024,7 +2024,9 @@
 <e><p><l>eMgI</l><r>a<s n="cat:v"/><s n="gen:f"/><s n="num:p"/><s n="per:u"/><s n="tam:gA"/></r></p></e>
 <e><p><l>eMgI</l><r>a<s n="cat:v"/><s n="gen:f"/><s n="num:p"/><s n="per:a"/><s n="tam:gA"/></r></p></e>
 <e><p><l>o</l><r>a<s n="cat:v"/><s n="gen:m"/><s n="num:p"/><s n="per:m"/><s n="tam:o"/></r></p></e>
+<e><p><l>o</l><r>a<s n="cat:v"/><s n="gen:m"/><s n="num:s"/><s n="per:m"/><s n="tam:o"/></r></p></e>
 <e><p><l>o</l><r>a<s n="cat:v"/><s n="gen:f"/><s n="num:p"/><s n="per:m"/><s n="tam:o"/></r></p></e>
+
 <e><p><l>o</l><r>a<s n="cat:v"/><s n="gen:m"/><s n="num:s"/><s n="per:a"/><s n="tam:o"/></r></p></e>
 <e><p><l>o</l><r>a<s n="cat:v"/><s n="gen:f"/><s n="num:s"/><s n="per:a"/><s n="tam:o"/></r></p></e>
 </pardef>
