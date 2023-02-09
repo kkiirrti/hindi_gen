@@ -38,8 +38,8 @@ if __name__ == "__main__":
     processed_pronouns = process_pronouns(pronouns_data,processed_nouns)
     processed_adjectives = process_adjectives(adjectives_data, processed_nouns)
     processed_others = process_others(others_data)
-    processed_verbs, processed_auxverbs= process_verbs(verbs_data, depend_data, processed_nouns, processed_pronouns, False)
-    process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_indeclinables)
+    processed_verbs, processed_auxverbs= process_verbs(verbs_data, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns, False)
+    process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others)
     
     # Todo : extract nouns / adjectives from Compound verbs with +
     # Todo : process nouns / adjectives got from verbs and add to processed_noun / processed_adjectives
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     if has_changes:
         # Reprocessing adjectives and verbs based on new noun info
         processed_adjectives = process_adjectives(adjectives_data, processed_nouns)
-        processed_verbs, processed_auxverbs = process_verbs(verbs_data, depend_data, processed_nouns, processed_pronouns, True)
+        processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, processed_nouns, processed_pronouns, True)
         # Sentence is generated again
         processed_words = collect_processed_data(processed_pronouns,processed_nouns,  processed_adjectives, processed_verbs,processed_auxverbs,processed_indeclinables,processed_others)
         OUTPUT_FILE = generate_morph(processed_words)
@@ -100,7 +100,7 @@ if __name__ == "__main__":
     write_hindi_text(hindi_output, POST_PROCESS_OUTPUT, OUTPUT_FILE)
 
     # if testing use the next line code and all results are collated in test.csv
-    # write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE)
+    # write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE, path)
 
     #for masked input -uncomment the following:
     masked_pp_list = masked_postposition(processed_words, words_info, processed_verbs)
