@@ -1,5 +1,19 @@
 
 
+
+
+ifadjective (index_no):
+pick noun from dependency row
+
+
+
+
+MAsked program -
+exta <> coming - 154,rAma ne KAnA KAyA hE.,rAma ne KAnA KAyA hE,राम ने खाना खाया है,राम <> खाना <> खाया है
+
+
+
+
 pattern: 
 'main_verb' - 'TAM for main verb' _Aux_verb+tam...
 

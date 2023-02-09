@@ -8,8 +8,6 @@ from wxconv import WXC
 from verb import Verb
 from concept import Concept
 
-
-
 def get_all_form(morph_forms):
     """
     >>> get_first_form("^mAz/mA<cat:n><case:d><gen:f><num:p>/mAz<cat:n><case:d><gen:f><num:s>/mAz<cat:n><case:o><gen:f><num:s>$")
@@ -168,10 +166,6 @@ def getVerbGNP(tam, depend_data, processed_nouns, processed_pronouns):
         log('Something went wrong. Cannot determine GNP for verb.', 'ERROR')
         sys.exit()
     return casedata[4], casedata[5], casedata[6][0]  # only first character of the person - to handle m_hx kind of case
-
-def setGNP(concept, verb):# returns GNP only if Complex predicate found
-    if concept[7] == 'CP_noun':
-        return list(verb[:4]) + concept[4:7] + ['']
 
 def read_file(file_path):
     '''Returns array of lines for data given in file'''
@@ -430,7 +424,7 @@ def process_adverb_as_verb(concept):
             return adverb
     return
 
-def process_adverbs(adverbs, processed_nouns, processed_verbs, processed_others):
+def process_adverbs(adverbs, processed_nouns, processed_verbs, processed_indeclinables):
     for adverb in adverbs:
         if adverb[2] =='abs':
             tmp = process_adverb_as_noun(adverb)
@@ -440,9 +434,9 @@ def process_adverbs(adverbs, processed_nouns, processed_verbs, processed_others)
             if tmp != None:
                 processed_verbs.append((tmp))
             else:
-                gender,number, person, case = get_default_GNP()
-                processed_others.append((adverb[0], clean(adverb[1]), 'other', gender, number, person))
-                log(f'adverb {adverb[1]} not processed as verb form not found in morph dix.')
+                term = clean(adverb[1]) + 'rOpa'
+                processed_indeclinables.append((adverb[0], term, 'indec'))
+                log(f'adverb {adverb[1]} processed indeclinable with form {term}')
 
 def process_nonfinite_verbs(nonfinite_list):
     '''
@@ -510,7 +504,7 @@ def process_nonfinite_verbs_as_verb(nonfinite_list, processed_verbs, processed_n
     return processed_nonfinite_verbs
 
 def process_indeclinables(indeclinables):
-    '''Processes indeclinable words'''
+    '''Processes indeclinable words index, word, 'indec'''
 
     processed_indeclinables = []
     for indec in indeclinables:
@@ -724,9 +718,13 @@ def process_main_CP(index, term):
     if '*' not in tags['form']:
         gender = tags['gen']
         number = tags['num']
+        category = tags['cat']
+    # if category == 'adj':
+    #     CP = [CP_index, CP_term, 'adj', 'd', gender, number]
+    # if category == 'n':
+        CP = [CP_index, CP_term, 'n','d', gender, number, person, 'CP_noun', postposition]
 
-    CP_noun = [CP_index, CP_term, 'n','d', gender, number, person, 'CP_noun', postposition]
-    return CP_noun
+    return CP
 
 
 def verb_agreement_with_CP(verb, CP):
@@ -757,13 +755,19 @@ def process_main_verb(concept: Concept, dependency_data, processed_nouns, proces
     verb.index = concept.index
     verb.term = identify_main_verb(concept.term)
     verb.tam = identify_default_tam_for_main_verb(concept.term)
+    if verb.term == 'hE' and verb.tam in ('pres', 'past'):  # process TAM
+        alt_tam = {'pres': 'hE', 'past': 'WA'}
+        alt_root = {'pres': 'hE', 'past': 'WA'}
+        verb.term = alt_root[verb.tam]  # handling past tense by passing correct root WA
+        verb.tam = alt_tam[verb.tam]
     verb.tam = get_TAM(verb.term, verb.tam)
     verb.gender, verb.number, verb.person = getVerbGNP(verb.tam, dependency_data, processed_nouns, processed_pronouns)
     if is_CP(concept.term):
         if not reprocessing:
             CP = process_main_CP(concept.index, concept.term)
-            log(f'{CP[1]} processed as noun with index {CP[0]} case:d gen:{CP[4]} num:{CP[5]} per:{CP[6]}, noun_type:{CP[7]}, default postposition:{CP[8]}.')
-            processed_nouns.append(tuple(CP))
+            if CP[2] == 'n':
+                log(f'{CP[1]} processed as noun with index {CP[0]} case:d gen:{CP[4]} num:{CP[5]} per:{CP[6]}, noun_type:{CP[7]}, default postposition:{CP[8]}.')
+                processed_nouns.append(tuple(CP))
             verb.gender, verb.number, verb.person = verb_agreement_with_CP(verb, CP)
         # elif reprocessing:
         #     if findValue('CP_noun', processed_nouns, index=0)[0]:
@@ -778,8 +782,10 @@ def create_auxiliary_verb(index, term, main_verb: Verb):
     verb.index = main_verb.index + (index + 1)/10
     verb.gender, verb.number, verb.person = main_verb.gender, main_verb.number, main_verb.person
     verb.term, verb.tam = auxmap_hin(term)
-    verb.type = 'Auxillary'
-    log(f'{verb.term} processed as Auxillary verb with index {verb.index} gen:{verb.gender} num:{verb.number} and tam:{verb.tam}')
+    if verb.term == 'cAha':
+            verb.person = 'm_h'
+    verb.type = 'auxillary'
+    log(f'{verb.term} processed as auxillary verb with index {verb.index} gen:{verb.gender} num:{verb.number} and tam:{verb.tam}')
     return verb
 
 def to_tuple(verb: Verb):
@@ -1041,7 +1047,7 @@ def generate_input_for_morph_generator(input_data):
             morph_data = f'{data[1]}'
         elif data[2] == 'n' and data[7] != 'proper':
             morph_data = f'^{data[1]}<cat:{data[2]}><case:{data[3]}><gen:{data[4]}><num:{data[5]}>$'
-        elif data[2] == 'v' and data[8] in ('main','Auxillary'):
+        elif data[2] == 'v' and data[8] in ('main','auxillary'):
             morph_data = f'^{data[1]}<cat:{data[2]}><gen:{data[3]}><num:{data[4]}><per:{data[5]}><tam:{data[6]}>$'
         elif data[2] == 'v' and data[6] == 'kara' and data[8] in ('nonfinite','adverb') :
             morph_data = f'^{data[1]}<cat:{data[2]}><gen:{data[3]}><num:{data[4]}><per:{data[5]}><tam:{data[6]}>$'
@@ -1208,6 +1214,8 @@ def masked_postposition(processed_words, words_info, processed_verbs):
                 if findValue('k2', words_info, index=4)[0]: # or findValue('k2p', words_info, index=4)[0]:
                     ppost = ppost_value
         elif data_case in ('r6', 'k3', 'k5', 'K5prk', 'k4', 'k4a', 'k7t', 'jk1','k7', 'k7p','k2g', 'k2','rsk', 'ru' ):
+            ppost = ppost_value
+        elif data_case == 'kr_vn' and data_info[2] == 'abs':  #abstract noun as adverb
             ppost = ppost_value
         elif data_case in ('k2g', 'k2') and data_info[2] in ("anim", "per"):
             ppost = ppost_value #'ko'
