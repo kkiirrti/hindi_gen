@@ -73,7 +73,7 @@ if __name__ == "__main__":
     if has_changes:
         # Reprocessing adjectives and verbs based on new noun info
         processed_adjectives = process_adjectives(adjectives_data, processed_nouns)
-        processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, processed_nouns, processed_pronouns, True)
+        processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns, True)
         # Sentence is generated again
         processed_words = collect_processed_data(processed_pronouns,processed_nouns,  processed_adjectives, processed_verbs,processed_auxverbs,processed_indeclinables,processed_others)
         OUTPUT_FILE = generate_morph(processed_words)

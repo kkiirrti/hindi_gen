@@ -197,8 +197,15 @@ def getComplexPredicateGNP(term):
 
 def getVerbGNP_new(verbs_data, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns):
     '''
-
     '''
+
+    if sentence_type == 'Imperative':
+        verb_gender = 'm'
+        verb_number = 's'
+        verb_person = 'm'
+        return verb_gender, verb_number, verb_person
+
+    #if non-imperative sentences, then do rest of the processing
     unprocessed_main_verb = verbs_data
     main_verb = identify_main_verb(unprocessed_main_verb)
     is_cp = is_CP(unprocessed_main_verb)
@@ -213,12 +220,6 @@ def getVerbGNP_new(verbs_data, seman_data, depend_data, sentence_type, processed
             continue
         k1exists = (depend_data.index(cases) + 1) if 'k1' == cases[-2:] else k1exists
         k2exists = (depend_data.index(cases) + 1) if 'k2' == cases[-2:] else k2exists
-
-    if sentence_type == 'imperative':
-        verb_gender = 'm'
-        verb_number = 's'
-        verb_person = 'm'
-        return verb_gender, verb_number, verb_person
 
     if not k1exists and not k2exists:
         log('k1exists and k2exists both are false')
@@ -255,10 +256,6 @@ def getVerbGNP_new(verbs_data, seman_data, depend_data, sentence_type, processed
 
     return verb_gender, verb_number, verb_person[0]
 
-
-def setGNP(concept, verb):# returns GNP only if Complex predicate found
-    if concept[7] == 'CP_noun':
-        return list(verb[:4]) + concept[4:7] + ['']
 
 def read_file(file_path):
     '''Returns array of lines for data given in file'''
@@ -531,71 +528,6 @@ def process_adverbs(adverbs, processed_nouns, processed_verbs, processed_indecli
                 processed_indeclinables.append((adverb[0], term, 'indec'))
                 log(f'adverb {adverb[1]} processed indeclinable with form {term}')
 
-def process_nonfinite_verbs(nonfinite_list):
-    '''
-    # process nonfinite verbs as indeclinables. Just add the suffix as required. No morphological processing.
-    >>> process_nonfinite_verbs_as_indec([(3, 'jA_1', '', '', '5:rpk', '', '', '')])
-    [OK] : jA_1 processed as non-finite verb with form:jAkara
-    [(3, 'jAkara', 'nonfinite')]
-    '''
-
-    processed_nonfinite_verbs = []
-    nonfinite_form = ''
-    for nonfinite in nonfinite_list:
-        dep_rel = nonfinite[4].split(':')[1]
-        if dep_rel == 'rpk':
-            nonfinite_form = clean(nonfinite[1]) + 'kara'
-        else:
-            if dep_rel == 'rsk':
-                nonfinite_form = clean(nonfinite[1]) + 'wehue'
-
-        processed_nonfinite_verbs.append((nonfinite[0], nonfinite_form, 'nonfinite'))
-        log(f'{nonfinite[1]} processed as non-finite verb with form:{nonfinite_form} ')
-    return processed_nonfinite_verbs
-
-def process_nonfinite_verbs_as_verb(nonfinite_list, processed_verbs, processed_nouns, processed_pronouns):
-    '''
-    Process verbs as (index, word, category, gender, number, person, tam)
-    >>> process_nonfinite_verbs_as_verb([(3, 'jA_1', '', '', '5:rpk', '', '', '')])
-    (3, 'jA', 'v, '','','','','nonfinite')
-    '''
-
-    category = 'v'
-    gender = 'm'
-    number = 's'
-    person = 'a'
-    root = ''
-    tam = ''
-    processed_nonfinite_verbs = []
-    nonfinite_form = ''
-    for nonfinite in nonfinite_list:
-        relnoun = int(nonfinite[4].strip().split(':')[0])
-        dep_rel = nonfinite[4].split(':')[1]
-        index = nonfinite[0]
-        root = clean(nonfinite[1])
-
-        if dep_rel == 'rvks':
-            tam = 'wA_huA'
-        elif dep_rel == 'rpk':
-            tam = 'kara'
-        elif dep_rel == 'rsk':
-            tam = 'wA_huA'
-        else:
-            if dep_rel == 'rbks':
-                tam = 'yA_huA'
-
-        relnoun_data = getDataByIndex(relnoun, processed_nouns+ processed_pronouns)
-        if relnoun_data == False:
-            log(f'Associated Noun or pronoun not found for non-finite verb {nonfinite[1]}. Using default GNP')
-        gender = relnoun_data[4]
-        number = relnoun_data[5]
-        person = relnoun_data[6]
-
-        processed_verbs.append((index, root, category, gender, number, person, tam))
-        log(f'{root} nonfinite verb processed as verb with gen:{gender} num:{number} per:{person} tam:{tam}')
-
-    return processed_nonfinite_verbs
-
 def process_indeclinables(indeclinables):
     '''Processes indeclinable words index, word, 'indec'''
 
@@ -603,7 +535,6 @@ def process_indeclinables(indeclinables):
     for indec in indeclinables:
         processed_indeclinables.append((indec[0], clean(indec[1]), 'indec'))
     return processed_indeclinables
-
 
 def process_others(other_words):
     '''Process other words. Right now being processed as noun with default gnp'''
@@ -984,52 +915,6 @@ def process_nonfinite_verb(concept, depend_data, processed_nouns, processed_pron
     verb.case = 'o' # to be updated
     log(f'{verb.term} processed as nonfinite verb with index {verb.index} gen:{verb.gender} num:{verb.number} case:{verb.case}, and tam:{verb.tam}')
     return verb
-
-
-def process_nonfinite_verbs_as_verb(nonfinite_list, processed_verbs, processed_nouns, processed_pronouns):
-    '''
-    Process verbs as (index, word, category, gender, number, person, tam)
-    >>> process_nonfinite_verbs_as_verb([(3, 'jA_1', '', '', '5:rpk', '', '', '')])
-    (3, 'jA', 'v, '','','','','nonfinite')
-    '''
-
-    category = 'v'
-    gender = 'm'
-    number = 's'
-    person = 'a'
-    root = ''
-    tam = ''
-    processed_nonfinite_verbs = []
-    nonfinite_form = ''
-    for nonfinite in nonfinite_list:
-        relnoun = int(nonfinite[4].strip().split(':')[0])
-        dep_rel = nonfinite[4].split(':')[1]
-        index = nonfinite[0]
-        root = clean(nonfinite[1])
-
-        if dep_rel == 'rvks':
-            tam = 'wA_huA'
-        elif dep_rel == 'rpk':
-            tam = 'kara'
-        elif dep_rel == 'rsk':
-            tam = 'wA_huA'
-        else:
-            if dep_rel == 'rbks':
-                tam = 'yA_huA'
-
-        relnoun_data = getDataByIndex(relnoun, processed_nouns+ processed_pronouns)
-        if relnoun_data == False:
-            log(f'Associated Noun or pronoun not found for non-finite verb {nonfinite[1]}. Using default GNP')
-        gender = relnoun_data[4]
-        number = relnoun_data[5]
-        person = relnoun_data[6]
-
-        processed_verbs.append((index, root, category, gender, number, person, tam))
-        log(f'{root} nonfinite verb processed as verb with gen:{gender} num:{number} per:{person} tam:{tam}')
-
-    return processed_nonfinite_verbs
-
-
 
 def process_verbs(concepts: [tuple], seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns, reprocess=False):
     processed_verbs = []
