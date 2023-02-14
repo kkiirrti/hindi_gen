@@ -709,13 +709,16 @@
 <e><p><l>ewe_rahanA_hE</l><r>e<s n="cat:v"/><s n="gen:f"/><s n="num:p"/><s n="per:a"/><s n="tam:we_rahanA_hE"/></r></p></e>
 <e><p><l>ewe_rahanA_hE</l><r>e<s n="cat:v"/><s n="gen:f"/><s n="num:p"/><s n="per:m_h"/><s n="tam:we_rahanA_hE"/></r></p></e>
 
-
 <e><p><l>e</l><r>e<s n="cat:v"/><s n="gen:f"/><s n="num:s"/><s n="per:m_h0"/><s n="tam:imper"/></r></p></e>
 <e><p><l>e</l><r>e<s n="cat:v"/><s n="gen:m"/><s n="num:s"/><s n="per:m_h0"/><s n="tam:imper"/></r></p></e>
 <e><p><l>o</l><r>e<s n="cat:v"/><s n="gen:f"/><s n="num:s"/><s n="per:m_h1"/><s n="tam:imper"/></r></p></e>
 <e><p><l>o</l><r>e<s n="cat:v"/><s n="gen:m"/><s n="num:s"/><s n="per:m_h1"/><s n="tam:imper"/></r></p></e>
 <e><p><l>o</l><r>e<s n="cat:v"/><s n="gen:f"/><s n="num:p"/><s n="per:m_h1"/><s n="tam:imper"/></r></p></e>
 <e><p><l>o</l><r>e<s n="cat:v"/><s n="gen:m"/><s n="num:p"/><s n="per:m_h1"/><s n="tam:imper"/></r></p></e>
+<e><p><l>o</l><r>e<s n="cat:v"/><s n="gen:m"/><s n="num:p"/><s n="per:m"/><s n="tam:o"/></r></p></e>
+<e><p><l>o</l><r>e<s n="cat:v"/><s n="gen:m"/><s n="num:s"/><s n="per:m"/><s n="tam:o"/></r></p></e>
+<e><p><l>o</l><r>e<s n="cat:v"/><s n="gen:f"/><s n="num:p"/><s n="per:m"/><s n="tam:o"/></r></p></e>
+<e><p><l>o</l><r>e<s n="cat:v"/><s n="gen:f"/><s n="num:s"/><s n="per:m"/><s n="tam:o"/></r></p></e>
 <e><p><l>Ijiye</l><r>e<s n="cat:v"/><s n="gen:f"/><s n="num:s"/><s n="per:m_h2"/><s n="tam:imper"/></r></p></e>
 <e><p><l>Ijiye</l><r>e<s n="cat:v"/><s n="gen:m"/><s n="num:s"/><s n="per:m_h2"/><s n="tam:imper"/></r></p></e>
 <e><p><l>Ijiye</l><r>e<s n="cat:v"/><s n="gen:m"/><s n="num:p"/><s n="per:m_h2"/><s n="tam:imper"/></r></p></e>
@@ -3196,8 +3199,8 @@ addition ended by Kirti Garg kirti.garg@gmail.com on 7/12/22-->
 
 <!-- automatic added parsarg from marathi-hindi tam mapping. -->
 
-
 <e lm="kyA"><i>kyA</i><par n="kyA/__p"/></e>
+<e lm="kahAz"><i>kahAz</i><par n="kyA/__p"/></e>
 <e lm="0"><i>0</i><par n="parsarg"/></e>
 <e lm="0~ke_pICe"><i>0~ke_pICe</i><par n="parsarg"/></e>
 <e lm="0~ke_pICekA{pu._e.}"><i>0~ke_pICekA{pu._e.}</i><par n="parsarg"/></e>
@@ -17933,7 +17936,7 @@ addition ended by Kirti Garg kirti.garg@gmail.com on 7/12/22-->
 <e lm="maMwraxAwA"><i>maMwraxAwA</i><par n="rAjA/__n"/></e>
 <e lm="maMwraxevawA"><i>maMwraxevawA</i><par n="rAjA/__n"/></e>
 <e lm="maMwraxraRtA"><i>maMwraxraRtA</i><par n="rAjA/__n"/></e>
-<e lm="maMwrI"><i>maMwrI</i><par n="AjAxI/__n"/></e>
+<e lm="maMwrI"><i>maMwr</i><par n="Axam/I__n"/></e>
 <e lm="mAMwrika"><i>mAMwrika</i><par n="amIra/__adj"/></e>
 <e lm="maMwrimaMdala"><i>maMwrimaMdal</i><par n="Gar/a__n"/></e>
 <e lm="maMwriNI"><i>maMwriN</i><par n="ladak/I__n"/></e>

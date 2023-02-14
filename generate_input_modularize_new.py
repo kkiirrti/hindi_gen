@@ -100,12 +100,12 @@ if __name__ == "__main__":
     write_hindi_text(hindi_output, POST_PROCESS_OUTPUT, OUTPUT_FILE)
 
     # if testing use the next line code and all results are collated in test.csv
-    # write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE, path)
+    #write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE, path)
 
     #for masked input -uncomment the following:
-    masked_pp_list = masked_postposition(processed_words, words_info, processed_verbs)
-    masked_pp_fulldata = add_postposition(transformed_data, masked_pp_list)
-    arranged_masked_output = rearrange_sentence(masked_pp_fulldata)
-    masked_hindi_data = collect_hindi_output(arranged_masked_output)
-    write_masked_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, masked_hindi_data, OUTPUT_FILE, path)
+    # masked_pp_list = masked_postposition(processed_words, words_info, processed_verbs)
+    # masked_pp_fulldata = add_postposition(transformed_data, masked_pp_list)
+    # arranged_masked_output = rearrange_sentence(masked_pp_fulldata)
+    # masked_hindi_data = collect_hindi_output(arranged_masked_output)
+    # write_masked_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, masked_hindi_data, OUTPUT_FILE, path)
 
