@@ -450,7 +450,7 @@ def analyse_words(words_list):
     verbs = []
     others = []
     adverbs = []
-
+    nominal_form = []
     for word_data in words_list:
         if check_indeclinable(word_data):
             log(f'{word_data[1]} identified as indeclinable.')
@@ -461,6 +461,9 @@ def analyse_words(words_list):
         elif check_adverb(word_data):
             log(f'{word_data[1]} identified as adverb.')
             adverbs.append(word_data)
+        elif check_nominal_form(word_data):
+            log(f'{word_data[1]} identified as nominal form.')
+            nominal_form.append(word_data)
         elif check_pronoun(word_data):
             log(f'{word_data[1]} identified as pronoun.')
             pronouns.append(word_data)
@@ -474,12 +477,37 @@ def analyse_words(words_list):
             log(f'{word_data[1]} identified as other word, but processed as noun with default GNP.')  # treating other words as noun
             # others.append(word_data) #modification by Kirti on 12/12 to handle other words
             nouns.append(word_data)
-    return indeclinables, pronouns, nouns, adjectives, verbs, adverbs, others
+    return indeclinables, pronouns, nouns, adjectives, verbs, adverbs, others, nominal_form
 
+def check_nominal_form(word_data):
+    rel_list = ['rt', 'rh', 'k7p', 'k7t']
+    relation = word_data[4].strip().split(':')[1]
+    gnp_info = word_data[3]
+    if relation in rel_list and gnp_info == '':
+        return True
+    return False
 
+def process_nominal_form(nominal_forms_data, processed_noun):
 
-def reprocess(processed_nouns, processed_adjectives, processed_verbs):
-    pass
+   nominal_verbs = []
+   for nominal_form in nominal_forms_data:
+        index = nominal_form[0]
+        term = clean(nominal_form[1])
+        gender = 'm'
+        number = 's'
+        person = 'a'
+        category = 'n'
+        noun_type = 'vn'
+        case = 'o'
+        postposition = ''
+        tags = find_tags_from_dix_as_list(term)
+        for tag in tags:
+            if (tag[0] == 'cat' and tag[1] == 'v'):
+                processed_noun.append(index, term, category, case, gender, number, person, noun_type, postposition)
+                log(f'{term} processed as nominal verb with index {index} gen:{gender} num:{number} person:{person} noun_type:{noun_type} case:{case} and postposition:{postposition}')
+            else:
+                log('when cat is not v')
+   return nominal_verbs
 
 def process_adverb_as_noun(concept, processed_nouns):
     index = concept[0]
@@ -536,14 +564,41 @@ def process_adverbs(adverbs, processed_nouns, processed_verbs, processed_indecli
                     log(f'adverb {adverb[1]} processed indeclinable with form {term}, no processing done')
                     return
 
+def process_kim_form(relation, anim):
+    if relation in ('k1', 'k1s'):
+        return 'kOna'
+    elif relation == 'k2' and anim == '':
+        return 'kyA'
+    elif relation in ('k2p', 'k7p'):
+        return 'kahAz'
+    elif relation == 'k5':
+        return 'kahAz se'
+    elif relation == 'kr_vn':
+        return 'kEse'
+    elif relation == 'k3':
+        return 'kisa se'
+    elif relation == 'k1s':
+        return 'kEsA'
+    elif relation == 'rt':
+        return 'kyoM'
+    elif relation == 'k7t':
+        return 'kaba'
+    elif relation in ('k2', 'k2g', 'k5'):
+        return 'kisa se'
+    else :
+        return 'kim'
 
 def process_indeclinables(indeclinables):
     '''Processes indeclinable words index, word, 'indec'''
 
     processed_indeclinables = []
     for indec in indeclinables:
-        term = clean(indec[1])
-        processed_indeclinables.append((indec[0], term, 'indec'))
+        clean_indec = clean(indec[1])
+        if clean_indec == 'kim':
+            relation = indec[4].strip().split(':')[1]
+            anim = indec[2]
+            clean_indec = process_kim_form(relation, anim)
+        processed_indeclinables.append((indec[0], clean_indec, 'indec'))
     return processed_indeclinables
 
 def process_others(other_words):
@@ -614,7 +669,7 @@ def process_pronouns(pronouns, processed_nouns):
 
 
 def process_nouns(nouns):
-    '''Process nouns as (index, word, category, case, gender, number, proper/noun type= proper or CP_noun, postposition)'''
+    '''Process nouns as Process nouns as (index, word, category, case, gender, number, proper/noun type= proper, common, NC, nominal_verb or CP_noun, postposition)'''
     #noun_attribute dict to store all nouns as keys
     processed_nouns = []
     for noun in nouns:
@@ -650,9 +705,8 @@ def get_default_GNP():
 
 def process_adjectives(adjectives, processed_nouns):
     '''Process adjectives as (index, word, category, case, gender, number)
-    '''
+        '''
     processed_adjectives = []
-
     gender, number, person, case = get_default_GNP()
     for adjective in adjectives:
         index = adjective[0]
@@ -992,6 +1046,8 @@ def generate_input_for_morph_generator(input_data):
                 morph_data = f'^{data[1]}<cat:{data[2]}><case:{data[3]}><parsarg:{data[7]}><gen:{data[4]}><num:{data[5]}><per:{data[6]}>$'
         elif data[2] == 'n' and data[7] == 'proper':
             morph_data = f'{data[1]}'
+        elif data[2] == 'n' and data[7] == 'vn':
+            morph_data = f'^{data[1]}<cat:{data[7]}><case:{data[3]}>$'
         elif data[2] == 'n' and data[7] != 'proper':
             morph_data = f'^{data[1]}<cat:{data[2]}><case:{data[3]}><gen:{data[4]}><num:{data[5]}>$'
         elif data[2] == 'v' and data[8] in ('main','auxillary'):

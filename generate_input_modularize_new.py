@@ -30,7 +30,7 @@ if __name__ == "__main__":
                     gnp_data, depend_data, discourse_data, spkview_data, scope_data)
     
     # Categorising words as Nound/Pronouns/Adjectives/..etc.
-    indeclinables_data, pronouns_data, nouns_data, adjectives_data, verbs_data, adverbs_data, others_data = analyse_words(words_info)
+    indeclinables_data, pronouns_data, nouns_data, adjectives_data, verbs_data, adverbs_data, others_data, nominal_forms_data = analyse_words(words_info)
     
     #  Processing Stage
     processed_indeclinables = process_indeclinables(indeclinables_data)
@@ -40,6 +40,7 @@ if __name__ == "__main__":
     processed_others = process_others(others_data)
     processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns, False)
     process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others)
+    process_nominal_form = process_nominal_form(nominal_forms_data, processed_nouns)
     
     # Todo : extract nouns / adjectives from Compound verbs with +
     # Todo : process nouns / adjectives got from verbs and add to processed_noun / processed_adjectives
