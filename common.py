@@ -228,14 +228,14 @@ def getVerbGNP(verbs_data, seman_data, depend_data, sentence_type, processed_nou
             verb_gender, verb_number, verb_person = getComplexPredicateGNP(unprocessed_main_verb)
             return verb_gender, verb_number, verb_person[0]
         else:
-            if not is_cp and k2exists and seman_data[k2exists] != 'anim':
+            if not is_cp and k2exists and seman_data[k2exists] in('anim','per'):
                 casedata = getDataByIndex(k2exists, searchList)
                 if (casedata == False):
                     log('Something went wrong. Cannot determine GNP for verb.', 'ERROR')
                     sys.exit()
                 verb_gender, verb_number, verb_person = casedata[4], casedata[5], casedata[6]
                 return verb_gender, verb_number, verb_person[0]
-            if not is_cp and k2exists and seman_data[k2exists] == 'anim':
+            if not is_cp and k2exists and seman_data[k2exists] in ('anim','per'):
                 verb_gender = 'm'
                 verb_number = 's'
                 verb_person = 'a'
@@ -537,7 +537,8 @@ def process_indeclinables(indeclinables):
 
     processed_indeclinables = []
     for indec in indeclinables:
-        processed_indeclinables.append((indec[0], clean(indec[1]), 'indec'))
+        term = clean(indec[1])
+        processed_indeclinables.append((indec[0], term, 'indec'))
     return processed_indeclinables
 
 def process_others(other_words):
@@ -575,13 +576,13 @@ def process_pronouns(pronouns, processed_nouns):
         parsarg = 0
         fnum = None
         gender, number, person = extract_gnp(pronoun[3])
-        if "k1" in pronoun[4] or 'dem' in pronoun[4]:
-            if clean(pronoun[1]) in ('kOna', 'kyA', 'vaha', 'yaha') and pronoun[2] != 'per':
-                #if findValue('yA', processed_verbs, index=6)[0]: TAM not 'yA'
-                    case = "d"
-        else:
-            if "k2" in pronoun[4] and pronoun[2] in ('anim', 'per'):
-                case = 'd'
+        # if "k1" in pronoun[4] or 'dem' in pronoun[4]:
+        #     if clean(pronoun[1]) in ('kOna', 'kyA', 'vaha', 'yaha') and pronoun[2] != 'per':
+        #         #if findValue('yA', processed_verbs, index=6)[0]: TAM not 'yA'
+        #             case = "d"
+        # else:
+        if "k2" in pronoun[4] and pronoun[2] in ('anim', 'per'):
+            case = 'd'
 
         if pronoun[1] == 'addressee':
             addr_map = {'respect': 'Apa', 'informal': 'wU', '': 'wU'}
@@ -617,11 +618,6 @@ def process_nouns(nouns):
         postposition = None
         gender, number, person = extract_gnp(noun[3])
         noun_type = 'common' if '_' in noun[1] else 'proper'
-        if "k1" in noun[4]:
-            case = "d"
-        else:
-            if "k2" in noun[4] and 'anim' not in noun[2]:
-                case = 'd'
 
         # For Noun compound words
         if '+' in noun[1]:
@@ -632,7 +628,6 @@ def process_nouns(nouns):
                 clean_dnouns = clean(dnouns[k])
                 processed_nouns.append((index, clean_dnouns, category, case, gender, number, person, noun_type, postposition))
                 noun_attribute[clean_dnouns] = [[],[]]
-
         else:
             clean_noun = clean(noun[1])
             processed_nouns.append((noun[0], clean_noun, category, case, gender, number, person, noun_type, postposition))
@@ -1166,20 +1161,6 @@ def join_indeclinables(transformed_data, processed_indeclinables, processed_othe
     """Joins Indeclinable data with transformed data and sort it by index number."""
     return sorted(transformed_data + processed_indeclinables + processed_others)
 
-def get_concept_data_for_value(value, processed_list, fromIndex):
-    index = fromIndex
-    for i in range(len(processed_list)):
-        for data in processed_list:
-            for data_values in range(len(data)):
-                if data_values == value:
-                    return data[0]
-            # if index == data[0]:
-            #     if data[3] != '' and index != fromIndex:
-            #         return data
-            #     if ':' in data[4]:
-            #         index = int(data[4][0])
-    return False
-
 def nextNounData(fromIndex, word_info):
     index = fromIndex
     for i in range(len(word_info)):
@@ -1250,7 +1231,7 @@ def preprocess_postposition(processed_words, words_info, processed_verbs):
     PPdata = {}
     new_processed_words = []
     for data in processed_words:
-        if data[2] not in ('p', 'n', 'other'):
+        if data[2] not in ('p', 'n', 'other'): #postpositions only for nouns, pronouns and other words
             new_processed_words.append(data)
             continue
         data_info = getDataByIndex(data[0], words_info)
@@ -1261,13 +1242,19 @@ def preprocess_postposition(processed_words, words_info, processed_verbs):
             data_case = False
         ppost = ''
         if data_case in ('k1', 'pk1'):
-            if findValue('yA', processed_verbs, index=6)[0]:  # has TAM "yA"
+            if findValue('yA', processed_verbs, index=6)[0]:  # has TAM "yA" or "yA_hE" or "yA_WA" marA WA
                 if findValue('k2', words_info, index=4)[0]: # or if CP_present, then also ne - add
                     ppost = 'ne'
                     if data[2] != 'other':
                         temp = list(data)
                         temp[3] = 'o'
                         data = tuple(temp)
+            # elif tam in (nA_list):
+            #         ppost = 'ko'
+            # else:
+            #         ppost = '0'
+
+
         elif data_case in ('k3', 'k5', 'K5prk'):
             ppost = 'se'
         elif data_case in ('k4', 'k4a', 'k7t', 'jk1'):
@@ -1307,60 +1294,122 @@ def preprocess_postposition(processed_words, words_info, processed_verbs):
                     pass
         else:
             pass
+
         if data[2] == 'p':
             temp = list(data)
+            temp[3] = 'o'
             temp[7] = ppost if ppost != '' else 0
             data = tuple(temp)
         if data[2] == 'n' or data[2] == 'other':
             temp = list(data)
-            temp[8] = ppost if ppost != '' else None
+            if ppost != '':
+                temp[8] = ppost
+                temp[3] = 'o'
+            else:
+                temp[8] = None
+                temp[3] = 'd'
             data = tuple(temp)
             PPdata[data[0]] = ppost
         new_processed_words.append(data)
     return new_processed_words, PPdata
 
-
-def process_postposition(transformed_fulldata, words_info, processed_verbs):
-    '''Adds postposition to words wherever applicable according to rules.'''
-    PPFulldata = []
-
-    for data in transformed_fulldata:
-        if data[2] not in ('p', 'n', 'other'):
-            PPFulldata.append(data)
+def preprocess_postposition_new(processed_words,words_info,processed_verbs):
+    '''Calculates postposition to words wherever applicable according to rules.'''
+    PPdata = {}
+    new_processed_words = []
+    for data in processed_words:
+        if data[2] not in ('p', 'n', 'other'): #postpositions only for nouns, pronouns and other words
+            new_processed_words.append(data)
             continue
         data_info = getDataByIndex(data[0], words_info)
         try:
             data_case = False if data_info == False else data_info[4].split(':')[1].strip()
         except IndexError:
             data_case = False
-        data = list(data)
+
         ppost = ''
+        new_case = 'o'
         if data_case in ('k1', 'pk1'):
-            if findValue('yA', processed_verbs, index=6)[0]:  # has TAM "yA"
-                if findValue('k2', words_info, index=4)[0] or findValue('k2p', words_info, index=4)[0]:
+            if findValue('yA', processed_verbs, index=6)[0]:  # has TAM "yA" or "yA_hE" or "yA_WA" marA WA
+                k2exists = findValue('k2', words_info, index=4)[0] # or if CP_present, then also ne - add #get exact k2, not k2x
+                if k2exists == 'k2':
                     ppost = 'ne'
-        elif data_case in ('k3', 'k5'):
+                    if data[2] != 'other':
+                        temp = list(data)
+                        temp[3] = 'o'
+                        data = tuple(temp)
+            elif findValue('nA', processed_verbs, index=6)[0]: #tam in (nA_list):
+                ppost = 'ko'
+            else:
+                pass
+
+            # else:
+            #         ppost = '0'
+        elif data_case in ('k2g', 'k2'):
+                if data_info[2] in ("anim","per"):
+                    ppost = 'ko'
+                    # new_case = 'o'
+                else:
+                    new_case = 'd'
+        elif data_case == 'k2p':
+            ppost = 'meM'
+        elif data_case in ('k3', 'k5', 'K5prk'):
             ppost = 'se'
-        elif data_case in ('k4', 'k7t', 'jk1'):
+        elif data_case in ('k4', 'k4a', 'k7t', 'jk1'):
             ppost = 'ko'
         elif data_case == 'k7p':
             ppost = 'meM'
-        elif data_case == 'k7':
+        elif data_case =='k7':
             ppost = 'para'
-        elif (data_case == 'k2') and data_info[2] in ("anim", "per"):
-            ppost = 'ko'
+        elif data_case == 'kr_vn' and data_info[2] == 'abs':
+            ppost = 'se'
         elif data_case == 'rt':
             ppost = 'ke lie'
+        elif data_case in ('rsm', 'rsma'):
+            ppost = 'ke pAsa'
+        elif data_case == 'rsk':
+            ppost = 'hue'
+        elif data_case == 'ru':
+            ppost = 'jEsI'
+        elif data_case == 'rv':
+            ppost = 'kI tulanA meM'
+        elif data_case == 'rh':
+            ppost = 'ke_kAraNa'
+        elif data_case == 'rd':
+            ppost = 'kI ora'
         elif data_case == 'r6':
-            ppost = 'kI' if data[4] == 'f' else 'kA'
+            ppost = 'kA' #if data[4] == 'f' else 'kA'
+            nn_data = nextNounData(data[0], words_info)
+            if nn_data != False:
+                print('Next Noun data:', nn_data)
+                if nn_data[4].split(':')[1] in ('k3', 'k4', 'k5', 'k7', 'k7p', 'k7t', 'r6', 'mk1', 'jk1', 'rt'):
+                    ppost = 'ke'
+                elif nn_data[3][1] != 'f' and nn_data[3][3] == 'p': #agreement with gnp
+                    ppost = 'kA'
+                else:
+                    pass
         else:
             pass
+        # update postposition and case for the term
+        if ppost == '':
+            new_case = 'd'
         if data[2] == 'p':
-            data[7] = ppost if ppost != '' else 0
+            temp = list(data)
+            temp[3] = new_case
+            temp[7] = ppost if ppost != '' else 0
+            data = tuple(temp)
         if data[2] == 'n' or data[2] == 'other':
-            data[1] = data[1] + ' ' + ppost
-        PPFulldata.append(tuple(data))
-    return PPFulldata
+            temp = list(data)
+            if (ppost != ''):
+                temp[8] = ppost
+                temp[3] = new_case
+            else:
+                temp[8] = None
+                temp[3] = 'd'
+            data = tuple(temp)
+            PPdata[data[0]] = ppost
+        new_processed_words.append(data)
+    return new_processed_words, PPdata
 
 
 def join_compounds(transformed_data):

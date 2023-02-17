@@ -45,14 +45,14 @@ if __name__ == "__main__":
     # Todo : process nouns / adjectives got from verbs and add to processed_noun / processed_adjectives
 
     # processing postposition for pronouns only as it is required for parsarg info.
-    processed_pronouns,_ = preprocess_postposition(processed_pronouns, words_info, processed_verbs) # to get parsarg
+    processed_pronouns,_ = preprocess_postposition_new(processed_pronouns, words_info, processed_verbs) # to get parsarg
 
     # Every word is collected into one and sorted by index number.
     processed_words = collect_processed_data(processed_pronouns,processed_nouns,processed_adjectives,
                                             processed_verbs, processed_auxverbs,processed_indeclinables, processed_others)
     
     # calculating postpositions for words if applicable.
-    processed_words, processed_postpositions = preprocess_postposition(processed_words, words_info,processed_verbs)
+    processed_words, processed_postpositions = preprocess_postposition_new(processed_words, words_info,processed_verbs)
 
     # Input for morph generator is generated and fed into it.
     # Generator outputs the result in a file named morph_input.txt-out.txt
