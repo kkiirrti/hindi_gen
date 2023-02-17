@@ -1367,6 +1367,8 @@ def preprocess_postposition_new(processed_words,words_info,processed_verbs):
             ppost = 'ke lie'
         elif data_case in ('rsm', 'rsma'):
             ppost = 'ke pAsa'
+        elif data_case == 'rhh':
+            ppost = 'kA'
         elif data_case == 'rsk':
             ppost = 'hue'
         elif data_case == 'ru':
@@ -1381,13 +1383,16 @@ def preprocess_postposition_new(processed_words,words_info,processed_verbs):
             ppost = 'kA' #if data[4] == 'f' else 'kA'
             nn_data = nextNounData(data[0], words_info)
             if nn_data != False:
-                print('Next Noun data:', nn_data)
+                #print('Next Noun data:', nn_data)
                 if nn_data[4].split(':')[1] in ('k3', 'k4', 'k5', 'k7', 'k7p', 'k7t', 'r6', 'mk1', 'jk1', 'rt'):
                     ppost = 'ke'
-                elif nn_data[3][1] != 'f' and nn_data[3][3] == 'p': #agreement with gnp
-                    ppost = 'kA'
-                else:
-                    pass
+                    if nn_data[3][3] == 's':#agreement with gnp
+                        if nn_data[3][1] == 'f':
+                            ppost = 'kI'
+                        else:
+                            ppost = 'kA'
+                    else:
+                        pass
         else:
             pass
         # update postposition and case for the term
