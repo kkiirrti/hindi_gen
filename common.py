@@ -194,6 +194,8 @@ def getComplexPredicateGNP(term):
         number = tags['num']
     return gender, number, person
 
+
+
 def getVerbGNP(verbs_data, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns):
     '''
     '''
@@ -203,14 +205,16 @@ def getVerbGNP(verbs_data, seman_data, depend_data, sentence_type, processed_nou
         verb_person = 'm'
         return verb_gender, verb_number, verb_person
 
-    #if non-imperative sentences, then do rest of the processing
-    unprocessed_main_verb = verbs_data
-    #main_verb = identify_main_verb(unprocessed_main_verb)
-    is_cp = is_CP(unprocessed_main_verb)
-    tam = identify_default_tam_for_main_verb(unprocessed_main_verb)
+        # if non-imperative sentences, then do rest of the processing
+        unprocessed_main_verb = verbs_data
+        # main_verb = identify_main_verb(unprocessed_main_verb)
+        is_cp = is_CP(unprocessed_main_verb)
+        tam = identify_default_tam_for_main_verb(unprocessed_main_verb)
+
+
     k1exists = False
     k2exists = False
-    verb_gender, verb_number, verb_person, case= get_default_GNP()
+    verb_gender, verb_number, verb_person, case = get_default_GNP()
     searchList = processed_nouns + processed_pronouns
 
     for cases in depend_data:
@@ -220,7 +224,7 @@ def getVerbGNP(verbs_data, seman_data, depend_data, sentence_type, processed_nou
         k2exists = (depend_data.index(cases) + 1) if 'k2' == cases[-2:] else k2exists
 
     if not k1exists and not k2exists:
-        log('k1exists and k2exists both are false')
+        log('Sentence does not contain k1 and k2. Using defualt GNP m,s,a ')
         return verb_gender, verb_number, verb_person
 
     if tam == 'yA':
@@ -241,7 +245,7 @@ def getVerbGNP(verbs_data, seman_data, depend_data, sentence_type, processed_nou
                 verb_person = 'a'
                 return verb_gender, verb_number, verb_person[0]
 
-    if tam in ('nA_paDa', 'nA_hE', 'nA_tha', 'nA_thI', 'nA_hO', 'nA_chAhie'):
+    if tam in ('nA_paDa', 'nA_hE', 'nA_tha', 'nA_thI', 'nA_ho', 'nA_chAhie','nA_chAhiye'):
         verb_gender = 'm'
         verb_number = 's'
         verb_person = 'a'
@@ -253,6 +257,7 @@ def getVerbGNP(verbs_data, seman_data, depend_data, sentence_type, processed_nou
         verb_gender, verb_number, verb_person = casedata[4], casedata[5], casedata[6]
 
     return verb_gender, verb_number, verb_person[0]
+
 
 
 def read_file(file_path):
@@ -267,7 +272,6 @@ def read_file(file_path):
         log('No such File found.', 'ERROR')
         sys.exit()
     return data
-
 
 def generate_rulesinfo(file_data):
     '''Return list all 10 rules of USR as list of lists'''
@@ -530,6 +534,7 @@ def process_adverbs(adverbs, processed_nouns, processed_verbs, processed_indecli
                 else:
                     processed_indeclinables.append((adverb[0], term, 'indec')) #to be updated, when cases arise.
                     log(f'adverb {adverb[1]} processed indeclinable with form {term}, no processing done')
+                    return
 
 
 def process_indeclinables(indeclinables):
@@ -674,11 +679,6 @@ def process_adjectives(adjectives, processed_nouns):
 def is_complex_predicate(concept):
     return "+" in concept
 
-
-def identify_case(verb, dependency_data, processed_nouns, processed_pronouns):
-    return getVerbGNP(verb.tam, dependency_data, processed_nouns, processed_pronouns)
-
-
 def get_TAM(term, tam):
     """
     >>> get_TAM('hE', 'pres')
@@ -714,6 +714,25 @@ def identify_default_tam_for_main_verb(concept_term):
     '0'
     """
     return concept_term.split("-")[1].split("_")[0]
+
+
+def identify_complete_tam_for_verb(concept_term):
+    """
+    >>> identify_complete_tam_for_verb("kara_1-wA_hE_1")
+    'wA_hE'
+    >>> identify_complete_tam_for_verb("kara_1-0_rahA_hE_1")
+    'rahA_hE'
+    >>> identify_complete_tam_for_verb("kara_1-nA_howA_hE_1")
+    'nA_howA_hE'
+    >>> identify_complete_tam_for_verb("kara_o")
+    'o'
+    """
+    if "-" not in concept_term:
+        return concept_term.split("_")[-1]
+    tmp = concept_term.split("-")[1]
+    tokens = tmp.split("_")
+    non_digits = filter(lambda x: not x.isdigit(), tokens)
+    return "_".join(non_digits)
 
 
 def identify_auxillary_verb_terms(term):
@@ -791,6 +810,7 @@ def process_main_verb(concept: Concept, seman_data, dependency_data, sentence_ty
     verb.type = "main" if "0:main" in concept.dependency else "nonfinite"
     verb.index = concept.index
     verb.term = identify_main_verb(concept.term)
+    full_tam = identify_complete_tam_for_verb(concept.term)
     verb.tam = identify_default_tam_for_main_verb(concept.term)
     if verb.term == 'hE' and verb.tam in ('pres', 'past'):  # process TAM
         alt_tam = {'pres': 'hE', 'past': 'WA'}
@@ -798,7 +818,7 @@ def process_main_verb(concept: Concept, seman_data, dependency_data, sentence_ty
         verb.term = alt_root[verb.tam]  # handling past tense by passing correct root WA
         verb.tam = alt_tam[verb.tam]
     verb.tam = get_TAM(verb.term, verb.tam)
-    verb.gender, verb.number, verb.person = getVerbGNP(concept.term, seman_data, dependency_data, sentence_type, processed_nouns, processed_pronouns)
+    verb.gender, verb.number, verb.person = getVerbGNP(concept.term, full_tam, dependency_data, sentence_type, processed_nouns, processed_pronouns)
     if is_CP(concept.term):
         if not reprocessing:
             CP = process_main_CP(concept.index, concept.term)
@@ -841,7 +861,6 @@ def process_auxiliary_verbs(verb: Verb, concept_term: str) -> [Verb]:
 def process_verb(concept: Concept, seman_data, dependency_data, sentence_type, processed_nouns, processed_pronouns, reprocessing):
     """
     concept pattern: 'main_verb' - 'TAM for main verb' _Aux_verb+tam...
-
     Example 1:
     kara_1-wA_hE_1
     main verb - kara,  main verb tam: wA, Aux -hE with TAM hE (identified from tam mapping file)
@@ -893,9 +912,9 @@ def set_tam_for_nonfinite(dependency):
     return tam
 
 
-def process_nonfinite_verb(concept, depend_data, processed_nouns, processed_pronouns):
+def process_nonfinite_verb(concept, seman_data, dependency_data, sentence_type, processed_nouns, processed_pronouns):
     '''
-    >>>process_nonfinite_verb([], [()],[()])
+    >>process_nonfinite_verb([], [()],[()])
     '''
 
     gender = 'm'
@@ -909,7 +928,8 @@ def process_nonfinite_verb(concept, depend_data, processed_nouns, processed_pron
     #verb.category = 'v'
     relation = concept.dependency.strip().split(':')[1]
     verb.tam = set_tam_for_nonfinite(relation)
-    gender, number, person = getVerbGNP(verb.tam, depend_data, processed_nouns, processed_pronouns)
+    #gender, number, person = getVerbGNP(verb.tam, depend_data, processed_nouns, processed_pronouns)
+    gender, number, person = getVerbGNP(concept.term, seman_data, dependency_data, sentence_type, processed_nouns, processed_pronouns)
     verb.gender = gender
     verb.number = number
     verb.person = person
@@ -925,7 +945,7 @@ def process_verbs(concepts: [tuple], seman_data, depend_data, sentence_type, pro
         verb_type = identify_verb_type(concept)
 
         if verb_type == 'nonfinite':
-            verb = process_nonfinite_verb(concept, depend_data, processed_nouns, processed_pronouns)
+            verb = process_nonfinite_verb(concept, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns)
             processed_verbs.append(to_tuple(verb))
         else:
             verb, aux_verbs = process_verb(concept, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns, reprocess)
@@ -936,10 +956,10 @@ def process_verbs(concepts: [tuple], seman_data, depend_data, sentence_type, pro
 
     return processed_verbs, processed_auxverbs
 
+
 def identify_verb_type(verb_concept):
     '''
-    >>>identify_verb_type([])
-
+    >>identify_verb_type([])
     '''
     #dep_rel = verb_concept[4].strip().split(':')[1] #if using with non-OO program
     dependency = verb_concept.dependency
@@ -952,70 +972,6 @@ def identify_verb_type(verb_concept):
     else:
         v_type = "undetermined"
     return v_type
-
-
-
-def process_verbs_old(verbs, depend_data, processed_nouns, processed_pronouns, processed_others, sentence_type, reprocess=False):
-    """Process verbs as (index, word, category, gender, number, person, tam)"""
-    processed_verbs = []
-    processed_auxverbs = []
-    aux_verbs = []
-    is_GNP_identified = False
-
-    for verb in verbs:
-        if is_complex_predicate(verb[1]):
-            exp_v = verb[1].split('+')
-            if not reprocess:
-                cp_word = clean(exp_v[0])  # handle CP
-                processed_nouns.append(tuple([verb[0] - 0.1, cp_word, 'n', 'd', 'm','s','a', "CP_noun", '']))
-                log(f'{cp_word} from CP, processed as noun with {verb[4]}, {verb[5]}, {verb[6]} after agreement')
-            temp = list(verb)
-            temp[1] = exp_v[1]
-            verb = tuple(temp)
-            gender = 'm'
-            number = 's'
-            person = 'a'
-            is_GNP_identified = True  # CP_Noun verb agreement
-
-        category = 'v'
-
-        v = verb[1].split('-')
-        root = clean(v[0])
-
-        w = v[1].split('_')
-        tam = w[0]
-
-        for aux in w[1:]:
-            if aux.isalpha():
-                aux_verbs.append(aux)
-
-        if not is_GNP_identified:
-            gender, number, person = getVerbGNP(tam, depend_data, processed_nouns, processed_pronouns)
-        if root == 'hE' and tam in ('pres', 'past'):  # process TAM
-            alt_tam = {'pres': 'hE', 'past': 'WA'}
-            alt_root = {'pres': 'hE', 'past': 'WA'}
-            root = alt_root[tam]  # handling past tense by passing correct root WA
-            tam = alt_tam[tam]
-        # if sentence_type == 'imperative':   #added by Kirti to address imperative tams like KAo
-        #    tam = 'imper'
-        #    person = 'm_h1'
-        # if depend_data[indexno] =='rsv'
-        #    tam = 'we_huye'
-
-        processed_verbs.append((verb[0], root, category, gender, number, person, tam))
-        log(f'{root} processed as verb with gen:{gender} num:{number} per:{person} tam:{tam}')
-
-        # Processing Auxillary verbs
-        for i in range(len(aux_verbs)):
-            aux_info = auxmap_hin(aux_verbs[i])
-            if aux_info != False:
-                aroot, atam = aux_info
-                gender, number, person = getVerbGNP(tam, depend_data, processed_nouns, processed_pronouns)
-                aindex = verb[0] + ((i + 1) * 0.1)
-                processed_auxverbs.append((aindex, clean(aroot), category, gender, number, person, atam))
-                log(f'{aroot} processed as auxillary verb with gen:{gender} num:{number} per:{person} tam:{atam}')
-
-    return processed_verbs, processed_auxverbs, processed_others
 
 
 def collect_processed_data(processed_pronouns, processed_nouns, processed_adjectives, processed_verbs,
@@ -1313,7 +1269,7 @@ def preprocess_postposition(processed_words, words_info, processed_verbs):
         new_processed_words.append(data)
     return new_processed_words, PPdata
 
-def preprocess_postposition_new(processed_words,words_info,processed_verbs):
+def preprocess_postposition_new(processed_words, words_info, processed_verbs):
     '''Calculates postposition to words wherever applicable according to rules.'''
     PPdata = {}
     new_processed_words = []
@@ -1334,10 +1290,6 @@ def preprocess_postposition_new(processed_words,words_info,processed_verbs):
                 k2exists = findValue('k2', words_info, index=4)[0] # or if CP_present, then also ne - add #get exact k2, not k2x
                 if k2exists == 'k2':
                     ppost = 'ne'
-                    if data[2] != 'other':
-                        temp = list(data)
-                        temp[3] = 'o'
-                        data = tuple(temp)
             elif findValue('nA', processed_verbs, index=6)[0]: #tam in (nA_list):
                 ppost = 'ko'
             else:
@@ -1346,7 +1298,7 @@ def preprocess_postposition_new(processed_words,words_info,processed_verbs):
             # else:
             #         ppost = '0'
         elif data_case in ('k2g', 'k2'):
-                if data_info[2] in ("anim","per"):
+                if data_info[2] in ("anim", "per"):
                     ppost = 'ko'
                     # new_case = 'o'
                 else:
@@ -1368,7 +1320,7 @@ def preprocess_postposition_new(processed_words,words_info,processed_verbs):
         elif data_case in ('rsm', 'rsma'):
             ppost = 'ke pAsa'
         elif data_case == 'rhh':
-            ppost = 'kA'
+            ppost = 'ke'
         elif data_case == 'rsk':
             ppost = 'hue'
         elif data_case == 'ru':
@@ -1379,14 +1331,16 @@ def preprocess_postposition_new(processed_words,words_info,processed_verbs):
             ppost = 'ke_kAraNa'
         elif data_case == 'rd':
             ppost = 'kI ora'
+        elif data_case == 'ras_k1':
+            ppost = 'ke sAWa'
         elif data_case == 'r6':
-            ppost = 'kA' #if data[4] == 'f' else 'kA'
+            ppost = 'ke' #if data[4] == 'f' else 'kA'
             nn_data = nextNounData(data[0], words_info)
             if nn_data != False:
                 #print('Next Noun data:', nn_data)
                 if nn_data[4].split(':')[1] in ('k3', 'k4', 'k5', 'k7', 'k7p', 'k7t', 'r6', 'mk1', 'jk1', 'rt'):
                     ppost = 'ke'
-                    if nn_data[3][3] == 's':#agreement with gnp
+                    if nn_data[3][2] == 's':#agreement with gnp
                         if nn_data[3][1] == 'f':
                             ppost = 'kI'
                         else:
@@ -1506,3 +1460,8 @@ def write_masked_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, mas
         file.write('\n')
         log('Output data write successfully')
     return "Output data write successfully"
+
+
+if __name__ == '__main__':
+    import doctest
+    doctest.run_docstring_examples(identify_complete_tam_for_verb, globals())
