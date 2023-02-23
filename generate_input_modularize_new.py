@@ -31,11 +31,11 @@ if __name__ == "__main__":
     
     # Categorising words as Nound/Pronouns/Adjectives/..etc.
     indeclinables_data, pronouns_data, nouns_data, adjectives_data, verbs_data, adverbs_data, others_data, nominal_forms_data = analyse_words(words_info)
-    
     #  Processing Stage
     processed_indeclinables = process_indeclinables(indeclinables_data)
-    processed_nouns = process_nouns(nouns_data)
-    processed_pronouns = process_pronouns(pronouns_data,processed_nouns)
+    processed_nouns = process_nouns(nouns_data, words_info, verbs_data)
+    processed_pronouns = process_pronouns(pronouns_data, processed_nouns, processed_indeclinables, words_info, verbs_data)
+
     processed_adjectives = process_adjectives(adjectives_data, processed_nouns)
     processed_others = process_others(others_data)
     processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns, False)
@@ -46,9 +46,8 @@ if __name__ == "__main__":
     # Todo : process nouns / adjectives got from verbs and add to processed_noun / processed_adjectives
 
     # processing postpositions for pronouns and nouns only
-    processed_pronouns, pp_pronouns = preprocess_postposition_new(processed_pronouns, words_info, processed_verbs) # to get parsarg
-    processed_nouns, pp_nouns = preprocess_postposition_new(processed_nouns, words_info, processed_verbs)
-    processed_postpositions = pp_nouns | pp_pronouns #merging postpositions of nouns and pronouns in single dict
+    #processed_pronouns, pp_pronouns = preprocess_postposition_new(processed_pronouns, words_info, processed_verbs) # to get parsarg
+    #positions = pp_nouns | pp_pronouns #merging postpositions of nouns and pronouns in single dict
 
     # Every word is collected into one and sorted by index number.
     processed_words = collect_processed_data(processed_pronouns,processed_nouns,processed_adjectives,
@@ -91,7 +90,7 @@ if __name__ == "__main__":
     transformed_data = join_compounds(transformed_data)
 
     #post-positions are joined.
-    PP_fulldata = add_postposition(transformed_data,processed_postpositions)
+    PP_fulldata = add_postposition(transformed_data, processed_postpositions_dict)
     
     POST_PROCESS_OUTPUT = rearrange_sentence(PP_fulldata)  # reaarange by index number
 

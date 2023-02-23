@@ -2813,6 +2813,8 @@
 <pardef n="w/U__p">
 <e><p><l>U</l><r>U<s n="cat:p"/><s n="case:o"/><s n="parsarg:0"/><s n="gen:m"/><s n="num:s"/><s n="per:m"/></r></p></e>
 <e><p><l>U</l><r>U<s n="cat:p"/><s n="case:o"/><s n="parsarg:0"/><s n="gen:f"/><s n="num:s"/><s n="per:m"/></r></p></e>
+<e><p><l>U</l><r>U<s n="cat:p"/><s n="case:d"/><s n="parsarg:0"/><s n="gen:m"/><s n="num:s"/><s n="per:m"/></r></p></e>
+<e><p><l>U</l><r>U<s n="cat:p"/><s n="case:d"/><s n="parsarg:0"/><s n="gen:f"/><s n="num:s"/><s n="per:m"/></r></p></e>
 <e><p><l>Une</l><r>U<s n="cat:p"/><s n="case:o"/><s n="parsarg:ne"/><s n="gen:m"/><s n="num:s"/><s n="per:m"/></r></p></e>
 <e><p><l>Une</l><r>U<s n="cat:p"/><s n="case:o"/><s n="parsarg:ne"/><s n="gen:f"/><s n="num:s"/><s n="per:m"/></r></p></e>
 <e><p><l>uJe</l><r>U<s n="cat:p"/><s n="case:o"/><s n="parsarg:ko"/><s n="gen:m"/><s n="num:s"/><s n="per:m"/></r></p></e>
@@ -2834,6 +2836,10 @@
 <!--added by Kirti Garg kirti.garg@gmail.com on 7/12/22-->
 <e><p><l>uma</l><r>U<s n="cat:p"/><s n="case:o"/><s n="parsarg:0"/><s n="gen:m"/><s n="num:s"/><s n="per:m_h1"/></r></p></e>
 <e><p><l>uma</l><r>U<s n="cat:p"/><s n="case:o"/><s n="parsarg:0"/><s n="gen:f"/><s n="num:s"/><s n="per:m_h1"/></r></p></e>
+<e><p><l>uma</l><r>U<s n="cat:p"/><s n="case:d"/><s n="parsarg:0"/><s n="gen:f"/><s n="num:s"/><s n="per:m_h1"/></r></p></e>
+<e><p><l>uma</l><r>U<s n="cat:p"/><s n="case:d"/><s n="parsarg:0"/><s n="gen:m"/><s n="num:s"/><s n="per:m_h1"/></r></p></e>
+<e><p><l>uma</l><r>U<s n="cat:p"/><s n="case:d"/><s n="parsarg:0"/><s n="gen:m"/><s n="num:p"/><s n="per:m_h1"/></r></p></e>
+<e><p><l>uma</l><r>U<s n="cat:p"/><s n="case:d"/><s n="parsarg:0"/><s n="gen:f"/><s n="num:p"/><s n="per:m_h1"/></r></p></e>
 <!--addition ended by Kirti Garg kirti.garg@gmail.com on 7/12/22-->
 
 <e><p><l>umane </l><r>U<s n="cat:p"/><s n="case:o"/><s n="parsarg:ne"/><s n="gen:m"/><s n="num:p"/><s n="per:m"/></r></p></e>
@@ -2886,6 +2892,10 @@ addition ended by Kirti Garg kirti.garg@gmail.com on 7/12/22-->
 <e><p><l></l><r><s n="cat:p"/><s n="case:o"/><s n="parsarg:0"/><s n="gen:m"/><s n="num:p"/><s n="per:m"/></r></p></e>
 <e><p><l></l><r><s n="cat:p"/><s n="case:o"/><s n="parsarg:0"/><s n="gen:f"/><s n="num:s"/><s n="per:m"/></r></p></e>
 <e><p><l></l><r><s n="cat:p"/><s n="case:o"/><s n="parsarg:0"/><s n="gen:f"/><s n="num:p"/><s n="per:m"/></r></p></e>
+<e><p><l></l><r><s n="cat:p"/><s n="case:d"/><s n="parsarg:0"/><s n="gen:m"/><s n="num:s"/><s n="per:m"/></r></p></e>
+<e><p><l></l><r><s n="cat:p"/><s n="case:d"/><s n="parsarg:0"/><s n="gen:m"/><s n="num:p"/><s n="per:m"/></r></p></e>
+<e><p><l></l><r><s n="cat:p"/><s n="case:d"/><s n="parsarg:0"/><s n="gen:f"/><s n="num:s"/><s n="per:m"/></r></p></e>
+<e><p><l></l><r><s n="cat:p"/><s n="case:d"/><s n="parsarg:0"/><s n="gen:f"/><s n="num:p"/><s n="per:m"/></r></p></e>
 <e><p><l>ne</l><r><s n="cat:p"/><s n="case:o"/><s n="parsarg:ne"/><s n="gen:m"/><s n="num:s"/><s n="per:m"/></r></p></e>
 <e><p><l>ne</l><r><s n="cat:p"/><s n="case:o"/><s n="parsarg:ne"/><s n="gen:m"/><s n="num:p"/><s n="per:m"/></r></p></e>
 <e><p><l>ne</l><r><s n="cat:p"/><s n="case:o"/><s n="parsarg:ne"/><s n="gen:f"/><s n="num:s"/><s n="per:m"/></r></p></e>
