@@ -795,14 +795,17 @@ def process_pronouns(pronouns, processed_nouns, processed_indeclinables, words_i
         if pronoun[1] == 'addressee':
             addr_map = {'respect': 'Apa', 'informal': 'wU', '': 'wU'}
             pronoun_per = {'respect': 'm', 'informal': 'm_h0', '': 'm_h1'}
+            pronoun_number = {'respect': 'p', 'informal': 's', '': 'p'}
             word = addr_map.get(pronoun[6].strip().lower(), 'wU')
             person = pronoun_per.get(pronoun[6].strip().lower(), 'm_h1')
+            number = pronoun_number.get(pronoun[6].strip(), 'p')
         elif pronoun[1] == 'speaker':
             word = 'mEM'
         elif pronoun[1] == 'vaha':
             word = 'vaha'
         else:
             word = term
+
 
         # If dependency is r6 then add fnum and take gnp and case from following noun.
         if "r6" in pronoun[4]:
@@ -1490,32 +1493,26 @@ def preprocess_postposition(processed_words, words_info, is_tam_ya):
 #def preprocess_postposition_new(processed_words, words_info, processed_verbs):
 def preprocess_postposition_new(np_data, words_info, main_verb):
     '''Calculates postposition to words wherever applicable according to rules.'''
-    PPdata = {}
-    new_processed_words = []
-    data_info = getDataByIndex(np_data[0], words_info)
-    try:
-        data_case = False if data_info == False else data_info[4].split(':')[1].strip()
-    except IndexError:
-        data_case = False
-    #term = identify_complete_tam_for_verb(main_verb[1])
+
+    data_case = np_data[4].strip().split(':')[1]
+    data_index = np_data[0]
+    data_seman = np_data[2]
     ppost = ''
     new_case = 'o'
     if data_case in ('k1', 'pk1'):
         if is_tam_ya(main_verb): # has TAM "yA" or "yA_hE" or "yA_WA" marA WA
-
-            #k2exists = findValue('k2', words_info, index=4)[0] # or if CP_present, then also ne - add #get exact k2, not k2x
-            #if k2exists == 'k2':
-            ppost = 'ne'
-
+            k2exists = findValue('k2', words_info, index=4)[0] # or if CP_present, then also ne - add #get exact k2, not k2x
+            if k2exists:
+                ppost = 'ne'
         elif identify_complete_tam_for_verb(main_verb[1]) in nA_list:
         #elif findValue('nA', verbs_data, index=6)[0]: #tam in (nA_list):
             ppost = 'ko'
         else:
-            pass
+            log('inside tam ya else')
             #new_case = 'd'
 
     elif data_case in ('k2g', 'k2'):
-            if data_info[2] in ("anim", "per"):
+            if data_seman in ("anim", "per"):
                 ppost = 'ko'
             else:
                 new_case = 'd'
@@ -1529,7 +1526,7 @@ def preprocess_postposition_new(np_data, words_info, main_verb):
         ppost = 'meM'
     elif data_case =='k7':
         ppost = 'para'
-    elif data_case == 'kr_vn' and data_info[2] == 'abs':
+    elif data_case == 'kr_vn' and data_seman == 'abs':
         ppost = 'se'
     elif data_case == 'rt':
         ppost = 'ke lie'
@@ -1551,7 +1548,7 @@ def preprocess_postposition_new(np_data, words_info, main_verb):
         ppost = 'ke sAWa'
     elif data_case == 'r6':
         ppost = 'ke' #if data[4] == 'f' else 'kA'
-        nn_data = nextNounData(np_data[0], words_info)
+        nn_data = nextNounData(data_index, words_info)
         if nn_data != False:
             #print('Next Noun data:', nn_data)
             if nn_data[4].split(':')[1] in ('k3', 'k4', 'k5', 'k7', 'k7p', 'k7t', 'r6', 'mk1', 'jk1', 'rt'):
@@ -1601,8 +1598,6 @@ def add_postposition(transformed_fulldata, processed_postpositions):
             ppost = processed_postpositions[index]
             if ppost != None and (temp[2] == 'n' or temp[2] == 'other'):
                 temp[1] = temp[1] + ' ' + ppost
-            #if ppost != None and temp[2] == 'p':
-            #   temp[1] = temp[1] + ppost
             data = tuple(temp)
         PPFulldata.append(data)
 
