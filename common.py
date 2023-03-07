@@ -156,7 +156,7 @@ def findExactMatch(value: int, searchList: list, index=0):
 
     try:
         for dataele in searchList:
-            if value == dataele[index]:
+            if value == dataele[index].strip().split(':')[1]:
                 return (True, dataele)
     except IndexError:
         log(f'Index out of range while searching index:{value} in {searchList}', 'WARNING')
@@ -244,18 +244,6 @@ def getGNP_using_k1(k1exists, searchList):
     verb_gender, verb_number, verb_person = casedata[4], casedata[5], casedata[6]
     return verb_gender, verb_number, verb_person
 
-def get_relation_case(processed_nouns, processed_pronouns, relation):
-    relation_case = 'o'
-    for noun in processed_nouns:
-        if noun[len(noun) - 1] == relation:
-            relation_case = noun[3]
-
-    for pronoun in processed_pronouns:
-        if pronoun[len(pronoun) - 1] == relation:
-            relation_case = pronoun[3]
-
-    return relation_case
-
 def getVerbGNP_new(verb_term, full_tam, is_cp, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns):
     '''
     '''
@@ -270,8 +258,8 @@ def getVerbGNP_new(verb_term, full_tam, is_cp, seman_data, depend_data, sentence
     #for non-imperative sentences
     k1exists = False
     k2exists = False
-    k1_case = get_relation_case(processed_nouns, processed_pronouns, 'k1')
-    k2_case = get_relation_case(processed_nouns, processed_pronouns, 'k2')
+    k1_case = ''
+    k2_case = ''
     verb_gender, verb_number, verb_person, case= get_default_GNP()
     searchList = processed_nouns + processed_pronouns
 
@@ -280,6 +268,20 @@ def getVerbGNP_new(verb_term, full_tam, is_cp, seman_data, depend_data, sentence
             continue
         k1exists = (depend_data.index(cases) + 1) if 'k1' == cases[-2:] else k1exists
         k2exists = (depend_data.index(cases) + 1) if 'k2' == cases[-2:] else k2exists
+
+    if k1exists:
+        casedata = getDataByIndex(k1exists, searchList)
+        if (casedata == False):
+            log('Something went wrong. Cannot determine case for k1.', 'ERROR')
+        else:
+            k1_case = casedata[3]
+
+    if k2exists:
+        casedata = getDataByIndex(k2exists, searchList)
+        if (casedata == False):
+            log('Something went wrong. Cannot determine case for k2.', 'ERROR')
+        else:
+            k2_case = casedata[3]
 
     if is_cp:
         if not k1exists and not k2exists:
@@ -743,14 +745,6 @@ def process_nominal_form(nominal_forms_data, processed_noun, words_info, verbs_d
         case, postposition = preprocess_postposition_new('noun', nominal_form, words_info, main_verb)
         tags = find_tags_from_dix_as_list(term)
         for tag in tags:
-            # if (tag[0] == 'cat' and tag[1] == 'v'):
-            #     noun = (index, term, category, case, gender, number, person, noun_type, postposition, relation)
-            #     processed_noun.append(noun)
-            #     log(f'{term} processed as nominal verb with index {index} gen:{gender} num:{number} person:{person} noun_type:{noun_type} case:{case} and postposition:{postposition}')
-            # else:
-            #     noun_type = 'common'
-            #     log('Else case of process nominal form not handled')
-
             if (tag[0] == 'cat' and tag[1] == 'v'):
                 noun_type = 'vn'
                 if relation in ('k2', 'rt', 'rh'):
@@ -758,7 +752,7 @@ def process_nominal_form(nominal_forms_data, processed_noun, words_info, verbs_d
                 log_msg = f'{term} processed as nominal verb with index {index} gen:{gender} num:{number} person:{person} noun_type:{noun_type} case:{case} and postposition:{postposition}'
                 break
 
-        noun = (index, term, category, case, gender, number, person, noun_type, postposition, relation)
+        noun = (index, term, category, case, gender, number, person, noun_type, postposition)
         processed_noun.append(noun)
         log(log_msg)
 
@@ -941,8 +935,8 @@ def process_pronouns(pronouns, processed_nouns, processed_indeclinables, words_i
             gender = fnoun_data[4]  # To-ask
             fnum = number = fnoun_data[5]
             case = fnoun_data[3]
-        processed_pronouns.append((pronoun[0], word, category, case, gender, number, person, parsarg, fnum, relation))
-        log(f'{pronoun[1]} processed as pronoun with case:{case} par:{parsarg} gen:{gender} num:{number} per:{person} fnum:{fnum} relation:{relation}')
+        processed_pronouns.append((pronoun[0], word, category, case, gender, number, person, parsarg, fnum))
+        log(f'{pronoun[1]} processed as pronoun with case:{case} par:{parsarg} gen:{gender} num:{number} per:{person} fnum:{fnum}')
     return processed_pronouns
 
 
@@ -960,15 +954,8 @@ def process_nouns(nouns, words_info, verbs_data):
         category = 'n'
         gender, number, person = extract_gnp(noun[3])
         noun_type = 'common' if '_' in noun[1] else 'proper'
-        relation = ''
-        if noun[4] != '':
-            relation = noun[4].strip().split(':')[1]
         # to fetch postposition and case logic and update each tuple
         case, postposition = preprocess_postposition_new('noun', noun, words_info, main_verb)
-        # if postposition == '':
-        #     postposition = None
-        # #Update the post position dict for all nouns
-        # processed_postpositions_dict[noun[0]] = postposition
 
         # For Noun compound words
         if '+' in noun[1]:
@@ -977,13 +964,13 @@ def process_nouns(nouns, words_info, verbs_data):
                 index = noun[0] + (k * 0.1)
                 noun_type = 'NC'
                 clean_dnouns = clean(dnouns[k])
-                processed_nouns.append((index, clean_dnouns, category, case, gender, number, person, noun_type, postposition, relation))
+                processed_nouns.append((index, clean_dnouns, category, case, gender, number, person, noun_type, postposition))
                 noun_attribute[clean_dnouns] = [[],[]]
         else:
             clean_noun = clean(noun[1])
-            processed_nouns.append((noun[0], clean_noun, category, case, gender, number, person, noun_type, postposition, relation))
+            processed_nouns.append((noun[0], clean_noun, category, case, gender, number, person, noun_type, postposition))
             noun_attribute[clean_noun] = [[], []]
-        log(f'{noun[1]} processed as noun with case:{case} gen:{gender} num:{number} noun_type:{noun_type} postposition: {postposition} relation: {relation}.')
+        log(f'{noun[1]} processed as noun with case:{case} gen:{gender} num:{number} noun_type:{noun_type} postposition: {postposition}.')
 
     return processed_nouns
 
