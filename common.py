@@ -10,7 +10,7 @@ from concept import Concept
 
 noun_attribute = dict()
 USR_row_info = ['root_words', 'index_data', 'seman_data', 'gnp_data', 'depend_data', 'discourse_data', 'spkview_data', 'scope_data']
-nA_list = ['nA_paDa', 'nA_hE', 'nA_tha', 'nA_thI', 'nA_ho', 'nA_hogA', 'nA_chAhie', 'nA_chAhiye']
+nA_list = ['nA_paDa', 'nA_padZA', 'nA_padA', 'nA_hE', 'nA_tha', 'nA_thI', 'nA_ho', 'nA_hogA', 'nA_chAhie', 'nA_chAhiye']
 
 processed_postpositions_dict = {}
 def add_adj_to_noun_attribute(key, value):
@@ -204,22 +204,95 @@ def getComplexPredicateGNP(term):
         number = tags['num']
     return gender, number, person
 
-def getGNP_using_k2(k2exists, seman_data, searchList):
-    if k2exists:
-        if seman_data[k2exists] not in ('anim', 'per'):
-            casedata = getDataByIndex(k2exists, searchList)
-            if (casedata == False):
-                log('Something went wrong. Cannot determine GNP for verb.', 'ERROR')
-                sys.exit()
-            verb_gender, verb_number, verb_person = casedata[4], casedata[5], casedata[6]
-            return verb_gender, verb_number, verb_person[0]
-        if seman_data[k2exists] in ('anim', 'per'):
-            verb_gender = 'm'
-            verb_number = 's'
-            verb_person = 'a'
-            return verb_gender, verb_number, verb_person[0]
+def getGNP_using_k2(k2exists, searchList):
+    casedata = getDataByIndex(k2exists, searchList)
+    if (casedata == False):
+        log('Something went wrong. Cannot determine GNP for verb.', 'ERROR')
+        sys.exit()
+    verb_gender, verb_number, verb_person = casedata[4], casedata[5], casedata[6]
+    return verb_gender, verb_number, verb_person[0]
+        # if seman_data[k2exists] in ('anim', 'per') and k2_case == 'd' and k1_case == 'o':
+        #     casedata = getDataByIndex(k1_case, searchList)
+        #     if (casedata == False):
+        #         log('Something went wrong. Cannot determine GNP for verb.', 'ERROR')
+        #         sys.exit()
+        #     verb_gender, verb_number, verb_person = casedata[4], casedata[5], casedata[6]
+        #     # verb_gender = 'm'
+        #     # verb_number = 's'
+        #     # verb_person = 'a'
+        #     return verb_gender, verb_number, verb_person[0]
 
-def getVerbGNP_new(verb_term, verb_tam, is_cp, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns):
+def getGNP_using_k1(k1exists, searchList):
+    casedata = getDataByIndex(k1exists, searchList)
+    if (casedata == False):
+        log('Something went wrong. Cannot determine GNP for verb.', 'ERROR')
+        sys.exit()
+    verb_gender, verb_number, verb_person = casedata[4], casedata[5], casedata[6]
+    return verb_gender, verb_number, verb_person
+
+def get_relation_case(processed_nouns, processed_pronouns, relation):
+    relation_case = 'o'
+    for noun in processed_nouns:
+        if noun[len(noun) - 1] == relation:
+            relation_case = noun[3]
+
+    for pronoun in processed_pronouns:
+        if pronoun[len(pronoun) - 1] == relation:
+            relation_case = pronoun[3]
+
+    return relation_case
+
+def getVerbGNP_new(verb_term, full_tam, is_cp, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns):
+    '''
+    '''
+
+    #for imperative sentences
+    if sentence_type in ('Imperative','imperative') :
+        verb_gender = 'm'
+        verb_number = 's'
+        verb_person = 'm'
+        return verb_gender, verb_number, verb_person
+
+    #for non-imperative sentences
+    k1exists = False
+    k2exists = False
+    k1_case = get_relation_case(processed_nouns, processed_pronouns, 'k1')
+    k2_case = get_relation_case(processed_nouns, processed_pronouns, 'k2')
+    verb_gender, verb_number, verb_person, case= get_default_GNP()
+    searchList = processed_nouns + processed_pronouns
+
+    for cases in depend_data:
+        if cases == '':
+            continue
+        k1exists = (depend_data.index(cases) + 1) if 'k1' == cases[-2:] else k1exists
+        k2exists = (depend_data.index(cases) + 1) if 'k2' == cases[-2:] else k2exists
+
+    if is_cp:
+        if not k1exists and not k2exists:
+            verb_gender, verb_number, verb_person = getComplexPredicateGNP(verb_term)
+        elif k1exists and k1_case == 'd':
+            verb_gender, verb_number, verb_person = getGNP_using_k1(k1exists, searchList)
+        elif k1exists and k1_case == 'o' and k2exists and k2_case == 'o':
+            verb_gender, verb_number, verb_person = getComplexPredicateGNP(verb_term)
+        return verb_gender, verb_number, verb_person[0]
+
+    if 'yA' in full_tam:
+        if k1exists and k1_case == 'd':
+            verb_gender, verb_number, verb_person = getGNP_using_k1(k1exists, searchList)
+        elif k1exists and k1_case == 'o' and k2exists and k2_case == 'd':
+            verb_gender, verb_number, verb_person = getGNP_using_k2(k2exists, searchList)
+        return verb_gender, verb_number, verb_person[0]
+
+    if full_tam in nA_list:
+        return verb_gender, verb_number, verb_person[0]
+
+    #tam - gA
+    else:
+        verb_gender, verb_number, verb_person = getGNP_using_k1(k1exists, searchList)
+        return verb_gender, verb_number, verb_person[0]
+
+
+def getVerbGNP_new_new(verb_term, verb_tam, is_cp, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns):
     '''
     '''
     #for imperative sentences
@@ -232,8 +305,22 @@ def getVerbGNP_new(verb_term, verb_tam, is_cp, seman_data, depend_data, sentence
     #for non-imperative sentences
     k1exists = False
     k2exists = False
+    k1_case = 'o'
+    k2_case = 'o'
     verb_gender, verb_number, verb_person, case= get_default_GNP()
     searchList = processed_nouns + processed_pronouns
+
+    for noun in processed_nouns:
+        if noun[noun.size() - 1] == 'k1':
+            k1_case = noun[3]
+        if noun[noun.size() - 1] == 'k2':
+            k2_case = noun[3]
+
+    for pronoun in processed_pronouns:
+        if pronoun[pronoun.size() - 1] == 'k1':
+            k1_case = pronoun[3]
+        if pronoun[pronoun.size() - 1] == 'k2':
+            k2_case = pronoun[3]
 
     for cases in depend_data:
         if cases == '':
@@ -246,11 +333,11 @@ def getVerbGNP_new(verb_term, verb_tam, is_cp, seman_data, depend_data, sentence
         return verb_gender, verb_number, verb_person
 
     if verb_tam == 'yA':
-        if is_cp:
+        if is_cp and not k2exists:
             verb_gender, verb_number, verb_person = getComplexPredicateGNP(verb_term)
             return verb_gender, verb_number, verb_person[0]
-        elif k2exists:
-            verb_gender, verb_number, verb_person = getGNP_using_k2(k2exists, seman_data, searchList)
+        elif not is_cp and k2exists:
+            verb_gender, verb_number, verb_person = getGNP_using_k2(k2exists, seman_data, searchList, k1_case, k2_case)
             return verb_gender, verb_number, verb_person[0]
 
     if verb_tam in ('nA_paDa', 'nA_hE', 'nA_tha', 'nA_thI', 'nA_hO', 'nA_chAhie'):
@@ -607,7 +694,7 @@ def analyse_words(words_list):
     return indeclinables, pronouns, nouns, adjectives, verbs, adverbs, others, nominal_form
 
 def check_nominal_form(word_data):
-    rel_list = ['rt', 'rh', 'k7p', 'k7t']
+    rel_list = ['rt', 'rh', 'k7p', 'k7t', 'k2']
     if word_data[4].strip() != '':
         relation = word_data[4].strip().split(':')[1]
         gnp_info = word_data[3]
@@ -615,9 +702,14 @@ def check_nominal_form(word_data):
             return True
     return False
 
-def process_nominal_form(nominal_forms_data, processed_noun):
+def process_nominal_form(nominal_forms_data, processed_noun, words_info, verbs_data):
 
    nominal_verbs = []
+   for verb in verbs_data:
+       if verb[4].strip().split(':')[1] == 'main':
+           main_verb = verb
+           break
+
    for nominal_form in nominal_forms_data:
         index = nominal_form[0]
         term = clean(nominal_form[1])
@@ -628,10 +720,16 @@ def process_nominal_form(nominal_forms_data, processed_noun):
         noun_type = 'vn'
         case = 'o'
         postposition = ''
+        relation = ''
+        if nominal_form[4] != '':
+            relation = nominal_form[4].strip().split(':')[1]
+
         tags = find_tags_from_dix_as_list(term)
         for tag in tags:
             if (tag[0] == 'cat' and tag[1] == 'v'):
-                processed_noun.append(index, term, category, case, gender, number, person, noun_type, postposition)
+                case, postposition = preprocess_postposition_new('noun', nominal_form, words_info, main_verb)
+                noun = (index, term, category, case, gender, number, person, noun_type, postposition, relation)
+                processed_noun.append(noun)
                 log(f'{term} processed as nominal verb with index {index} gen:{gender} num:{number} person:{person} noun_type:{noun_type} case:{case} and postposition:{postposition}')
             else:
                 log('Else case of process nominal form not handled')
@@ -778,10 +876,10 @@ def process_pronouns(pronouns, processed_nouns, processed_indeclinables, words_i
         category = 'p'
         case = 'o'
         parsarg = 0
-        case, postposition = preprocess_postposition_new(pronoun, words_info, main_verb)
+        case, postposition = preprocess_postposition_new('pronoun', pronoun, words_info, main_verb)
         if postposition != '':
             parsarg = postposition
-        processed_postpositions_dict[pronoun[0]] = parsarg
+
         fnum = None
         gender, number, person = extract_gnp(pronoun[3])
         # if "k1" in pronoun[4] or 'dem' in pronoun[4]:
@@ -814,8 +912,8 @@ def process_pronouns(pronouns, processed_nouns, processed_indeclinables, words_i
             gender = fnoun_data[4]  # To-ask
             fnum = number = fnoun_data[5]
             case = fnoun_data[3]
-        processed_pronouns.append((pronoun[0], word, category, case, gender, number, person, parsarg, fnum))
-        log(f'{pronoun[1]} processed as pronoun with case:{case} par:{parsarg} gen:{gender} num:{number} per:{person} fnum:{fnum}')
+        processed_pronouns.append((pronoun[0], word, category, case, gender, number, person, parsarg, fnum, relation))
+        log(f'{pronoun[1]} processed as pronoun with case:{case} par:{parsarg} gen:{gender} num:{number} per:{person} fnum:{fnum} relation:{relation}')
     return processed_pronouns
 
 
@@ -833,12 +931,15 @@ def process_nouns(nouns, words_info, verbs_data):
         category = 'n'
         gender, number, person = extract_gnp(noun[3])
         noun_type = 'common' if '_' in noun[1] else 'proper'
+        relation = ''
+        if noun[4] != '':
+            relation = noun[4].strip().split(':')[1]
         # to fetch postposition and case logic and update each tuple
-        case, postposition = preprocess_postposition_new(noun, words_info, main_verb)
-        if postposition == '':
-            postposition = None
-        #Update the post position dict for all nouns
-        processed_postpositions_dict[noun[0]] = postposition
+        case, postposition = preprocess_postposition_new('noun', noun, words_info, main_verb)
+        # if postposition == '':
+        #     postposition = None
+        # #Update the post position dict for all nouns
+        # processed_postpositions_dict[noun[0]] = postposition
 
         # For Noun compound words
         if '+' in noun[1]:
@@ -847,13 +948,13 @@ def process_nouns(nouns, words_info, verbs_data):
                 index = noun[0] + (k * 0.1)
                 noun_type = 'NC'
                 clean_dnouns = clean(dnouns[k])
-                processed_nouns.append((index, clean_dnouns, category, case, gender, number, person, noun_type, postposition))
+                processed_nouns.append((index, clean_dnouns, category, case, gender, number, person, noun_type, postposition, relation))
                 noun_attribute[clean_dnouns] = [[],[]]
         else:
             clean_noun = clean(noun[1])
-            processed_nouns.append((noun[0], clean_noun, category, case, gender, number, person, noun_type, postposition))
+            processed_nouns.append((noun[0], clean_noun, category, case, gender, number, person, noun_type, postposition, relation))
             noun_attribute[clean_noun] = [[], []]
-        log(f'{noun[1]} processed as noun with case:{case} gen:{gender} num:{number} noun_type:{noun_type} postposition: {postposition}.')
+        log(f'{noun[1]} processed as noun with case:{case} gen:{gender} num:{number} noun_type:{noun_type} postposition: {postposition} relation: {relation}.')
 
     return processed_nouns
 
@@ -1039,14 +1140,14 @@ def process_main_verb(concept: Concept, seman_data, dependency_data, sentence_ty
         verb.term = alt_root[verb.tam]  # handling past tense by passing correct root WA
         verb.tam = alt_tam[verb.tam]
     is_cp = is_CP(concept.term)
-    verb.gender, verb.number, verb.person = getVerbGNP_new(verb.term, verb.tam, is_cp, seman_data, dependency_data, sentence_type, processed_nouns, processed_pronouns)
+    verb.gender, verb.number, verb.person = getVerbGNP_new(verb.term, full_tam, is_cp, seman_data, dependency_data, sentence_type, processed_nouns, processed_pronouns)
     if is_CP(concept.term):
         if not reprocessing:
             CP = process_main_CP(concept.index, concept.term)
             if CP != [] and CP[2] == 'n':
                 log(f'{CP[1]} processed as noun with index {CP[0]} case:d gen:{CP[4]} num:{CP[5]} per:{CP[6]}, noun_type:{CP[7]}, default postposition:{CP[8]}.')
                 processed_nouns.append(tuple(CP))
-            verb.gender, verb.number, verb.person = verb_agreement_with_CP(verb, CP)
+            #verb.gender, verb.number, verb.person = verb_agreement_with_CP(verb, CP)
         # elif reprocessing:
         #     if findValue('CP_noun', processed_nouns, index=0)[0]:
         #         tmp = findValue('CP_noun', processed_nouns, index=0)[1]
@@ -1148,9 +1249,10 @@ def process_nonfinite_verb(concept, seman_data, depend_data, sentence_type, proc
     verb.tam = ''
     #verb.category = 'v'
     relation = concept.dependency.strip().split(':')[1]
+    full_tam = identify_complete_tam_for_verb(concept.term)
     verb.tam = set_tam_for_nonfinite(relation)
     is_cp = is_CP(verb.term)
-    gender, number, person = getVerbGNP_new(verb.term, verb.tam, is_cp, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns)
+    gender, number, person = getVerbGNP_new(verb.term, full_tam, is_cp, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns)
     verb.gender = gender
     verb.number = number
     verb.person = person
@@ -1491,7 +1593,7 @@ def preprocess_postposition(processed_words, words_info, is_tam_ya):
     return new_processed_words, PPdata
 
 #def preprocess_postposition_new(processed_words, words_info, processed_verbs):
-def preprocess_postposition_new(np_data, words_info, main_verb):
+def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
     '''Calculates postposition to words wherever applicable according to rules.'''
 
     data_case = np_data[4].strip().split(':')[1]
@@ -1565,6 +1667,18 @@ def preprocess_postposition_new(np_data, words_info, main_verb):
     # update postposition and case for the term
     if ppost == '':
         new_case = 'd'
+
+    if concept_type == 'noun':
+        if ppost == '':
+            ppost = None
+        #Update the post position dict for all nouns
+        processed_postpositions_dict[data_index] = ppost
+
+    if concept_type == 'pronoun':
+        if ppost == '':
+            ppost = 0
+        # Update the post position dict for all pronouns
+        processed_postpositions_dict[data_index] = ppost
 
     return new_case, ppost
 

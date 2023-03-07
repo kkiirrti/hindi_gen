@@ -40,7 +40,7 @@ if __name__ == "__main__":
     processed_others = process_others(others_data)
     processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns, False)
     process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others)
-    process_nominal_form = process_nominal_form(nominal_forms_data, processed_nouns)
+    process_nominal_form = process_nominal_form(nominal_forms_data, processed_nouns, words_info, verbs_data)
     
     # Todo : extract nouns / adjectives from Compound verbs with +
     # Todo : process nouns / adjectives got from verbs and add to processed_noun / processed_adjectives
