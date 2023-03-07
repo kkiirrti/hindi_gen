@@ -148,6 +148,20 @@ def getDataByIndex(value: int, searchList: list, index=0):
         return False
     return res
 
+def findExactMatch(value: int, searchList: list, index=0):
+    '''search and return data by index in an array of tuples.
+        Index should be first element of tuples.
+
+        Return False when index not found.'''
+
+    try:
+        for dataele in searchList:
+            if value == dataele[index]:
+                return (True, dataele)
+    except IndexError:
+        log(f'Index out of range while searching index:{value} in {searchList}', 'WARNING')
+        return (False, None)
+    return (False, None)
 
 def findValue(value: int, searchList: list, index=0):
     '''search and return data by index in an array of tuples.
@@ -717,22 +731,37 @@ def process_nominal_form(nominal_forms_data, processed_noun, words_info, verbs_d
         number = 's'
         person = 'a'
         category = 'n'
-        noun_type = 'vn'
+        noun_type = 'common'
         case = 'o'
         postposition = ''
+        log_msg = f'{term} identified as nominal, re-identified as other word and processed as common noun with index {index} gen:{gender} num:{number} person:{person} noun_type:{noun_type} case:{case} and postposition:{postposition}'
+
         relation = ''
         if nominal_form[4] != '':
             relation = nominal_form[4].strip().split(':')[1]
 
+        case, postposition = preprocess_postposition_new('noun', nominal_form, words_info, main_verb)
         tags = find_tags_from_dix_as_list(term)
         for tag in tags:
+            # if (tag[0] == 'cat' and tag[1] == 'v'):
+            #     noun = (index, term, category, case, gender, number, person, noun_type, postposition, relation)
+            #     processed_noun.append(noun)
+            #     log(f'{term} processed as nominal verb with index {index} gen:{gender} num:{number} person:{person} noun_type:{noun_type} case:{case} and postposition:{postposition}')
+            # else:
+            #     noun_type = 'common'
+            #     log('Else case of process nominal form not handled')
+
             if (tag[0] == 'cat' and tag[1] == 'v'):
-                case, postposition = preprocess_postposition_new('noun', nominal_form, words_info, main_verb)
-                noun = (index, term, category, case, gender, number, person, noun_type, postposition, relation)
-                processed_noun.append(noun)
-                log(f'{term} processed as nominal verb with index {index} gen:{gender} num:{number} person:{person} noun_type:{noun_type} case:{case} and postposition:{postposition}')
-            else:
-                log('Else case of process nominal form not handled')
+                noun_type = 'vn'
+                if relation in ('k2', 'rt', 'rh'):
+                    term = term + 'nA'
+                log_msg = f'{term} processed as nominal verb with index {index} gen:{gender} num:{number} person:{person} noun_type:{noun_type} case:{case} and postposition:{postposition}'
+                break
+
+        noun = (index, term, category, case, gender, number, person, noun_type, postposition, relation)
+        processed_noun.append(noun)
+        log(log_msg)
+
    return nominal_verbs
 
 def process_adverb_as_noun(concept, processed_nouns):
@@ -1603,9 +1632,11 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
     new_case = 'o'
     if data_case in ('k1', 'pk1'):
         if is_tam_ya(main_verb): # has TAM "yA" or "yA_hE" or "yA_WA" marA WA
-            k2exists = findValue('k2', words_info, index=4)[0] # or if CP_present, then also ne - add #get exact k2, not k2x
+            k2exists = findExactMatch('k2', words_info, index=4)[0] # or if CP_present, then also ne - add #get exact k2, not k2x
             if k2exists:
                 ppost = 'ne'
+            else:
+                log('Karma k2 not found. Output may be incorrect')
         elif identify_complete_tam_for_verb(main_verb[1]) in nA_list:
         #elif findValue('nA', verbs_data, index=6)[0]: #tam in (nA_list):
             ppost = 'ko'
