@@ -10,7 +10,7 @@ from concept import Concept
 
 noun_attribute = dict()
 USR_row_info = ['root_words', 'index_data', 'seman_data', 'gnp_data', 'depend_data', 'discourse_data', 'spkview_data', 'scope_data']
-nA_list = ['nA_paDa', 'nA_padZA', 'nA_padA', 'nA_hE', 'nA_tha', 'nA_thI', 'nA_ho', 'nA_hogA', 'nA_chAhie', 'nA_chAhiye']
+nA_list = ['nA_paDa', 'nA_padZA', 'nA_padA', 'nA_hE', 'nA_tha', 'nA_thI', 'nA_ho', 'nA_hogA', 'nA_cAhie', 'nA_cAhiye']
 
 processed_postpositions_dict = {}
 def add_adj_to_noun_attribute(key, value):
@@ -1028,6 +1028,10 @@ def get_TAM(term, tam):
     if term == 'hE' and tam in ('pres', 'past'):
         alt_tam = {'pres': 'hE', 'past': 'WA'}
         return alt_tam[tam]
+    else:
+        if term == 'jA':
+            tam = 'yA1'
+            return tam
     return tam
 
 
@@ -1155,6 +1159,8 @@ def process_main_verb(concept: Concept, seman_data, dependency_data, sentence_ty
         alt_root = {'pres': 'hE', 'past': 'WA'}
         verb.term = alt_root[verb.tam]  # handling past tense by passing correct root WA
         verb.tam = alt_tam[verb.tam]
+    if verb.term == 'jA' and verb.tam == 'yA':
+        verb.tam = 'yA1'
     is_cp = is_CP(concept.term)
     verb.gender, verb.number, verb.person = getVerbGNP_new(verb.term, full_tam, is_cp, seman_data, dependency_data, sentence_type, processed_nouns, processed_pronouns)
     if is_CP(concept.term):
@@ -1485,7 +1491,7 @@ def masked_postposition(processed_words, words_info, processed_verbs):
             if findValue('yA', processed_verbs, index=6)[0]:  # has TAM "yA"
                 if findValue('k2', words_info, index=4)[0]: # or findValue('k2p', words_info, index=4)[0]:
                     ppost = ppost_value
-        elif data_case in ('r6', 'k3', 'k5', 'K5prk', 'k4', 'k4a', 'k7t', 'jk1','k7', 'k7p','k2g', 'k2','rsk', 'ru' ):
+        elif data_case in ('r6', 'k3', 'k5', 'k5prk', 'k4', 'k4a', 'k7t', 'jk1','k7', 'k7p','k2g', 'k2','rsk', 'ru' ):
             ppost = ppost_value
         elif data_case == 'kr_vn' and data_info[2] == 'abs':  #abstract noun as adverb
             ppost = ppost_value
@@ -1550,7 +1556,7 @@ def preprocess_postposition(processed_words, words_info, is_tam_ya):
             #         ppost = '0'
 
 
-        elif data_case in ('k3', 'k5', 'K5prk'):
+        elif data_case in ('k3', 'k5', 'k5prk'):
             ppost = 'se'
         elif data_case in ('k4', 'k4a', 'k7t', 'jk1'):
             ppost = 'ko'
@@ -1638,7 +1644,7 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
                 new_case = 'd'
     elif data_case == 'k2p':
         ppost = 'meM'
-    elif data_case in ('k3', 'k5', 'K5prk'):
+    elif data_case in ('k3', 'k5', 'k5prk'):
         ppost = 'se'
     elif data_case in ('k4', 'k4a', 'k7t', 'jk1'):
         ppost = 'ko'
