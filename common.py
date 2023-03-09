@@ -141,7 +141,7 @@ def getDataByIndex(value: int, searchList: list, index=0):
     try:
         res = False
         for dataele in searchList:
-            if int(dataele[(index)]) == value:
+            if (dataele[(index)]) == value:
                 res = dataele
     except IndexError:
         log(f'Index out of range while searching index:{value} in {searchList}', 'WARNING')
@@ -564,7 +564,10 @@ def auxmap_hin(aux_verb):
         log('Auxillary Mapping File not found.', 'ERROR')
         sys.exit()
 
-
+def check_named_entity(word_data):
+    if word_data[2] == 'ne':
+        return True
+    return False
 def check_noun(word_data):
     '''Check if word is a noun by the USR info'''
 
@@ -705,6 +708,9 @@ def analyse_words(words_list):
         elif check_verb(word_data):
             log(f'{word_data[1]} identified as verb.')
             verbs.append(word_data)
+        elif check_named_entity(word_data):
+            log(f'{word_data[1]} identified as named entity and processed as other word.')
+            others.append(word_data)
         else:
             log(f'{word_data[1]} identified as other word, but processed as noun with default GNP.')  # treating other words as noun
             # others.append(word_data) #modification by Kirti on 12/12 to handle other words
@@ -1740,7 +1746,7 @@ def join_compounds(transformed_data):
     prevword = ''
     previndex = -1
     for data in sorted(transformed_data):
-        if int(data[0]) == previndex and data[2] == 'n':
+        if (data[0]) == previndex and data[2] == 'n':
             temp = list(data)
             temp[1] = prevword + ' ' + temp[1]
             data = tuple(temp)
