@@ -30,29 +30,31 @@ if __name__ == "__main__":
                     gnp_data, depend_data, discourse_data, spkview_data, scope_data)
     
     # Categorising words as Nound/Pronouns/Adjectives/..etc.
-    indeclinables_data, pronouns_data, nouns_data, adjectives_data, verbs_data, adverbs_data, others_data = analyse_words(words_info)
-    
+    indeclinables_data, pronouns_data, nouns_data, adjectives_data, verbs_data, adverbs_data, others_data, nominal_forms_data = analyse_words(words_info)
     #  Processing Stage
     processed_indeclinables = process_indeclinables(indeclinables_data)
-    processed_nouns = process_nouns(nouns_data)
-    processed_pronouns = process_pronouns(pronouns_data,processed_nouns)
+    processed_nouns = process_nouns(nouns_data, words_info, verbs_data)
+    processed_pronouns = process_pronouns(pronouns_data, processed_nouns, processed_indeclinables, words_info, verbs_data)
+
     processed_adjectives = process_adjectives(adjectives_data, processed_nouns)
     processed_others = process_others(others_data)
-    processed_verbs, processed_auxverbs= process_verbs(verbs_data, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns, False)
+    processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns, False)
     process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others)
+    process_nominal_form = process_nominal_form(nominal_forms_data, processed_nouns, words_info, verbs_data)
     
     # Todo : extract nouns / adjectives from Compound verbs with +
     # Todo : process nouns / adjectives got from verbs and add to processed_noun / processed_adjectives
 
-    # processing postposition for pronouns only as it is required for parsarg info.
-    processed_pronouns,_ = preprocess_postposition(processed_pronouns, words_info, processed_verbs) # to get parsarg
+    # processing postpositions for pronouns and nouns only
+    #processed_pronouns, pp_pronouns = preprocess_postposition_new(processed_pronouns, words_info, processed_verbs) # to get parsarg
+    #positions = pp_nouns | pp_pronouns #merging postpositions of nouns and pronouns in single dict
 
     # Every word is collected into one and sorted by index number.
     processed_words = collect_processed_data(processed_pronouns,processed_nouns,processed_adjectives,
                                             processed_verbs, processed_auxverbs,processed_indeclinables, processed_others)
     
     # calculating postpositions for words if applicable.
-    processed_words, processed_postpositions = preprocess_postposition(processed_words, words_info,processed_verbs)
+    #processed_words, processed_postpositions = preprocess_postposition_new(processed_words, words_info,processed_verbs)
 
     # Input for morph generator is generated and fed into it.
     # Generator outputs the result in a file named morph_input.txt-out.txt
@@ -75,7 +77,7 @@ if __name__ == "__main__":
         processed_adjectives = process_adjectives(adjectives_data, processed_nouns)
         processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns, True)
         # Sentence is generated again
-        processed_words = collect_processed_data(processed_pronouns,processed_nouns,  processed_adjectives, processed_verbs,processed_auxverbs,processed_indeclinables,processed_others)
+        processed_words = collect_processed_data(processed_pronouns, processed_nouns,  processed_adjectives, processed_verbs,processed_auxverbs,processed_indeclinables,processed_others)
         OUTPUT_FILE = generate_morph(processed_words)
 
     
@@ -88,7 +90,7 @@ if __name__ == "__main__":
     transformed_data = join_compounds(transformed_data)
 
     #post-positions are joined.
-    PP_fulldata = add_postposition(transformed_data,processed_postpositions)
+    PP_fulldata = add_postposition(transformed_data, processed_postpositions_dict)
     
     POST_PROCESS_OUTPUT = rearrange_sentence(PP_fulldata)  # reaarange by index number
 
@@ -97,9 +99,10 @@ if __name__ == "__main__":
         POST_PROCESS_OUTPUT = 'kyA ' + POST_PROCESS_OUTPUT + '?'
 
     hindi_output = collect_hindi_output(POST_PROCESS_OUTPUT)
+    #next line for single line input
     write_hindi_text(hindi_output, POST_PROCESS_OUTPUT, OUTPUT_FILE)
 
-    # if testing use the next line code and all results are collated in test.csv
+    # next line code for bulk generation of results. All results are collated in test.csv. Run sh test.sh
     #write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE, path)
 
     #for masked input -uncomment the following:
