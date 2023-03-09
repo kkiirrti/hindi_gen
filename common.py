@@ -601,6 +601,8 @@ def check_adjective(word_data):
         rel = word_data[4].strip().split(':')[1]
         if rel in ('card', 'mod', 'meas', 'ord', 'intf'):
             return True
+        if rel == 'k1s' and word_data[3] == '':
+            return True
     return False
 
 
@@ -981,7 +983,7 @@ def get_default_GNP():
     case  = 'o'
     return gender, number, person, case
 
-def process_adjectives(adjectives, processed_nouns):
+def process_adjectives(adjectives, processed_nouns, processed_verbs):
     '''Process adjectives as (index, word, category, case, gender, number)
         '''
     processed_adjectives = []
@@ -990,23 +992,48 @@ def process_adjectives(adjectives, processed_nouns):
         index = adjective[0]
         category = 'adj'
         adj = clean(adjective[1])
-        relnoun = int(adjective[4].strip().split(':')[0])
-        relnoun_data = getDataByIndex(relnoun, processed_nouns)
 
-        if relnoun_data == None or len(relnoun_data) == 0:
-            log(f'Associated noun not found with the adjective {adjective[1]}. Using default m,s,a,o ')
+
+        relConcept = int(adjective[4].strip().split(':')[0]) # noun for regular adjcetives, and verb for k1s-samaadhikaran
+        relation = adjective[4].strip().split(':')[1]
+        if relation == 'k1s':
+             relConcept_data = getDataByIndex(relConcept, processed_verbs)
         else:
-            case = relnoun_data[3]
-            gender = relnoun_data[4]
-            number = relnoun_data[5]
+            relConcept_data = getDataByIndex(relConcept, processed_nouns)
 
-        noun = relnoun_data[1]
-        add_adj_to_noun_attribute(noun, adj)
+        if relConcept_data == None or len(relConcept_data) == 0:
+            log(f'Associated noun/verb not found with the adjective {adjective[1]}. Using default m,s,a,o ')
+        else:
+            gender, number, person, case = get_gnpcase_from_concept(relConcept_data)
+            if relation == 'k1s':
+                case = 'd'
+
+        # noun = relConcept_data[1]
+        # add_adj_to_noun_attribute(noun, adj)
 
         adjective = (index, adj, category, case, gender, number)
         processed_adjectives.append((index, adj, category, case, gender, number))
         log(f'{adjective[1]} processed as an adjective with case:{case} gen:{gender} num:{number}')
     return processed_adjectives
+
+def get_gnpcase_from_concept(concept): #computes GNP values from noun or
+
+    if concept[2] == 'v':
+        gender = concept[3]
+        number= concept[4]
+        person = concept[5]
+        case =  concept[7]
+
+    elif concept[2] in ('n', 'p'):
+        gender = concept[4]
+        number= concept[5]
+        person = concept[6]
+        case = concept[3]
+    else:
+        gender, number, person, case = get_default_GNP()
+
+    return gender, number, person, case
+
 
 def is_complex_predicate(concept):
     return "+" in concept

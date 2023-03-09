@@ -36,9 +36,9 @@ if __name__ == "__main__":
     processed_nouns = process_nouns(nouns_data, words_info, verbs_data)
     processed_pronouns = process_pronouns(pronouns_data, processed_nouns, processed_indeclinables, words_info, verbs_data)
 
-    processed_adjectives = process_adjectives(adjectives_data, processed_nouns)
     processed_others = process_others(others_data)
     processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns, False)
+    processed_adjectives = process_adjectives(adjectives_data, processed_nouns, processed_verbs)
     process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others)
     process_nominal_form = process_nominal_form(nominal_forms_data, processed_nouns, words_info, verbs_data)
     
@@ -74,8 +74,10 @@ if __name__ == "__main__":
     # Adjectives and verbs are re-processed as they might be dependent on it.
     if has_changes:
         # Reprocessing adjectives and verbs based on new noun info
-        processed_adjectives = process_adjectives(adjectives_data, processed_nouns)
         processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns, True)
+        processed_adjectives = process_adjectives(adjectives_data, processed_nouns, processed_verbs)
+        process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others)
+
         # Sentence is generated again
         processed_words = collect_processed_data(processed_pronouns, processed_nouns,  processed_adjectives, processed_verbs,processed_auxverbs,processed_indeclinables,processed_others)
         OUTPUT_FILE = generate_morph(processed_words)
