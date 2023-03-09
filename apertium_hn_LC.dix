@@ -3100,6 +3100,10 @@ addition ended by Kirti Garg kirti.garg@gmail.com on 7/12/22-->
 <pardef n="/mEM__p">
 <e><p><l>mEM</l><r>mEM<s n="cat:p"/><s n="case:o"/><s n="parsarg:0"/><s n="gen:m"/><s n="num:s"/><s n="per:u"/></r></p></e>
 <e><p><l>mEM</l><r>mEM<s n="cat:p"/><s n="case:o"/><s n="parsarg:0"/><s n="gen:f"/><s n="num:s"/><s n="per:u"/></r></p></e>
+<!-- Added direct case for mEM -->
+<e><p><l>mEM</l><r>mEM<s n="cat:p"/><s n="case:d"/><s n="parsarg:0"/><s n="gen:m"/><s n="num:s"/><s n="per:u"/></r></p></e>
+<e><p><l>mEM</l><r>mEM<s n="cat:p"/><s n="case:d"/><s n="parsarg:0"/><s n="gen:f"/><s n="num:s"/><s n="per:u"/></r></p></e>
+
 <e><p><l>mEMne</l><r>mEM<s n="cat:p"/><s n="case:o"/><s n="parsarg:ne"/><s n="gen:m"/><s n="num:s"/><s n="per:u"/></r></p></e>
 <e><p><l>mEMne</l><r>mEM<s n="cat:p"/><s n="case:o"/><s n="parsarg:ne"/><s n="gen:f"/><s n="num:s"/><s n="per:u"/></r></p></e>
 <e><p><l>muJe</l><r>mEM<s n="cat:p"/><s n="case:o"/><s n="parsarg:ko"/><s n="gen:m"/><s n="num:s"/><s n="per:u"/></r></p></e>
