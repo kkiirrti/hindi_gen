@@ -943,6 +943,9 @@ def process_pronouns(pronouns, processed_nouns, processed_indeclinables, words_i
             gender = fnoun_data[4]  # To-ask
             fnum = number = fnoun_data[5]
             case = fnoun_data[3]
+            if term == 'apanA':
+                parsarg = '0'
+
         processed_pronouns.append((pronoun[0], word, category, case, gender, number, person, parsarg, fnum))
         log(f'{pronoun[1]} processed as pronoun with case:{case} par:{parsarg} gen:{gender} num:{number} per:{person} fnum:{fnum}')
     return processed_pronouns
@@ -961,7 +964,11 @@ def process_nouns(nouns, words_info, verbs_data):
     for noun in nouns:
         category = 'n'
         gender, number, person = extract_gnp(noun[3])
+        if noun[6] == 'respect': # respect for nouns
+            number = 'p'
         noun_type = 'common' if '_' in noun[1] else 'proper'
+
+
         # to fetch postposition and case logic and update each tuple
         case, postposition = preprocess_postposition_new('noun', noun, words_info, main_verb)
 
