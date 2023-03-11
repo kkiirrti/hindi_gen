@@ -244,7 +244,7 @@ def getGNP_using_k1(k1exists, searchList):
     verb_gender, verb_number, verb_person = casedata[4], casedata[5], casedata[6]
     return verb_gender, verb_number, verb_person
 
-def getVerbGNP_new(verb_term, full_tam, is_cp, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns):
+def getVerbGNP_new(concept_term, full_tam, is_cp, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns):
     '''
     '''
 
@@ -284,12 +284,13 @@ def getVerbGNP_new(verb_term, full_tam, is_cp, seman_data, depend_data, sentence
             k2_case = casedata[3]
 
     if is_cp:
+        cp_term = concept_term.split('+')[0]
         if not k1exists and not k2exists:
-            verb_gender, verb_number, verb_person = getComplexPredicateGNP(verb_term)
+            verb_gender, verb_number, verb_person = getComplexPredicateGNP(cp_term)
         elif k1exists and k1_case == 'd':
             verb_gender, verb_number, verb_person = getGNP_using_k1(k1exists, searchList)
         elif k1exists and k1_case == 'o' and k2exists and k2_case == 'o':
-            verb_gender, verb_number, verb_person = getComplexPredicateGNP(verb_term)
+            verb_gender, verb_number, verb_person = getComplexPredicateGNP(cp_term)
         return verb_gender, verb_number, verb_person[0]
 
     if 'yA' in full_tam:
@@ -524,6 +525,13 @@ def check_USR_format(root_words, index_data, seman_data, gnp_data, depend_data, 
                 diff = diff - 1
         i = i + 1
 
+    #Removing spaces if any,before/ after each ele for all rows in USR
+    for row in data:
+        for i in range(0, len(row)):
+            if type(row[i]) != int and row[i] != '':
+                temp = row[i].strip()
+                row[i] = temp
+    print(data)
     return list(
         zip(index_data, root_words, seman_data, gnp_data, depend_data, discourse_data, spkview_data, scope_data))
 
@@ -1202,7 +1210,7 @@ def process_main_verb(concept: Concept, seman_data, dependency_data, sentence_ty
     if verb.term == 'jA' and verb.tam == 'yA':
         verb.tam = 'yA1'
     is_cp = is_CP(concept.term)
-    verb.gender, verb.number, verb.person = getVerbGNP_new(verb.term, full_tam, is_cp, seman_data, dependency_data, sentence_type, processed_nouns, processed_pronouns)
+    verb.gender, verb.number, verb.person = getVerbGNP_new(concept.term, full_tam, is_cp, seman_data, dependency_data, sentence_type, processed_nouns, processed_pronouns)
     if is_CP(concept.term):
         if not reprocessing:
             CP = process_main_CP(concept.index, concept.term)
