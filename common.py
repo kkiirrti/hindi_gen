@@ -1022,7 +1022,7 @@ def process_adjectives(adjectives, processed_nouns, processed_verbs):
         else:
             relConcept_data = getDataByIndex(relConcept, processed_nouns)
 
-        if relConcept_data == None or len(relConcept_data) == 0:
+        if not relConcept_data:
             log(f'Associated noun/verb not found with the adjective {adjective[1]}. Using default m,s,a,o ')
         else:
             gender, number, person, case = get_gnpcase_from_concept(relConcept_data)
