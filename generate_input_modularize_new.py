@@ -1,5 +1,5 @@
 from common import *
-
+HAS_CONSTRUCTION_DATA = False
 if __name__ == "__main__":
     log("Program Started", "START")
 
@@ -24,7 +24,11 @@ if __name__ == "__main__":
     spkview_data = rules_info[7]
     scope_data = rules_info[8]
     sentence_type = rules_info[9]
-    
+    construction_data = ''
+    if rules_info[10] != '' and len(rules_info) > 0:
+        HAS_CONSTRUCTION_DATA = True
+        construction_data = rules_info[10]
+
     # Making a collection of words and its rules as a list of tuples.
     words_info = generate_wordinfo(root_words, index_data, seman_data, 
                     gnp_data, depend_data, discourse_data, spkview_data, scope_data)
@@ -36,9 +40,9 @@ if __name__ == "__main__":
     processed_nouns = process_nouns(nouns_data, words_info, verbs_data)
     processed_pronouns = process_pronouns(pronouns_data, processed_nouns, processed_indeclinables, words_info, verbs_data)
 
-    processed_adjectives = process_adjectives(adjectives_data, processed_nouns)
     processed_others = process_others(others_data)
     processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns, False)
+    processed_adjectives = process_adjectives(adjectives_data, processed_nouns, processed_verbs)
     process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others)
     process_nominal_form = process_nominal_form(nominal_forms_data, processed_nouns, words_info, verbs_data)
     
@@ -55,7 +59,8 @@ if __name__ == "__main__":
     
     # calculating postpositions for words if applicable.
     #processed_words, processed_postpositions = preprocess_postposition_new(processed_words, words_info,processed_verbs)
-
+    if HAS_CONSTRUCTION_DATA:
+        processed_words = process_construction(processed_words, construction_data, depend_data, gnp_data, index_data)
     # Input for morph generator is generated and fed into it.
     # Generator outputs the result in a file named morph_input.txt-out.txt
     OUTPUT_FILE = generate_morph(processed_words)
@@ -69,28 +74,33 @@ if __name__ == "__main__":
     has_changes, processed_nouns = handle_unprocessed(outputData, processed_nouns)
 
     # handle unprocessed_verbs also with verb agreement
-    
     # If any changes is done in gender for any word.
     # Adjectives and verbs are re-processed as they might be dependent on it.
     if has_changes:
         # Reprocessing adjectives and verbs based on new noun info
-        processed_adjectives = process_adjectives(adjectives_data, processed_nouns)
         processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns, True)
+        processed_adjectives = process_adjectives(adjectives_data, processed_nouns, processed_verbs)
+        process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others)
+
         # Sentence is generated again
         processed_words = collect_processed_data(processed_pronouns, processed_nouns,  processed_adjectives, processed_verbs,processed_auxverbs,processed_indeclinables,processed_others)
+        if HAS_CONSTRUCTION_DATA:
+            processed_words = process_construction(processed_words, construction_data, depend_data, gnp_data,index_data)
         OUTPUT_FILE = generate_morph(processed_words)
 
-    
     # Post-Processing Stage
     outputData = read_output_data(OUTPUT_FILE)
     # generated words and word-info data is combined #pp data not yet added
     transformed_data = analyse_output_data(outputData, processed_words)
 
     # compound words and post-positions are joined.
-    transformed_data = join_compounds(transformed_data)
+    transformed_data = join_compounds(transformed_data, construction_data)
 
     #post-positions are joined.
     PP_fulldata = add_postposition(transformed_data, processed_postpositions_dict)
+    #construction data is joined
+    if HAS_CONSTRUCTION_DATA:
+        PP_fulldata = add_construction(PP_fulldata, construction_dict)
     
     POST_PROCESS_OUTPUT = rearrange_sentence(PP_fulldata)  # reaarange by index number
 

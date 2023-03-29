@@ -4025,6 +4025,7 @@ addition ended by Kirti Garg kirti.garg@gmail.com on 7/12/22-->
 <e lm="cidiyZA"><i>cidiyZ</i><par n="gudiy/A__n"/></e>
 <e lm="cidiyZAGara"><i>cidiyZAGar</i><par n="Gar/a__n"/></e>
 <e lm="cidiyAGara"><i>cidiyAGar</i><par n="Gar/a__n"/></e>
+<e lm="AryAvarwa"><i>AryAvarw</i><par n="Gar/a__n"/></e>
 
 <e lm="DUzDZa"><i>DUzDZ</i><par n="uT/a__v"/></e>
 <e lm="GadZA"><i>GadZ</i><par n="regular__adj-noun"/></e>
@@ -6409,10 +6410,10 @@ addition ended by Kirti Garg kirti.garg@gmail.com on 7/12/22-->
 <e lm="apamiSraNa"><i>apamiSraNa</i><par n="kroXa/__n"/></e>
 <e lm="apamqwyu"><i>apamqwyu</i><par n="qwu/__n"/></e>
 <e lm="apanA"><i>apanA</i><par n="KA/__v"/></e>
+<e lm="apanA"><i>apan</i><par n="regular__adj-noun"/></e>
 <e lm="aPanA"><i>aPanA</i><par n="KA/__v"/></e>
 <e lm="apAna"><i>apAna</i><par n="kroXa/__n"/></e>
 <e lm="ApaNa"><i>ApaN</i><par n="Gar/a__n"/></e>
-<e lm="apanA"><i>apan</i><par n="regular__adj-noun"/></e>
 <e lm="apanA"><i>apan</i><par n="regular__adj-noun"/></e>
 <e lm="apanAma"><i>apanAma</i><par n="kroXa/__n"/></e>
 <e lm="apanApana"><i>apanApana</i><par n="kroXa/__n"/></e>
@@ -32894,7 +32895,8 @@ addition ended by Kirti Garg kirti.garg@gmail.com on 7/12/22-->
 <e lm="xuHKaxAwA"><i>xuHKaxAwA</i><par n="rAjA/__n"/></e>
 <e lm="xuHKaxAyI"><i>xuHKaxAyI</i><par n="ajAwI/__adj"/></e>
 <e lm="xuHKAyawana"><i>xuHKAyawana</i><par n="kroXa/__n"/></e>
-<e lm="xuHKI"><i>xuHKI</i><par n="ajAwI/__adj"/></e>
+<e lm="xuHKI"><i>xuHKI</i><par n="amIra/__adj"/></e>
+<e lm="IrRyAlu"><i>IrRyAlu</i><par n="amIra/__adj"/></e>
 <e lm="xuHKiwa"><i>xuHKiwa</i><par n="amIra/__adj"/></e>
 <e lm="xuHsAhasa"><i>xuHsAhasa</i><par n="kroXa/__n"/></e>
 <e lm="xuHsAhasika"><i>xuHsAhasika</i><par n="amIra/__adj"/></e>
