@@ -1,0 +1,399 @@
+USR_ID, Original sentence, generated sentence, HIndi generated sentence, masked hindi sentence
+1,Apa kahAz rahawe hEM?,Apa #kahAz meM rahawA hE,आप #कहाँ में रहता है,आप #कहाँ <> रहता है
+2,aXyApaka aBI Aye hEM.,aXyApaka aBI AyA hE,अध्यापक अभी आया है,अध्यापक अभी आया है
+3,baccA agaswa meM Pala KAwA hE.,baccA agaswa ko Pala KAwA hE,बच्चा अगस्त को फल खाता है,बच्चा अगस्त <> फल <> खाता है
+4,bacce janavarI meM Pala KAwe hEM.,bacce janavarI ko Pala KAwe hEM,बच्चे जनवरी को फल खाते हैं,बच्चे जनवरी <> फल <> खाते हैं
+5,baccA kya kAwA hE?,baccA kyA KAwA hE,बच्चा क्या खाता है,बच्चा क्या खाता है
+6,bacce maMgalavAra ko Pala KAwe hEM.,bacce maMgalavAra ko Pala KAwe hEM,बच्चे मंगलवार को फल खाते हैं,बच्चे मंगलवार <> फल <> खाते हैं
+7,bacce Pala KAwe hEM.,bacce Pala KAwe hEM,बच्चे फल खाते हैं,बच्चे फल <> खाते हैं
+8,bacce somavAra ko Pala KAwe hEM.,bacce somavAra ko Pala KAwe hEM,बच्चे सोमवार को फल खाते हैं,बच्चे सोमवार <> फल <> खाते हैं
+9,rAma rojZa eka seba KAwA hE.,rAma roja eka seba KAwA hE,राम रोज एक सेब खाता है,राम रोज एक सेब <> खाता है
+10,betoM ne Kewa meM bIja bo xiyA.,betoM ne Kewa meM bIja boyA,बेटों ने खेत में बीज बोया,बेटों <> खेत <> बीज <> बोया
+11,gAyeM GAsa KAwIM hEM.,gAyeM GAsa KAwIM hEM,गायें घास खातीं हैं,गायें घास <> खातीं हैं
+12,jAnavara saBA meM Aye.,jAnavara ne saBA Ae,जानवर ने सभा आए,जानवर <> सभा आए
+13,John kA betA vixyAlaya meM paDawA hE,#John kA betA vixyAlaya meM paDawA hE,#झोह्न् का बेटा विद्यालय में पढता है,#झोह्न् <> बेटा विद्यालय <> पढता है
+14,kyA Apa jA rahe hEM?,kyA Apa jA rahA hE?,क्या आप जा रहा है?,आप जा रहा है
+15,kyA rAma jA rahA hE?,kyA rAma jA rahA hE?,क्या राम जा रहा है?,राम जा रहा है
+16,ladakA bagIce meM nayI kiwAba paDa rahA hE.,ladakA bagIce meM nayI kiwAba paDa rahA hE,लडका बगीचे में नयी किताब पढ रहा है,लडका बगीचे <> नयी किताब <> पढ रहा है
+17,ladakA calacciwra xeKa rahA hE.,ladakA #calacciwra xeKa rahA hE,लडका #चलच्चित्र देख रहा है,लडका #चलच्चित्र <> देख रहा है
+18,ladakA kiwAba paDa rahA hE.,ladakA kiwAba paDa rahA hE,लडका किताब पढ रहा है,लडका किताब <> पढ रहा है
+19,ladakA kiwAbeM paDa rahA hE.,ladakA kiwAbeM paDa rahA hE,लडका किताबें पढ रहा है,लडका किताबें <> पढ रहा है
+20,mohana rAma ko apane Gara bulAwA hE.,mohana rAma ko #apanA Gara bulAwA hE,मोहन राम को #अपना घर बुलाता है,मोहन राम <> #अपना घर बुलाता है
+21,rAma ne mohana ko nIlI kiwAba xI.,rAma ne mohana ko nIlI kiwAba xI,राम ने मोहन को नीली किताब दी,राम <> मोहन <> नीली किताब <> दी
+22,rAma bETA hE.,rAma bETA hE,राम बैठा है,राम बैठा है
+23,mohana rAma ko apane vixyAlaya bulAwA hE.,mohana rAma ko #apanA vixyAlaya bulAwA hE,मोहन राम को #अपना विद्यालय बुलाता है,मोहन राम <> #अपना विद्यालय बुलाता है
+24,ladake ke liye jaMgala se Pala lAo!,ladake ke lie jaMgala se Pala lAo, लडके के लिए जंगल से फल लाओ,लडके <> <> जंगल <> फल <> लाओ
+25,ladake ne KAnA nahIM KAyA.,ladake ne KAnA nahIM KAyA,लडके ने खाना नहीं खाया,लडके <> खाना <> नहीं खाया
+27,mEca kisane jIwA?,mEca kisane jIwA,मैच किसने जीता,मैच <> किसने जीता
+28,rAma ko xuHKa hE.,rAma ko xuHKa hE,राम को दुःख है,राम <> दुःख है
+29,mEM A rahA hUz.,mEM A rahA hUz,मैं आ रहा हूँ,मैं आ रहा हूँ
+30,rAma xuHKI hE. ,rAma #xuHKI hE,राम #दुःखी है,राम #दुःखी है
+31,mEM john ke lie Sahara se AyA.,mEM #John ke lie Sahara se AyA,मैं #झोह्न् के लिए शहर से आया,मैं #झोह्न् <> <> शहर <> आया
+32,mAz ne rAma se bacce ko KAnA KilavAyA.,mAz rAma baccA ko KAnA #KAyA,माँ राम बच्चा को खाना #खाया,माँ राम बच्चा <> खाना <> #खाया
+33,mEM kala AyA.,mEM kala ko AI,मैं कल को आई,मैं कल <> आई
+34,mEM kiwAbeM paDa rahA hUz.,mEM kiwAbeM paDa rahA hUz,मैं किताबें पढ रहा हूँ,मैं किताबें <> पढ रहा हूँ
+35,mEM ladake ke lie Sahara se AyA.,mEM ladake ke lie Sahara se AyA,मैं लडके के लिए शहर से आया,मैं लडके <> <> शहर <> आया
+36,mEMne acCA Pala KAyA.,mEMne acCA Pala KAyA,मैंने अच्छा फल खाया,मैंने अच्छा फल <> खाया
+37,mEMne acCI kiwAba paDI hE.,mEMne acCI kiwAba paDI hE,मैंने अच्छी किताब पढी है,मैंने अच्छी किताब <> पढी है
+38,rAma ne SyAma xvArA mohana se BiKArI ko xAna xilavAyA.,rAma #SyAma mohana ko BiKArI ko xAna #xeyA,राम #श्याम मोहन को भिखारी को दान #देया,राम #श्याम मोहन <> भिखारी <> दान <> #देया
+39,ye prawIka hE.,isa prawIka hE,इस प्रतीक है,इस प्रतीक है
+40,rAma ko xillI jAnA padZA.,rAma xillI jAnA padA,राम दिल्ली जाना पडा,राम दिल्ली जाना पडा
+42,mEMne nayA Pala KAyA.,mEMne nayA Pala KAyA,मैंने नया फल खाया,मैंने नया फल <> खाया
+43,mEMne naye ladake ko xeKA.,mEMne nayA ladakA xeKA,मैंने नया लडका देखा,मैंने नया लडका <> देखा
+44,bagIce meM billiyAz WIM. ,bagIce meM billiyAz WIM,बगीचे में बिल्लियाँ थीं,बगीचे <> बिल्लियाँ थीं
+45,BArawa meM xvIpasamUha hEM.,BArawa meM xvIpasamUha hEM,भारत में द्वीपसमूह हैं,भारत <> द्वीपसमूह हैं
+46,mEMne pahalI kiwAba paDI.,mEMne pahalI kiwAba paDI,मैंने पहली किताब पढी,मैंने पहली किताब <> पढी
+47,AkASagaMgA badI hE.,AkASagaMgA badA hE,आकाशगंगा बडा है,आकाशगंगा बडा है
+48,wAre timatimAwe hEM.,wAre timatimAwe hEM,तारे टिमटिमाते हैं,तारे टिमटिमाते हैं
+49,mEM Sahara meM eka vixyAlaya gayA.,mEMne Sahara meM vixyAlaya jAyA,मैंने शहर में विद्यालय जाया,मैंने शहर <> विद्यालय जाया
+50,mEM Sahara meM vixyAlaya meM gayA.,mEMne Sahara meM vixyAlaya jAyA,मैंने शहर में विद्यालय जाया,मैंने शहर <> विद्यालय जाया
+51,ladakA usake lie Sahara gayA.,ladake ne #vaha Sahara jAyA,लडके ने #वह शहर जाया,लडके <> #वह शहर जाया
+53,mEM usase eka kiwAba le rahA hUz.,mEM usase kiwAba le rahA hUz,मैं उससे किताब ले रहा हूँ,मैं उससे किताब <> ले रहा हूँ
+54,brahmAMda badA hE.,brahmAMda badA hE,ब्रह्मांड बडा है,ब्रह्मांड बडा है
+55,mEMne usase eka praSna pUCA.,mEMne #vaha eka praSna pUCA,मैंने #वह एक प्रश्न पूछा,मैंने #वह एक प्रश्न <> पूछा
+57,mere liye jaMgala se Pala lAo!,#mEM jaMgala se Pala lAo,#मैं जंगल से फल लाओ,#मैं जंगल <> फल <> लाओ
+58,rAma john ke liye Sahara se AyA.,rAma #John ke lie Sahara se AyA,राम #झोह्न् के लिए शहर से आया,राम #झोह्न् <> <> शहर <> आया
+59,rAma xo kiwAbeM paDa rahA hE.,rAma xo kiwAbeM paDa rahA hE,राम दो किताबें पढ रहा है,राम दो किताबें <> पढ रहा है
+60,rAvana mArA gayA.,rAvaNa ko mArA jAyA,रावण को मारा जाया,रावण <> मारा जाया
+61,rAvaNa rAma ke xvArA mArA gayA WA.,rAvaNa ko rAma ne mArA jAyA WA,रावण को राम ने मारा जाया था,रावण <> राम <> मारा जाया था
+62,Sahara jAo!,Sahara jAo,शहर जाओ,शहर जाओ
+63,Sera ne yuxXa ke liye jaMgala meM saBA bulAI.,Sera ne yuxXa ke lie jaMgala meM saBA bulAI,शेर ने युद्ध के लिए जंगल में सभा बुलाई,शेर <> युद्ध <> <> जंगल <> सभा <> बुलाई
+67,vaha kaba jA rahA hE?,vaha #kaba ko jA rahA hE,वह #कब को जा रहा है,वह #कब <> जा रहा है
+69,ve calacciwra xeKa rahe hEM.,#vaha #calacciwra xeKa rahe hEM,#वह #चलच्चित्र देख रहे हैं,#वह #चलच्चित्र <> देख रहे हैं
+70,wuma kele KA rahe ho.,wuma kele KA rahA hE,तुम केले खा रहा है,तुम केले <> खा रहा है
+71,mEM so rahA hUz.,mEM so rahA hUz,मैं सो रहा हूँ,मैं सो रहा हूँ
+72,rAma ne muJe kiwAba xI.,rAma ne muJe kiwAba xI,राम ने मुझे किताब दी,राम <> मुझे किताब <> दी
+73,rAma acCA hE.,rAma acCA hE,राम अच्छा है,राम अच्छा है
+74,vaha apane piwA ke sAWa vixyAlaya jAyegI.,vaha #apanA piwA vixyAlaya jAegA,वह #अपना पिता विद्यालय जाएगा,वह #अपना पिता विद्यालय जाएगा
+75,rAma acCA doYktara hE.,rAma acCA doYktara hE,राम अच्छा डोक्टर है,राम अच्छा डोक्टर है
+76,rAma xillI meM rahawA hE.,rAma xillI meM rahawA hE,राम दिल्ली में रहता है,राम दिल्ली <> रहता है
+77,ladakA xillI meM hE.,ladakA xillI meM hE,लडका दिल्ली में है,लडका दिल्ली <> है
+78,rAma bagIce meM hE.,rAma bagIce meM hE,राम बगीचे में है,राम बगीचे <> है
+79,rAma xillI meM hE.,rAma xillI meM hE,राम दिल्ली में है,राम दिल्ली <> है
+80,mEM xillI meM hUz.,mEM xillI meM hUz,मैं दिल्ली में हूँ,मैं दिल्ली <> हूँ
+81,rAma ko buKAra hE.,rAma ko buKAra hE,राम को बुखार है,राम <> बुखार है
+82,ladake ko buKAra hE.,ladake ko buKAra hE,लडके को बुखार है,लडके <> बुखार है
+83,muJe buKAra hE.,muJe buKAra hE,मुझे बुखार है,मुझे बुखार है
+84,rAma ke pAsa kiwAba hE.,rAma ke pAsa kiwAba hE,राम के पास किताब है,राम <> <> किताब है
+85,mere pAsa kiwAba hE.,#mEM kiwAba hE,#मैं किताब है,#मैं किताब है
+86,ladake ke pAsa kiwAba hE.,ladake ke pAsa kiwAba hE,लडके के पास किताब है,लडके <> <> किताब है
+88,kyA rAma ke pAsa kiwAba hE?,kyA rAma ke pAsa kiwAba hE?,क्या राम के पास किताब है?,राम <> <> किताब है
+89,kyA wuma xillI meM ho?,kyA wuma xillI meM hE?,क्या तुम दिल्ली में है?,तुम दिल्ली <> है
+90,kyA wumhe buKAra hE?,kyA #wU buKAra?,क्या #तू बुखार?,#तू बुखार
+91,rAma apane piwA ke sAWa vixyAlaya gayA.,rAma ne #apanA piwA vixyAlaya jAyA,राम ने #अपना पिता विद्यालय जाया,राम <> #अपना पिता विद्यालय जाया
+92,mEM vahAz A rahA hUz.,mEM #vahAz A rahA hUz,मैं #वहाँ आ रहा हूँ,मैं #वहाँ आ रहा हूँ
+93,wuma Keloge.,wuma Keloge/KelegA,तुम खेलोगे/खेलेगा,तुम खेलोगे/खेलेगा
+94,rAma paDegA.,rAma paDegA,राम पढेगा,राम पढेगा
+95,mEM Gara jA sakawA hUz.,mEM Gara jA sakawA hUz,मैं घर जा सकता हूँ,मैं घर <> जा सकता हूँ
+96,vaha Gara jA sakawA hE.,vaha Gara jA sakawA hE,वह घर जा सकता है,वह घर <> जा सकता है
+97,somavAra pahalA xina hE.,somavAra pahalA xina hE,सोमवार पहला दिन है,सोमवार पहला दिन है
+98,hAra mahilA ke gale meM hE.,hAra mahilA ke gale meM hE,हार महिला के गले में है,हार महिला <> गले <> है
+99,camadZe se jUwe banAo.,camade jUwe banAo,चमडे जूते बनाओ,चमडे जूते <> बनाओ
+100,mEM rUsI nahIM bola sakawA hUz.,mEM rUsI ko nahIM bola sakawA hUz,मैं रूसी को नहीं बोल सकता हूँ,मैं रूसी <> नहीं बोल सकता हूँ
+102,rAma ko Pala KAnA hogA.,rAma Pala KAnA hogA,राम फल खाना होगा,राम फल <> खाना होगा
+106,muJe kala AnA hogA.,mEM kala ko AnA hoUzgA,मैं कल को आना होऊँगा,मैं कल <> आना होऊँगा
+107,mEM rUsI bola sakawA hUz.,mEM rUsI bola sakawA hUz,मैं रूसी बोल सकता हूँ,मैं रूसी <> बोल सकता हूँ
+108,usane nahIM KAyA.,vaha nahIM KAyA,वह नहीं खाया,वह नहीं खाया
+109,Apa kahAz raha sakawe ho?,Apa #kahAz meM raha sakawA hE,आप #कहाँ में रह सकता है,आप #कहाँ <> रह सकता है
+110,muJe kalama xiyA gayA.,muJe kalama xiyA jAyA,मुझे कलम दिया जाया,मुझे कलम <> दिया जाया
+111,mEM Kela Kela sakawA hUz.,mEM Kela Kela sakawA hUz,मैं खेल खेल सकता हूँ,मैं खेल <> खेल सकता हूँ
+112,mEM JUTa bola sakawA hUz.,mEM JUTa bola sakawA hUz,मैं झूठ बोल सकता हूँ,मैं झूठ <> बोल सकता हूँ
+113,sUrya camakawA BI hE.,sUrya camakawA hE,सूर्य चमकता है,सूर्य चमकता है
+114,kyA mEM jA sakawA hUz?,kyA mEM jA sakawA hUz?,क्या मैं जा सकता हूँ?,मैं जा सकता हूँ
+115,kyA mEM kala Gara jA sakawA hUz?,kyA mEM kala ko Gara jA sakawA hUz?,क्या मैं कल को घर जा सकता हूँ?,मैं कल <> घर जा सकता हूँ
+116,kyA usane nahIM KAyA?,kyA vaha nahIM KAyA?,क्या वह नहीं खाया?,वह नहीं खाया
+117,hama puswakeM paDawe hEM.,hama puswakeM paDawe hEM,हम पुस्तकें पढते हैं,हम पुस्तकें <> पढते हैं
+120,yaha Gara hE.,isa Gara hE,इस घर है,इस घर है
+122,vaha so sakawA hE.,vaha so sakawA hE,वह सो सकता है,वह सो सकता है
+123,mEM kala Kela KelUMgA.,mEM kala ko Kela KelUzgA, मैं कल को खेल खेलूँगा,मैं कल <> खेल <> खेलूँगा
+124,kyA wuma Keloge?,kyA wuma Keloge/KelegA?,क्या तुम खेलोगे/खेलेगा?,तुम खेलोगे/खेलेगा
+125,rAvaNa mArA gayA WA.,rAvaNa ko mArA jAyA WA,रावण को मारा जाया था,रावण <> मारा जाया था
+126,rAma doYktara nahIM hE.,rAma doYktara nahIM hE,राम डोक्टर नहीं है,राम डोक्टर नहीं है
+127,rAma xillI meM nahIM hE.,rAma xillI meM nahIM hE,राम दिल्ली में नहीं है,राम दिल्ली <> नहीं है
+128,rAvaNa rAma ke xvArA laMkA meM mArA gayA.,rAvaNa ko rAma ne laMkA meM mArA jAyA WA,रावण को राम ने लंका में मारा जाया था,रावण <> राम <> लंका <> मारा जाया था
+129,prawyeka baccA Kela rahA hE.,#prawyeka baccA Kela rahA hE,#प्रत्येक बच्चा खेल रहा है,#प्रत्येक बच्चा खेल रहा है
+130,hara baccA Kela rahA hE.,#hara baccA Kela rahA hE,#हर बच्चा खेल रहा है,#हर बच्चा खेल रहा है
+131,saBI bacce Kela rahe hEM.,saBI bacce Kela rahe hEM,सभी बच्चे खेल रहे हैं,सभी बच्चे खेल रहे हैं
+132,prawyeka pedZa lambA hE.,#prawyeka peda #lambA hE,#प्रत्येक पेड #लम्बा है,#प्रत्येक पेड #लम्बा है
+133,kuCa bacce koI Kela Kela sakawe hEM.,#kuCa bacce #koI Kela Kela sakawe hEM,#कुछ बच्चे #कोई खेल खेल सकते हैं,#कुछ बच्चे #कोई खेल <> खेल सकते हैं
+134,bacce koI Kela nahIM KeleMge.,bacce #koI Kela nahIM KeleMge,बच्चे #कोई खेल नहीं खेलेंगे,बच्चे #कोई खेल <> नहीं खेलेंगे
+135,rAma ke pAsa WodZA pAnI hE.,rAma ke pAsa Wode pAnI hE,राम के पास थोडे पानी है,राम <> <> थोडे पानी है
+136,mEM souMgA.,mEM soUzgA,मैं सोऊँगा,मैं सोऊँगा
+137,kyA Apa AeMge?,kyA Apa AegA?,क्या आप आएगा?,आप आएगा
+138,kyA usane KAyA?,kyA vaha KAyA?,क्या वह खाया?,वह खाया
+139,kyA wuma nahIM Keloge?,kyA wuma nahIM Keloge/KelegA?,क्या तुम नहीं खेलोगे/खेलेगा?,तुम नहीं खेलोगे/खेलेगा
+141,vaha xillI meM rahawA WA.,vaha xillI meM rahawA WA,वह दिल्ली में रहता था,वह दिल्ली <> रहता था
+142,rAma yaha kAma kara sakawA hE.,rAma isa kAma kara sakawA hE,राम इस काम कर सकता है,राम इस काम <> कर सकता है
+143,rAma yaha kAma nahIM kara sakawA.,rAma isa kAma nahIM kara sakawA,राम इस काम नहीं कर सकता,राम इस काम <> नहीं कर सकता
+144,Sahara jAie!,Sahara jAie,शहर जाइए,शहर जाइए
+145,Sahara jAiegA.,Sahara jAiegA,शहर जाइएगा,शहर जाइएगा
+149,Sahara jA.,Sahara jA,शहर जा,शहर जा
+150,rAma ne KAnA nahIM KAyA WA,rAma KAnA nahIM,राम खाना नहीं,राम खाना <> नहीं
+152,xillI A.,xillI A,दिल्ली आ,दिल्ली आ
+153,rAma ne kAma kiyA WA,rAma ne kAma kiyA WA,राम ने काम किया था,राम <> काम <> किया था
+154,rAma ne KAnA KAyA hE.,rAma ne KAnA KAyA hE,राम ने खाना खाया है,राम <> खाना <> खाया है
+155,BEravanAWa mAz vERNo ke xvArA katarA  meM mArA gayA hE.,#BEravanAWa ko mAz #vERNo #katarA meM mArI jAI hE,#भैरवनाथ को माँ #वैष्णो #कटरा में मारी जाई है,#भैरवनाथ <> माँ #वैष्णो #कटरा <> मारी जाई है
+156,rAvaNa rAma ke xvArA laMkA meM mArA gayA hE.,rAvaNa ko rAma ne laMkA meM mArA jAyA hE,रावण को राम ने लंका में मारा जाया है,रावण <> राम <> लंका <> मारा जाया है
+157,usake xvArA KAnA KAyA gayA WA.,usane KAnA KAyA jAyA WA,उसने खाना खाया जाया था,उसने खाना <> खाया जाया था
+159,rAma sonA cAhawA hE.,rAma #so cAhawA hE,राम #सो चाहता है,राम #सो <> चाहता है
+160,KAnA mere xvArA KAyA gayA.,KAnA mEMne KAyA jAyA,खाना मैंने खाया जाया,खाना <> मैंने खाया जाया
+161,kyA rAvaNa rAma ke xvArA mArA gayA WA?,kyA rAvaNa ko rAma ne mArA jAyA WA,क्या रावण को राम ने मारा जाया था,क्या रावण <> राम <> मारा जाया था
+162,mere xvArA KAnA KAyA gayA WA.,mEMne KAnA KAyA jAyA WA,मैंने खाना खाया जाया था,मैंने खाना <> खाया जाया था
+163,lomadZI BUKI WI,lomadI BUKA WI,लोमडी भूखा थी,लोमडी भूखा थी
+164,usane eka Kewa xeKA,usane eka Kewa xeKA,उसने एक खेत देखा,उसने एक खेत <> देखा
+165,Kewa meM bahuwa aMgUra We,Kewa meM bahuwa aMgUra We,खेत में बहुत अंगूर थे,खेत <> बहुत अंगूर थे
+166,aMgUra rasIle  We.,aMgUra rasIlA We,अंगूर रसीला थे,अंगूर रसीला थे
+167,saviwA rImA ko xasa seba xegI.,#saviwA #rImA ko xasa/xasoM seba xegA,#सविता #रीमा को दस/दसों सेब देगा,#सविता #रीमा <> दस/दसों सेब <> देगा
+168,rajawa ne rAXA ko bawAyA,#rajawa ne rAXA ko bawAI,#रजत ने राधा को बताई,#रजत <> राधा <> बताई
+169,mEM Sivama ke lie Sahara se AyA.,mEM #Sivama ke lie Sahara se AyA,मैं #शिवम के लिए शहर से आया,मैं #शिवम <> <> शहर <> आया
+170,mEMne naye ladake ko xeKA.,mEMne naye ladake ko xeKA,मैंने नये लडके को देखा,मैंने नये लडके <> देखा
+171,mEMne aMXe ladake ko xeKA.,mEMne aMXe ladake ko xeKA,मैंने अंधे लडके को देखा,मैंने अंधे लडके <> देखा
+173,ismA puswakeM paDegI.,#ismA puswakeM paDegA,#इस्मा पुस्तकें पढेगा,#इस्मा पुस्तकें <> पढेगा
+174,mEMne kiwAba paDI.,mEMne kiwAba paDI,मैंने किताब पढी,मैंने किताब <> पढी
+175,mEMne acCI kiwAba paDI.,mEMne acCI kiwAba paDI,मैंने अच्छी किताब पढी,मैंने अच्छी किताब <> पढी
+176,XarAwala SikRA meM hE.,XarAwala SikRA meM hE,धरातल शिक्षा में है,धरातल शिक्षा <> है
+177,rAma ke pAsa lABa hE.,rAma ke pAsa lABa hE,राम के पास लाभ है,राम <> <> लाभ है
+178,jaMgala meM Sera WA.,jaMgala meM Sera WA,जंगल में शेर था,जंगल <> शेर था
+179,kyA rAma doYktara hE ?,kyA rAma doYktara hE?,क्या राम डोक्टर है?,राम डोक्टर है
+180,vaha kiwAba suMxara hE.,usa kiwAba #suMxara hE,उस किताब #सुंदर है,उस किताब #सुंदर है
+181,mEM kala AUMgA.,mEM kala ko AUzgA,मैं कल को आऊँगा,मैं कल <> आऊँगा
+182,mEM saBA ke lie Sahara AyA,mEMne saBA ke lie Sahara AyA,मैंने सभा के लिए शहर आया,मैंने सभा <> <> शहर आया
+183,Delhi Ao.,#Delhi A,#ढेल्हि आ,#ढेल्हि आ
+184,rAma doYktara hE.,rAma doYktara hE,राम डोक्टर है,राम डोक्टर है
+185,SaharI rAjA jaMgala AyA.,#SaharI rAjA ne jaMgala AyA,#शहरी राजा ने जंगल आया,#शहरी राजा <> जंगल आया
+186,Sera rAjA ko xeKA.,Sera ne rAjA xeKA,शेर ने राजा देखा,शेर <> राजा <> देखा
+188,mEM so rahA WA,mEM so rahA WA,मैं सो रहा था,मैं सो रहा था
+189,rAju ko buKAra hE,#rAju ko buKAra hE,#राजु को बुखार है,#राजु <> बुखार है
+191,kyA wumako buKAra hE?,kyA #wU buKAra hE?,क्या #तू बुखार है?,#तू बुखार है
+192,pariNAma burA WA,pariNAma burA WA,परिणाम बुरा था,परिणाम बुरा था
+193,mEM Delhi meM hUz.,mEM #Delhi meM hUz,मैं #ढेल्हि में हूँ,मैं #ढेल्हि <> हूँ
+194,kyA wuma Delhi meM ho?,kyA wuma #Delhi meM hE?,क्या तुम #ढेल्हि में है?,तुम #ढेल्हि <> है
+195,bacce Pala KAwe hEM.,bacce Pala KAwe hEM,बच्चे फल खाते हैं,बच्चे फल <> खाते हैं
+196,rAma ko KIra KAnI padZI.,rAma KIra KAnA padA,राम खीर खाना पडा,राम खीर <> खाना पडा
+199,ladakA vixyAlaya meM paDawA hE.,ladakA vixyAlaya meM paDawA hE,लडका विद्यालय में पढता है,लडका विद्यालय <> पढता है
+200,KAnA mere xvArA KAyA gayA WA.,KAnA mEMne KAyA jAyA WA,खाना मैंने खाया जाया था,खाना <> मैंने खाया जाया था
+201,ladakA vixyAlaya ke bagIce meM kiwAba paDa rahA hE.,ladakA vixyAlaya ke bagIce meM kiwAba paDa rahA hE,लडका विद्यालय के बगीचे में किताब पढ रहा है,लडका विद्यालय <> बगीचे <> किताब <> पढ रहा है
+204,haMsa sabaka sIKa gaye.,haMsoM ne sabaka sIKA,हंसों ने सबक सीखा,हंसों <> सबक <> सीखा
+205,rAjA rAjamahala se AyA.,rAjA rAjamahala se AyA,राजा राजमहल से आया,राजा राजमहल <> आया
+208,rAjamahala meM wAlAba hE.,rAjamahala meM wAlAba hE,राजमहल में तालाब है,राजमहल <> तालाब है
+209,haMsa IrRyAlu hEM.,haMsa #IrRyAlu hEM,हंस #ईर्ष्यालु हैं,हंस #ईर्ष्यालु हैं
+210,haMsa suKI hE.,haMsa suKI hE,हंस सुखी है,हंस सुखी है
+211,rAjA ke pAsa paMKa hEM,rAjA ke pAsa paMKa hEM,राजा के पास पंख हैं,राजा <> <> पंख हैं
+213,Apa kala KeleMge.,Apa kala ko Keloge/KelegA,आप कल को खेलोगे/खेलेगा,आप कल <> खेलोगे/खेलेगा
+214,ladakA Sahara se AyA hE.,ladakA Sahara se AyA hE,लडका शहर से आया है,लडका शहर <> आया है
+215,wAlAba meM haMsa hE.,wAlAba meM haMsa hE,तालाब में हंस है,तालाब <> हंस है
+216,ladake ne nayI kiwAba paDI.,ladakA ne nayI kiwAba paDI,लडका ने नयी किताब पढी,लडका <> नयी किताब <> पढी
+217,rAma xvArA KIra KAyI gayI.,rAma ne KIra KAI jAI,राम ने खीर खाई जाई,राम <> खीर <> खाई जाई
+218,rAma Sahara meM WA,rAma Sahara meM WA,राम शहर में था,राम शहर <> था
+219,ayAn kA miwra vixyAlaya meM paDawA WA.,#ayAn kA miwra vixyAlaya meM paDawA WA,#अयान् का मित्र विद्यालय में पढता था,#अयान् <> मित्र विद्यालय <> पढता था
+220,vaha rAmapura meM rahawA WA.,vaha rAmapura meM rahawA WA,वह रामपुर में रहता था,वह रामपुर <> रहता था
+221,koI Pala KawI hEM.,#koI Pala KAwA hE,#कोई फल खाता है,#कोई फल <> खाता है
+222,ayAn ne use pAnI xiyA.,#ayAn ne usako pAnI xiyA,#अयान् ने उसको पानी दिया,#अयान् <> उसको पानी <> दिया
+223,mEMne nayI kiwAba paDI.,mEMne nayI kiwAba paDI,मैंने नयी किताब पढी,मैंने नयी किताब <> पढी
+224,mEM Sahara jA rahA hUz.,mEM Sahara jA rahA hUz,मैं शहर जा रहा हूँ,मैं शहर जा रहा हूँ
+225,mEM saBA ke lie Sahara se AyA.,mEM saBA ke lie Sahara se AyA,मैं सभा के लिए शहर से आया,मैं सभा <> <> शहर <> आया
+226,mEM Aja AyA.,mEM Aja AyA,मैं आज आया,मैं आज आया
+227,mEM usase kiwAba le rahA hUz.,mEM usase kiwAba le rahA hUz,मैं उससे किताब ले रहा हूँ,मैं उससे किताब <> ले रहा हूँ
+228,mEM usake lie Sahara se AyA.,mEM #vaha Sahara se AyA,मैं #वह शहर से आया,मैं #वह शहर <> आया
+229,ayAn ke pAsa WodZA pAnI WA.,#ayAn ke pAsa Wode pAnI WA,#अयान् के पास थोडे पानी था,#अयान् <> <> थोडे पानी था
+230,mEM kala AUzgA.,mEM kala ko AUzgA,मैं कल को आऊँगा,मैं कल <> आऊँगा
+231,vaha acCA doYktara hE,vaha acCA doYktara hE,वह अच्छा डोक्टर है,वह अच्छा डोक्टर है
+232,ladake ke liye jaMgala se Pala lAo!,ladake ke lie jaMgala se Pala lAo,लडके के लिए जंगल से फल लाओ,लडके <> <> जंगल <> फल <> लाओ
+233,ladakA nayI kiwAba paDa rahA hE.,ladakA nayI kiwAba paDa rahA hE,लडका नयी किताब पढ रहा है,लडका नयी किताब <> पढ रहा है
+234,mEM Gara A rahA hUz.,mEM Gara A rahA hUz,मैं घर आ रहा हूँ,मैं घर आ रहा हूँ
+236,ayAn ne KAnA nahIM KAyA WA.,#ayAn KAnA nahIM,#अयान् खाना नहीं,#अयान् खाना <> नहीं
+237,vaha Sahara meM vixyAlaya meM gayA.,usane Sahara meM vixyAlaya jAyA,उसने शहर में विद्यालय जाया,उसने शहर <> विद्यालय जाया
+238,rAma Delhi meM rahawA hE,rAma #Delhi meM rahawA hE,राम #ढेल्हि में रहता है,राम #ढेल्हि <> रहता है
+239,baccA bagIcA meM Kela rahA hE,baccA bagIce meM Kela rahA hE,बच्चा बगीचे में खेल रहा है,बच्चा बगीचे <> खेल रहा है
+240,sIwA ne xillI meM cidayAGara xeKA,sIwA ne xillI meM cidiyAGara xeKA,सीता ने दिल्ली में चिडियाघर देखा,सीता <> दिल्ली <> चिडियाघर <> देखा
+241,aMSa doYktara hE,aMSa doYktara hE,अंश डोक्टर है,अंश डोक्टर है
+242,ladakA vixyAlaya meM bagIce meM kiwAba paDa rahA hE.,ladakA vixyAlaya meM bagIce meM kiwAba paDa rahA hE,लडका विद्यालय में बगीचे में किताब पढ रहा है,लडका विद्यालय <> बगीचे <> किताब <> पढ रहा है
+243,rAma KIra KAwA hE.,rAma KIra KAwA hE,राम खीर खाता है,राम खीर <> खाता है
+244,rAju ko Pala KAnA hogA,#rAju Pala,#राजु फल,#राजु फल <>
+245,mEM so rahA WA,mEM so rahA WA,मैं सो रहा था,मैं सो रहा था
+246,aMSa ne sIwA ko kiwAba xiyA.,aMSa ne sIwA ko kiwAba xI,अंश ने सीता को किताब दी,अंश <> सीता <> किताब <> दी
+248,ayAn paDegA.,#ayAn paDegI,#अयान् पढेगी,#अयान् पढेगी
+249,usane calaciwra xeKA.,usane calaciwra xeKA,उसने चलचित्र देखा,उसने चलचित्र <> देखा
+250,unhoMne bagIce meM KAnA KAyA.,unhoMne bagIce meM KAnA KAyA,उन्होंने बगीचे में खाना खाया,उन्होंने बगीचे <> खाना <> खाया
+252,riweSa vixyAlaya meM paDawA hE.,#riweSa vixyAlaya meM paDawI hE,#रितेश विद्यालय में पढती है,#रितेश विद्यालय <> पढती है
+253,jAnavara GAsa KAwA hE.,jAnavara GAsa KAwA hE,जानवर घास खाता है,जानवर घास <> खाता है
+254,riweSa bagIce meM hE.,#riweSa bagIce meM hE,#रितेश बगीचे में है,#रितेश बगीचे <> है
+255,usane KAnA nahIM KAyA.,usane KAnA nahIM KAyA,उसने खाना नहीं खाया,उसने खाना <> नहीं खाया
+256,vaha KAnA KA rahA hE.,vaha KAnA KA rahA hE,वह खाना खा रहा है,वह खाना <> खा रहा है
+257,merA xoswa bagIce meM Kela rahA hE.,merA xoswa bagIce meM Kela rahA hE,मेरा दोस्त बगीचे में खेल रहा है,मेरा दोस्त बगीचे <> खेल रहा है
+258,jAnavara bagIce meM Aye.,jAnavaroM ne bagIcA Ae,जानवरों ने बगीचा आए,जानवरों <> बगीचा आए
+259,jAnavara Pala KAwe hEM.,jAnavara Pala KAwA hE,जानवर फल खाता है,जानवर फल <> खाता है
+260,mEM XIre calawA hUz.,mEM #XIre calawA hUz,मैं #धीरे चलता हूँ,मैं #धीरे चलता हूँ
+261,riweSa acCA hE.,#riweSa acCA hE,#रितेश अच्छा है,#रितेश अच्छा है
+262,kyA riweSa jA rahA hE?,kyA #riweSa jA rahI hE?,क्या #रितेश जा रही है?,#रितेश जा रही है
+263,rAma ne mohana se tikata KarIxavAye.,rAma ne mohana ko tikata KarIxA,राम ने मोहन को टिकट खरीदा,राम <> मोहन <> टिकट <> खरीदा
+264,riweSa vixyAlaya meM bagIce meM kiwAba paDa rahA hE.,#riweSa vixyAlaya meM bagIce meM kiwAba paDa rahI hE,#रितेश विद्यालय में बगीचे में किताब पढ रही है,#रितेश विद्यालय <> बगीचे <> किताब <> पढ रही है
+265,riweSa ke liye jaMgala se Pala lAo!,#riweSa ke lie jaMgala se Pala lAo,#रितेश के लिए जंगल से फल लाओ,#रितेश <> <> जंगल <> फल <> लाओ
+266,jAnavara kyA kAwe hEM?,jAnavara kyA KAwe hEM,जानवर क्या खाते हैं,जानवर क्या खाते हैं
+267,ayAn acCA ladZakA WA,#ayAn acCA ladakA WI,#अयान् अच्छा लडका थी,#अयान् अच्छा लडका थी
+268,riweSa vixyAlaya meM paDawA WA.,#riweSa vixyAlaya meM paDawI WI,#रितेश विद्यालय में पढती थी,#रितेश विद्यालय <> पढती थी
+269,riweSa ke pAsa KaragoSa WA.,#riweSa ke pAsa KaragoSa WA,#रितेश के पास खरगोश था,#रितेश <> <> खरगोश था
+271,Riwesa KaragoSa ko GAsa xewA hE.,#Riwesa KaragoSa ko GAsa xewI hE,#षितेस खरगोश को घास देती है,#षितेस खरगोश <> घास <> देती है
+272,KaragoSa GAsa KAwA hE.,KaragoSa GAsa KAwA hE,खरगोश घास खाता है,खरगोश घास <> खाता है
+273,vaha vixyAlaya meM  gayA,usane vixyAlaya jAyA,उसने विद्यालय जाया,उसने विद्यालय जाया
+274,vaha Gara meM KaragoSa ko DUzDZa rahA WA ,vaha Gara meM KaragoSa ko DUzDZa rahA WA,वह घर में खरगोश को ढूँढ़ रहा था,वह घर <> खरगोश <> ढूँढ़ रहा था
+275,KaragoSa guma gayA WA.,KaragoSa guma jAyA WA,खरगोश गुम जाया था,खरगोश गुम जाया था
+276,riweSa ro rahA WA.,#riweSa ro rahI WI,#रितेश रो रही थी,#रितेश रो रही थी
+277,riweSa ne KaragoSa ko xeKA.,#riweSa ne KaragoSa xeKA,#रितेश ने खरगोश देखा,#रितेश <> खरगोश <> देखा
+278,KaragoSa bagIcA meM WA,KaragoSa bagIce meM WA,खरगोश बगीचे में था,खरगोश बगीचे <> था
+279,KaragoSa GAsa KA rahA WA ,KaragoSa GAsa KA rahA WA,खरगोश घास खा रहा था,खरगोश घास <> खा रहा था
+281,KaragoSa BUKA WA,KaragoSa BUKA WA,खरगोश भूखा था,खरगोश भूखा था
+282,KaragoSa ne GAsa nahIM KAyI WI,KaragoSa ne GAsa nahIM KAI WI,खरगोश ने घास नहीं खाई थी,खरगोश <> घास <> नहीं खाई थी
+283,merI bA muJe KAnA xewI hE ,#mEM bI muJe KAnA xewI hE,#मैं बी मुझे खाना देती है,#मैं बी मुझे खाना <> देती है
+284,KaragoSa jaMgala meM rahawA WA.,KaragoSa jaMgala meM rahawA WA,खरगोश जंगल में रहता था,खरगोश जंगल <> रहता था
+285,vaha aBimAnI WA.,vaha aBimAnI WA,वह अभिमानी था,वह अभिमानी था
+286,usane eka bAra ek kaCuA ko xeKA.,usane eka #bAra kaCuI ko xeKI,उसने एक #बार कछुई को देखी,उसने एक #बार कछुई <> देखी
+289,kaCue ne cunOwI ko svIkAra kIyA.,kaCuA ne cunOwI #svIkAra,कछुआ ने चुनौती #स्वीकार,कछुआ <> चुनौती <> #स्वीकार
+291,KaragoSa PurwI se BAgA.,KaragoSa PurwI #se BAgA,खरगोश फुर्ती #से भागा,खरगोश फुर्ती #से भागा
+292,kaCuA XIre-XIre calA.,kaCuA #XIre #XIre calA,कछुआ #धीरे #धीरे चला,कछुआ #धीरे #धीरे चला
+293,KaragoSa Waka gayA.,KaragoSa WakA jAyA,खरगोश थका जाया,खरगोश थका जाया
+294,KaragoSa rukA.,KaragoSa rukA,खरगोश रुका,खरगोश रुका
+296,vaha kaCuA ko nahIM xeKa sakawA WA.,vaha kaCue ko nahIM xeKa sakawA WA,वह कछुए को नहीं देख सकता था,वह कछुए <> नहीं देख सकता था
+297,KaragoSa ne socA.,KaragoSa socA,खरगोश सोचा,खरगोश सोचा
+298,kaCuA XIre cala rahA hE.,kaCuA #XIre cala rahA hE,कछुआ #धीरे चल रहा है,कछुआ #धीरे चल रहा है
+300,KaragoSa so gayA.,KaragoSa so jAyA,खरगोश सो जाया,खरगोश सो जाया
+301,kaCuA niraMwara calawA rahA.,kaCuA #niraMwara #cala WA,कछुआ #निरंतर #चल था,कछुआ #निरंतर #चल था
+302,KaragoSa aBI BI so rahA WA.,KaragoSa #aBI #BI so rahA WA,खरगोश #अभी #भी सो रहा था,खरगोश #अभी #भी सो रहा था
+303,kaCuA ganwavya pe pahuzca gayA.,kaCue ne ganwavya pahuzcA,कछुए ने गन्तव्य पहुँचा,कछुए <> गन्तव्य <> पहुँचा
+304,kaCuA xOdZa jIwa gayA.,kaCuA ne xOda jIwI,कछुआ ने दौड जीती,कछुआ <> दौड <> जीती
+305,KaragoSa SaramiMxA huA.,KaragoSa SaramiMxA WA,खरगोश शरमिंदा था,खरगोश शरमिंदा था
+307,usane basa addA xeKA.,usane basa addI xeKI,उसने बस अड्डी देखी,उसने बस अड्डी देखी
+308,vaha basa adde para gayA.,usane basa addI jAyA,उसने बस अड्डी जाया,उसने बस अड्डी जाया
+309,vaha bahuwa aBimAnI WA.,vaha bahuwa aBimAnI WA,वह बहुत अभिमानी था,वह बहुत अभिमानी था
+310,usane pramANa pawra xeKA.,usane pramANa pawra xeKA,उसने प्रमाण पत्र देखा,उसने प्रमाण पत्र देखा
+311,usane rAma ke kAryAlaya kI AXAraSilA raKI.,usane rAma ke kAryAlaya ke lie AXAraSilA raKI,उसने राम के कार्यालय के लिए आधारशिला रखी,उसने राम <> कार्यालय <> <> आधारशिला <> रखी
+312,Apa Sahara jAo!,Apa Sahara jAo,आप शहर जाओ,आप शहर जाओ
+313,hari ne pAnI se GadZe ko BarA.,hari ne pAnI se GadA BarA,हरि ने पानी से घडा भरा,हरि <> पानी <> घडा <> भरा
+314,kyA hari ne pAnI se GadZe ko BarA?,kyA hari ne pAnI se GadA BarA?,क्या हरि ने पानी से घडा भरा?,हरि <> पानी <> घडा <> भरा
+315,kisane pAnI se GadZe ko BarA?,kisane pAnI se GadA BarA,किसने पानी से घडा भरा,किसने पानी <> घडा <> भरा
+316,hari ne kyA GadZe meM BarA?,hari ne kyA Gade meM BarA,हरि ने क्या घडे में भरा,हरि <> क्या घडे <> भरा
+317,wuma pAnI se GadZe ko Baro.,wuma pAnI se GadA #Bara,तुम पानी से घडा #भर,तुम पानी <> घडा <> #भर
+318,hari ne pAnI se GadZe ko nahIM BarA.,hari pAnI se GadA nahIM,हरि पानी से घडा नहीं,हरि पानी <> घडा <> नहीं
+319,GadZe meM pAnI hari ne BarA.,Gade meM pAnI hari ne BarA,घडे में पानी हरि ने भरा,घडे <> पानी <> हरि <> भरा
+320,Sahara mawa jAo!,Sahara nahIM jAo,शहर नहीं जाओ,शहर नहीं जाओ
+321,sUrya nakRawra hE.,sUrya nakRawra hE,सूर्य नक्षत्र है,सूर्य नक्षत्र है
+322,sUrya badA nakRawra hE.,sUrya badA nakRawra hE,सूर्य बडा नक्षत्र है,सूर्य बडा नक्षत्र है
+323,sUrya sabase badA nakRawra hE.,sUrya badA nakRawra hE,सूर्य बडा नक्षत्र है,सूर्य बडा नक्षत्र है
+324,gulAba jEse PUla pAnI meM nahIM ugawe hEM.,gulAboM jEsI PUla pAnI meM nahIM ugawe hEM,गुलाबों जैसी फूल पानी में नहीं उगते हैं,गुलाबों <> फूल पानी <> नहीं उगते हैं
+325,mEMne rAma se praSna pUCA.,mEMne rAma ko praSna pUCA,मैंने राम को प्रश्न पूछा,मैंने राम <> प्रश्न <> पूछा
+327,rAma pahale AyA.,rAma #pahale ko AyA,राम #पहले को आया,राम #पहले <> आया
+328,rAma ne cammaca se katorI se KIra KAyI.,rAma ne cammaca se katore se KIra KAI,राम ने चम्मच से कटोरे से खीर खाई,राम <> चम्मच <> कटोरे <> खीर <> खाई
+329,rAma ne mohana ko kahAnI sunAyI.,rAma ne mohana ko kahAnI sunAI,राम ने मोहन को कहानी सुनाई,राम <> मोहन <> कहानी <> सुनाई
+330,rAma ne skUla jAkara KAnA KAyA.,rAma ne skUla #jA KAnA KAyA,राम ने स्कूल #जा खाना खाया,राम <> स्कूल #जा खाना <> खाया
+332,rAvaNa acCA nahIM hE.,rAvaNa acCA nahIM hE,रावण अच्छा नहीं है,रावण अच्छा नहीं है
+333,XaniyA iwanI vyavahAra kuSala nahIM WI.,XaniyA iwanA vyavahAra #kuSala nahIM WI,धनिया इतना व्यवहार #कुशल नहीं थी,धनिया इतना व्यवहार #कुशल नहीं थी
+334,rAma sabako skUla bulAwA hE.,rAma saba skUla meM bulAwA hE,राम सब स्कूल में बुलाता है,राम सब स्कूल <> बुलाता है
+335,rAma sabako apane skUla bulAwA hE.,rAma saba #apanA skUla meM bulAwA hE,राम सब #अपना स्कूल में बुलाता है,राम सब #अपना स्कूल <> बुलाता है
+336,rAma kyA cAhawA hE?,rAma kyA cAhawA hE,राम क्या चाहता है,राम क्या चाहता है
+337,rAma Pala cAhawA hE?,rAma Pala cAhawA hE,राम फल चाहता है,राम फल <> चाहता है
+338,mohana laMgadAkara calawA hE.,mohana laMgade calawA hE,मोहन लंगडे चलता है,मोहन लंगडे चलता है
+340,BAgawe hue Sera ko xeKo.,BAga Sera xeKo,भाग शेर देखो,भाग शेर <> देखो
+341,BAgawe hue Sera ko xeKo.,BAga Sera xeKo,भाग शेर देखो,भाग शेर <> देखो
+342,KIra ke liye cAvala KarIxo.,KIra ke lie cAvala KarIxo,खीर के लिए चावल खरीदो,खीर <> <> चावल <> खरीदो
+343,KIra ke liye KarIxo.,KIra ke lie KarIxo,खीर के लिए खरीदो,खीर <> <> खरीदो
+344,hAWI JUmawA huA calawA hE.,hAWI #JUma calawA hE,हाथी #झूम चलता है,हाथी #झूम चलता है
+345,rAma hazsawe hue bolawA hE.,rAma #hazsa bolawA hE,राम #हँस बोलता है,राम #हँस बोलता है
+346,rAma mohana se jyAxA buxXimAna hE.,rAma mohana jEsI #buxXimAna hE,राम मोहन जैसी #बुद्धिमान है,राम मोहन <> #बुद्धिमान है
+349,rAma mohana se kama buxXimAna hE.,rAma mohana jEsI #buxXimAna hE,राम मोहन जैसी #बुद्धिमान है,राम मोहन <> #बुद्धिमान है
+350,mEM BHU meM paDawA hUM.,mEM #BHU meM paDawA hUz,मैं #भ्Hऊ में पढता हूँ,मैं #भ्Hऊ <> पढता हूँ
+351,ladZake eka hokara lade.,ladake eka #ho lade,लडके एक #हो लडे,लडके एक #हो लडे
+352,gAyoM ke xuhane se pahale rAma gayA.,gAyoM ko #xuha rAma ne jAIM,गायों को #दुह राम ने जाईं,गायों <> #दुह राम <> जाईं
+353,rAXA mIrA jEsI sunxara hE.,rAXA #mIrA jEsI #sunxara hE,राधा #मीरा जैसी #सुन्दर है,राधा #मीरा <> #सुन्दर है
+354,rAma Ora sIwA acCe hEM.,rAma sIwA acCA hE,राम सीता अच्छा है,राम सीता अच्छा है
+355,rAma ke xo bete hEM.,rAma xo bete hEM,राम दो बेटे हैं,राम दो बेटे हैं
+356,rAma ke eka betI hE.,rAma betI hE,राम बेटी है,राम बेटी है
+357,mEMne kaviwAoM kI kiwAba KarIxI.,mEMne kaviwAoM kA kiwAba KarIxI,मैंने कविताओं का किताब खरीदी,मैंने कविताओं <> किताब <> खरीदी
+358,rAma nalasAja nahIM hE.,rAma nalasAja nahIM hE,राम नलसाज नहीं है,राम नलसाज नहीं है
+359,mEMne SruwaleKa paDA.,mEMne SruwaleKa paDA,मैंने श्रुतलेख पढा,मैंने श्रुतलेख <> पढा
+361,mEM kala rAma ko sarAhuMgA.,mEM kala ko rAma ko sarAhUzgA,मैं कल को राम को सराहूँगा,मैं कल <> राम <> सराहूँगा
+362,mEMne avinASI saca paDA.,mEMne #avinASI saca paDA,मैंने #अविनाशी सच पढा,मैंने #अविनाशी सच <> पढा
+344,hAWI JUmawA huA calawA hE.,hAWI #JUma calawA hE,हाथी #झूम चलता है,हाथी #झूम चलता है
+Test_data/2.tx,rAma hazsawe hue bolawA hE.,rAma hazsakara bolawA hE,राम हँसकर बोलता है,राम हँसकर बोलता है
+103,betoM ko Kewa meM bIja bonA cAhie.,bete Kewa meM bIja bone #None,बेटे खेत में बीज बोने #णोने,बेटे खेत <> बीज <> बोने #णोने
+103,betoM ko Kewa meM bIja bonA cAhie.,bete Kewa meM bIja bone cAheM,बेटे खेत में बीज बोने चाहें,बेटे खेत <> बीज <> बोने चाहें
+103,betoM ko Kewa meM bIja bonA cAhie.,bete Kewa meM bIja bone cAheM,बेटे खेत में बीज बोने चाहें,बेटे खेत <> बीज <> बोने चाहें
+103,betoM ko Kewa meM bIja bonA cAhie.,bete Kewa meM bIja bone cAheM,बेटे खेत में बीज बोने चाहें,बेटे खेत <> बीज <> बोने चाहें
+61,rAvaNa rAma ke xvArA mArA gayA WA.,rAvaNa ko rAma ne mArA gayA WA,रावण को राम ने मारा गया था,रावण <> राम <> मारा गया था
+101,viveka ne rAhula ko BI samAroha meM AmaMwriwa kiyA.,vivek ne rahul ko samAroha #AmaMwriwa kiyA,विवेक् ने रहुल् को समारोह #आमंत्रित किया,विवेक् <> रहुल् <> समारोह #आमंत्रित किया
+247,ayAn ko vixyAlaya meM paDanA cAhie.,ayAn vixyAlaya meM paDanA cAhe,अयान् विद्यालय में पढना चाहे,अयान् विद्यालय <> पढना चाहे
+1,Apa kahAz rahawe hEM?,Apa #kahAz meM rahawA hE,आप #कहाँ में रहता है,आप #कहाँ <> रहता है
+4,bacce janavarI meM Pala KAwe hEM.,bacce janavarI ko Pala KAwe hEM,बच्चे जनवरी को फल खाते हैं,बच्चे जनवरी <> फल <> खाते हैं
+1,Apa kahAz rahawe hEM?,Apa #kahAz meM rahawA hE,आप #कहाँ में रहता है,आप #कहाँ <> रहता है
+88,kyA rAma ke pAsa kiwAba hE?,kyA rAma ke pAsa kiwAba hE?,क्या राम के पास किताब है?,राम <> <> किताब है
+40,rAma ko xillI jAnA padZA.,rAma xillI jAnA #None,राम दिल्ली जाना #णोने,राम दिल्ली जाना #णोने
+56,bacce ko CAwra kahA jAyegA.,bacce ko CAwra kahA #None,बच्चे को छात्र कहा #णोने,बच्चे <> छात्र <> कहा #णोने
+56,bacce ko CAwra kahA jAyegA.,bacce ko CAwra kahA #jA,बच्चे को छात्र कहा #जा,बच्चे <> छात्र <> कहा #जा
+33,mEM kala AyA.,mEM kala ko AI,मैं कल को आई,मैं कल <> आई
+64,unhone Kewa meM bIja bo xiye.,#vaha Kewa meM bIja bo #None,#वह खेत में बीज बो #णोने,#वह खेत <> बीज <> बो #णोने
+64,unhone Kewa meM bIja bo xiye.,#vaha Kewa meM bIja bo #xe,#वह खेत में बीज बो #दे,#वह खेत <> बीज <> बो #दे
+64,unhone Kewa meM bIja bo xiye.,#vaha Kewa meM bIja bo #xe,#वह खेत में बीज बो #दे,#वह खेत <> बीज <> बो #दे
+64,unhone Kewa meM bIja bo xiye.,#vaha Kewa meM bIja bo xie,#वह खेत में बीज बो दिए,#वह खेत <> बीज <> बो दिए
+65,BArawa ko AryAvarwa kahA jAwA WA.,BArawa AryAvarwa kahA #None WA,भारत आर्यावर्त कहा #णोने था,भारत <> आर्यावर्त <> कहा #णोने था
+65,BArawa ko AryAvarwa kahA jAwA WA.,BArawa AryAvarwa kahA #None WA,भारत आर्यावर्त कहा #णोने था,भारत <> आर्यावर्त <> कहा #णोने था
+65,BArawa ko AryAvarwa kahA jAwA WA.,BArawa AryAvarwa kahA jAwA WA,भारत आर्यावर्त कहा जाता था,भारत <> आर्यावर्त <> कहा जाता था
+56,bacce ko CAwra kahA jAyegA.,bacce ko CAwra kahA jAegA,बच्चे को छात्र कहा जाएगा,बच्चे <> छात्र <> कहा जाएगा
+68,pqWvI ko graha kahA jAwA hE.,pqWvI graha kahA jAwA hE,पृथ्वी ग्रह कहा जाता है,पृथ्वी <> ग्रह <> कहा जाता है
+103,betoM ko Kewa meM bIja bonA cAhie.,bete Kewa meM bIja bone cAheM,बेटे खेत में बीज बोने चाहें,बेटे खेत <> बीज <> बोने चाहें
+103,betoM ko Kewa meM bIja bonA cAhie.,bete Kewa meM bIja bone cAheM,बेटे खेत में बीज बोने चाहें,बेटे खेत <> बीज <> बोने चाहें
+103,betoM ko Kewa meM bIja bonA cAhie.,bete Kewa meM bIja bone cAheM,बेटे खेत में बीज बोने चाहें,बेटे खेत <> बीज <> बोने चाहें
+103,betoM ko Kewa meM bIja bonA cAhie.,bete Kewa meM bIja bone cAheM,बेटे खेत में बीज बोने चाहें,बेटे खेत <> बीज <> बोने चाहें
+103,betoM ko Kewa meM bIja bonA cAhie.,bete Kewa meM bIja bone cAhiye/cAhie,बेटे खेत में बीज बोने चाहिये/चाहिए,बेटे खेत <> बीज <> बोने चाहिये/चाहिए
+104,ladake ko nayI kiwAba paDanI cAhie.,ladakA naye kiwAba paDanA cAhiye/cAhie,लडका नये किताब पढना चाहिये/चाहिए,लडका नये किताब <> पढना चाहिये/चाहिए
+110,muJe kalama xiyA gayA.,muJe kalama xiyA gayA,मुझे कलम दिया गया,मुझे कलम <> दिया गया
+147,vaha so cukA hogA.,vaha so #None hogA,वह सो #णोने होगा,वह सो #णोने होगा
+147,vaha so cukA hogA.,vaha so cukA hogA,वह सो चुका होगा,वह सो चुका होगा
+150,rAma ne KAnA nahIM KAyA WA,rAma KAnA nahIM,राम खाना नहीं,राम खाना <> नहीं
+150,rAma ne KAnA nahIM KAyA WA,rAma ne KAnA nahIM KAyA WA,राम ने खाना नहीं खाया था,राम <> खाना <> नहीं खाया था
+158,mEMne Pala KA liyA hogA.,mEM Pala KA liyA hoUzgA,मैं फल खा लिया होऊँगा,मैं फल <> खा लिया होऊँगा
+163,lomadZI BUKI WI,lomadI BUKA #hE,लोमडी भूखा #है,लोमडी भूखा #है
+163,lomadZI BUKI WI,lomadI BUKA #WA,लोमडी भूखा #था,लोमडी भूखा #था
+163,lomadZI BUKI WI,lomadI BUKA WI,लोमडी भूखा थी,लोमडी भूखा थी
+168,rajawa ne rAXA ko bawAyA,rajawa ne rAXA ko bawAI,रजत ने राधा को बताई,रजत <> राधा <> बताई
+176,XarAwala SikRA meM hE.,XarAwala SikRA meM hE,धरातल शिक्षा में है,धरातल शिक्षा <> है
+178,jaMgala meM Sera WA.,jaMgala meM Sera WA,जंगल में शेर था,जंगल <> शेर था
+194,kyA wuma Delhi meM ho?,kyA wuma Delhi meM hE?,क्या तुम ढेल्हि में है?,तुम ढेल्हि <> है
+196,rAma ko KIra KAnI padZI.,rAma KIra KAnA pada,राम खीर खाना पड,राम खीर <> खाना पड
+196,rAma ko KIra KAnI padZI.,rAma KIra KAnA padA,राम खीर खाना पडा,राम खीर <> खाना पडा
+197,muJe xOdZanA cAhie.,mEM xOdanA cAhiye/cAhie,मैं दौडना चाहिये/चाहिए,मैं दौडना चाहिये/चाहिए
+218,rAma Sahara meM WA,rAma Sahara meM WA,राम शहर में था,राम शहर <> था
+229,ayAn ke pAsa WodZA pAnI WA.,ayAn ke pAsa Wode pAnI WA,अयान् के पास थोडे पानी था,अयान् <> <> थोडे पानी था
+280,riweSa ko samaJa A gayA,riweSa samaJa cukA WA,रितेश समझ चुका था,रितेश समझ चुका था
+24,ladake ke liye jaMgala se Pala lAo!,ladake ke lie jaMgala se Pala lAo,लडके के लिए जंगल से फल लाओ,लडके <> <> जंगल <> फल <> लाओ
+44,bagIce meM billiyAz WIM. ,bagIce meM billiyAz WIM,बगीचे में बिल्लियाँ थीं,बगीचे <> बिल्लियाँ थीं
+40,rAma ko xillI jAnA padZA.,rAma xillI jAnA padA,राम दिल्ली जाना पडा,राम दिल्ली जाना पडा
+57,mere liye jaMgala se Pala lAo!,#mEM jaMgala se Pala lAo,#मैं जंगल से फल लाओ,#मैं जंगल <> फल <> लाओ
+99,camadZe se jUwe banAo.,camade jUwe banAo,चमडे जूते बनाओ,चमडे जूते <> बनाओ
+168,rajawa ne rAXA ko bawAyA,rajawa ne rAXA ko bawAI,रजत ने राधा को बताई,रजत <> राधा <> बताई
+168,rajawa ne rAXA ko bawAyA,rajawa ne rAXA ko bawAI,रजत ने राधा को बताई,रजत <> राधा <> बताई
+232,ladake ke liye jaMgala se Pala lAo!,ladake ke lie jaMgala se Pala lAo,लडके के लिए जंगल से फल लाओ,लडके <> <> जंगल <> फल <> लाओ
+265,riweSa ke liye jaMgala se Pala lAo!,riweSa ke lie jaMgala se Pala lAo,रितेश के लिए जंगल से फल लाओ,रितेश <> <> जंगल <> फल <> लाओ
+281,KaragoSa BUKA WA,KaragoSa BUKA WA,खरगोश भूखा था,खरगोश भूखा था
+305,KaragoSa SaramiMxA huA.,KaragoSa SaramiMxA WA,खरगोश शरमिंदा था,खरगोश शरमिंदा था
+307,usane basa addA xeKA.,usane basa addI xeKI,उसने बस अड्डी देखी,उसने बस अड्डी देखी
+140,kala varRA hogI.,kala varRA hoMgI,कल वर्षा होंगी,कल वर्षा होंगी
+151,SikRikA ne CAwroM se kakRA ko sAPa karAyA.,SikRaka ne CAwra ko kakRA sAPa kie,शिक्षक ने छात्र को कक्षा साफ किए,शिक्षक <> छात्र <> कक्षा साफ किए
+Test_data/1.tx,rAma ne skUla jAkara KAnA KAyA.,rAma ne skUla jAkara KAnA KAyA,राम ने स्कूल जाकर खाना खाया,राम <> स्कूल जाकर खाना <> खाया
+Test_data/1.tx,भागते हुए शेर को देखो,BAgawe_hue Sera #XeKa,भागते_हुए शेर #धेख,भागते_हुए शेर <> #धेख
+Test_data/1.tx,भागते हुए शेर को देखो,BAgawe_hue Sera #xeKa,भागते_हुए शेर #देख,भागते_हुए शेर <> #देख
+Test_data/1.tx,भागते हुए शेर को देखो,BAgawe_hue Sera xeKo,भागते_हुए शेर देखो,भागते_हुए शेर <> देखो
+Test_data/1.tx,rAma ne skUla jAkara KAnA KAyA.,rAma ne skUla jAkara KAnA KAyA,राम ने स्कूल जाकर खाना खाया,राम <> स्कूल जाकर खाना <> खाया
+Test_data/1.tx,राम खा-खाकर मोटा हो गया ।,rAma #KA motA huA gayA,राम #खा मोटा हुआ गया,राम #खा मोटा हुआ गया
+Test_data/1.tx,राम खा-खाकर मोटा हो गया ।,rAma #KA motA ho gayA,राम #खा मोटा हो गया,राम #खा मोटा हो गया
+Test_data/1.tx,pANdava eka hokara lade,pANdava eka #ho lade,पाण्डव एक #हो लडे,पाण्डव एक #हो लडे
+Test_data/1.tx,p#राम सोते हुए खर्राटे भरता है।,rAma sowe_hue,राम सोते_हुए,राम सोते_हुए
+Test_data/1.tx,p#राम सोते हुए खर्राटे भरता है।,rAma sowe_hue #KarrAte BarawA hE,राम सोते_हुए #खर्राटे भरता है,राम सोते_हुए #खर्राटे भरता है
+Test_data/1.tx,p#राम सोते हुए खर्राटे भरता है।,rAma sowe_hue #KarrAte BarawA hE,राम सोते_हुए #खर्राटे भरता है,राम सोते_हुए #खर्राटे भरता है
+151,SikRikA ne CAwroM se kakRA ko sAPa karAyA.,SikRaka ne CAwra ko kakRA sAPa kie,शिक्षक ने छात्र को कक्षा साफ किए,शिक्षक <> छात्र <> कक्षा साफ किए
+1,Apa kahAz rahawe hEM?,Apa #kahAz meM rahawA hE,आप #कहाँ में रहता है,आप #कहाँ <> रहता है
+5,baccA kya kAwA hE?,baccA kyA KAwA hE,बच्चा क्या खाता है,बच्चा क्या खाता है
+67,vaha kaba jA rahA hE?,vaha #kaba ko jA rahA hE,वह #कब को जा रहा है,वह #कब <> जा रहा है
+266,jAnavara kyA kAwe hEM?,jAnavara kyA KAwe hEM,जानवर क्या खाते हैं,जानवर क्या खाते हैं
+1,Apa kahAz rahawe hEM?,Apa #kahAz meM rahawA hE,आप #कहाँ में रहता है,आप #कहाँ <> रहता है
+67,vaha kaba jA rahA hE?,vaha #kaba ko jA rahA hE,वह #कब को जा रहा है,वह #कब <> जा रहा है
+390,muJe cAya yA kAPI xo.,muJe cAya #kOPI #xe,मुझे चाय #कौफी #दे,मुझे चाय <> #कौफी <> #दे
+247,ayAn ko vixyAlaya meM paDanA cAhie.,ayAn vixyAlaya meM paDanA cAhiye/cAhie,अयान् विद्यालय में पढना चाहिये/चाहिए,अयान् विद्यालय <> पढना चाहिये/चाहिए

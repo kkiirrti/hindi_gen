@@ -105,7 +105,7 @@ if __name__ == "__main__":
     POST_PROCESS_OUTPUT = rearrange_sentence(PP_fulldata)  # reaarange by index number
 
     # for yn_interrogative add kya in the beginning
-    if sentence_type == "yn_interrogative":
+    if sentence_type in ("yn_interrogative","yn_interrogative_negative" ):
         POST_PROCESS_OUTPUT = 'kyA ' + POST_PROCESS_OUTPUT + '?'
 
     hindi_output = collect_hindi_output(POST_PROCESS_OUTPUT)

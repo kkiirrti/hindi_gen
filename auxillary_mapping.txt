@@ -15,6 +15,7 @@ hE,hE,hE
 cAhiye,cAha,subj
 cAhie,cAha,subj
 sakawA,saka,wA
+sakA,saka,yA
 WA,WA,WA
 padawA,pada,wA
 calawA,cala,wA
@@ -22,7 +23,7 @@ jAwA,jA,wA
 xiyA,xe,yA
 xewA,xe,wA
 xegA,xe,gA
-cukA,cukA,0
+cukA,cuka,yA
 liyA,le,yA
 lewA,le,wA
 legA,le,gA
