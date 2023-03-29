@@ -675,12 +675,22 @@ def check_adverb(word_data):
 
 def check_indeclinable(word_data):
     """ Check if word is in indeclinable word list."""
+    if word_data[2] == 'unit':
+        return True
+
     word = word_data[1]
     if '_' in word:
         w = word.split('_')
         num = w[0]
         if num.isdigit():
             return True
+
+    units = (
+        'semI,kimI,mItara'
+    )
+    unit_list = units.split(",")
+    if clean(word_data[1]) in unit_list:
+        return True
 
     indeclinable_words = (
         'aBI,waWA,Ora,paranwu,kinwu,evaM,waWApi,Bale hI,'
@@ -869,11 +879,16 @@ def get_root_for_kim(relation, anim):
 
 def process_indeclinables(indeclinables):
     '''Processes indeclinable words index, word, 'indec'''
-
     processed_indeclinables = []
     for indec in indeclinables:
-        clean_indec = clean(indec[1])
-        processed_indeclinables.append((indec[0], clean_indec, 'indec'))
+        if '_' in indec[1]:
+            temp = indec[1].split('_')
+            num = temp[0]
+        if num.isdigit():
+                processed_indeclinables.append((indec[0], num, 'indec'))
+        else:
+            clean_indec = clean(indec[1])
+            processed_indeclinables.append((indec[0], clean_indec, 'indec'))
     return processed_indeclinables
 
 def process_others(other_words):
