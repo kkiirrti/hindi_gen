@@ -11,8 +11,9 @@ from concept import Concept
 noun_attribute = dict()
 USR_row_info = ['root_words', 'index_data', 'seman_data', 'gnp_data', 'depend_data', 'discourse_data', 'spkview_data', 'scope_data']
 nA_list = ['nA_paDa', 'nA_padZA', 'nA_padA', 'nA_hE', 'nA_tha', 'nA_thI', 'nA_ho', 'nA_hogA', 'nA_cAhie', 'nA_cAhiye']
-
 processed_postpositions_dict = {}
+construction_dict = {}
+
 def add_adj_to_noun_attribute(key, value):
     if key is not None:
         if key in noun_attribute:
@@ -118,7 +119,7 @@ def clean(word, inplace=''):
 
 def is_tam_ya(verbs_data):
     ya_tam = '-yA_'
-    if verbs_data != []:
+    if verbs_data != ():
         term = verbs_data[1]
         if ya_tam in term:
             return True
@@ -445,15 +446,17 @@ def read_file(file_path):
     log(f'File ~ {file_path}')
     try:
         with open(file_path, 'r') as file:
-            data = file.read().splitlines()
+            lines = file.readlines()
+            lines = [line.strip() for line in lines if line.strip()]
             log('File data read.')
     except FileNotFoundError:
         log('No such File found.', 'ERROR')
         sys.exit()
-    return data
+    return lines
 
 def generate_rulesinfo(file_data):
     '''Return list all 10 rules of USR as list of lists'''
+
     if len(file_data) < 10:
         log('Invalid USR. USR does not contain 10 lines.', 'ERROR')
         sys.exit()
@@ -468,10 +471,13 @@ def generate_rulesinfo(file_data):
     spkview_data = file_data[7].strip().split(',')
     scope_data = file_data[8].strip().split(',')
     sentence_type = file_data[9].strip()
+    construction_data = ''
+    if len(file_data) > 10:
+        construction_data = file_data[10].strip()
 
     log('Rules Info extracted succesfully fom USR.')
     return [src_sentence, root_words, index_data, seman_data, gnp_data, depend_data, discourse_data, spkview_data,
-            scope_data, sentence_type]
+            scope_data, sentence_type, construction_data]
 
 def check_USR_format(root_words, index_data, seman_data, gnp_data, depend_data, discourse_data, spkview_data,
                       scope_data):
@@ -669,6 +675,12 @@ def check_adverb(word_data):
 
 def check_indeclinable(word_data):
     """ Check if word is in indeclinable word list."""
+    word = word_data[1]
+    if '_' in word:
+        w = word.split('_')
+        num = w[0]
+        if num.isdigit():
+            return True
 
     indeclinable_words = (
         'aBI,waWA,Ora,paranwu,kinwu,evaM,waWApi,Bale hI,'
@@ -680,6 +692,7 @@ def check_indeclinable(word_data):
     indeclinable_list = indeclinable_words.split(",")
     if clean(word_data[1]) in indeclinable_list:
         return True
+
     return False
 
 def analyse_words(words_list):
@@ -963,6 +976,7 @@ def process_nouns(nouns, words_info, verbs_data):
     '''Process nouns as Process nouns as (index, word, category, case, gender, number, proper/noun type= proper, common, NC, nominal_verb or CP_noun, postposition)'''
     #noun_attribute dict to store all nouns as keys
     processed_nouns = []
+    main_verb = ''
     # fetch the main verb
     for verb in verbs_data:
         if verb[4].strip().split(':')[1] == 'main':
@@ -1184,7 +1198,105 @@ def verb_agreement_with_CP(verb, CP):
         return CP[4], CP[5], CP[6]
     else:
         return verb.gender, verb.number, verb.person
+def process_plurality(processed_words, depend_data):
+    i = 1
+    if depend_data != '':
+        dependency = depend_data.strip().split(',')
+        for dep in dependency:
+            if dep != '':
+                dep_head = dep.strip().split(':')[0]
+                dep_val = dep.strip().split(':')[1]
 
+                if dep_val == 'k1s':
+                    pass
+
+
+def set_gender_make_plural(processed_words, g, num):
+    process_data = []
+    # for all k1s and main verb change gender to female and number to plural
+    for i in range(len(processed_words)):
+        word_list = list(processed_words[i])
+        if word_list[2] == 'adj':
+            # 4th index - gender, 5th index - number
+            word_list[4] = g
+            word_list[5] = num
+        elif word_list[2] == 'v':
+            # 3rd index - gender, 4th index - number
+            word_list[3] = g
+            word_list[4] = num
+        process_data.append(tuple(word_list))
+
+    return process_data
+def process_construction(processed_words, construction_data, depend_data, gnp_data, index_data):
+    # Adding Ora or yA as a tuple to be sent to morph/ adding it at join_compounds only
+    # if k1 in conj, all k1s and main verb g - m and n - pl
+    # if all k1 male or mix - k1s g - male else g - f
+    # cons list - can be more than one conj
+    # k1 ka m/f/mix nikalkr k1s and verb ko g milega    index dep:gen
+    # map to hold conj kaha aega
+    process_data = processed_words
+    dep_gender_dict = {}
+    if gnp_data != []:
+        gender = []
+        for i in range(len(gnp_data)):
+            gnp_info = gnp_data[i]
+            gnp_info = gnp_info.strip().strip('][')
+            gnp = gnp_info.split(' ')
+            gender.append(gnp[0])
+
+
+    if depend_data != []:
+        dependency = []
+        for dep in depend_data:
+            if dep != '':
+                dep_val = dep.strip().split(':')[1]
+                dependency.append(dep_val)
+
+    for i, dep, g in zip(index_data, dependency, gender):
+        dep_gender_dict[str(i)] = dep + ':' + g
+
+    if construction_data != '' and len(construction_data) > 0:
+        construction = construction_data.strip().split(' ')
+        for cons in construction:
+            conj_type = cons.split(':')[0].strip().lower()
+            index = cons.split(':')[1].strip().strip('][').split(',')
+            length_index = len(index)
+            cnt_m = 0
+            cnt_f = 0
+            PROCESS = False
+            for i in index:
+                relation = dep_gender_dict[i]
+                dep = relation.split(':')[0]
+                gen = relation.split(':')[1]
+
+                if dep == 'k1':
+                    PROCESS = True
+                    if gen == 'm':
+                        cnt_m = cnt_m + 1
+                    elif gen == 'f':
+                        cnt_f = cnt_f + 1
+
+            if PROCESS:
+                if cnt_f == length_index:
+                    g = 'f'
+                    num = 'p'
+                else:
+                    g = 'm'
+                    num = 'p'
+                process_data = set_gender_make_plural(processed_words, g, num)
+
+            update_index = index[length_index - 2]
+            for i in index:
+                if i == update_index:
+                    if conj_type == 'conj':
+                        construction_dict[update_index] = 'Ora'
+                    elif conj_type == 'disjunct':
+                        construction_dict[update_index] = 'yA'
+                    break
+                else:
+                    construction_dict[i] = ','
+
+    return process_data
 
 def process_main_verb(concept: Concept, seman_data, dependency_data, sentence_type, processed_nouns, processed_pronouns, reprocessing):
     """
@@ -1591,7 +1703,7 @@ def preprocess_postposition(processed_words, words_info, is_tam_ya):
             data_case = False
         ppost = ''
         if data_case in ('k1', 'pk1'):
-            if is_tam_ya:  # has TAM "yA"
+           # if is_tam_ya:  # has TAM "yA"
                 if findValue('k2', words_info, index=4)[0]: # or if CP_present, then also ne - add
                     ppost = 'ne'
                     if data[2] != 'other':
@@ -1662,13 +1774,12 @@ def preprocess_postposition(processed_words, words_info, is_tam_ya):
         new_processed_words.append(data)
     return new_processed_words, PPdata
 
-#def preprocess_postposition_new(processed_words, words_info, processed_verbs):
 def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
     '''Calculates postposition to words wherever applicable according to rules.'''
-
-    data_case = np_data[4].strip().split(':')[1]
-    data_index = np_data[0]
-    data_seman = np_data[2]
+    if np_data != ():
+        data_case = np_data[4].strip().split(':')[1]
+        data_index = np_data[0]
+        data_seman = np_data[2]
     ppost = ''
     new_case = 'o'
     if data_case in ('k1', 'pk1'):
@@ -1755,11 +1866,71 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
     return new_case, ppost
 
 
-def join_compounds(transformed_data):
+# def join_compounds(transformed_data):
+#     '''joins compound words without spaces'''
+#     resultant_data = []
+#     prevword = ''
+#     previndex = -1
+#     if conjunction_data:
+#         conj_type = conjunction_data.split(':')[0].strip()
+#         index = conjunction_data.split(':')[1].strip('][').split(',')
+#
+#     for data in sorted(transformed_data):
+#         if (data[0]) == previndex and data[2] == 'n':
+#             temp = list(data)
+#             temp[1] = prevword + ' ' + temp[1]
+#             data = tuple(temp)
+#             resultant_data.pop()
+#         resultant_data.append(data)
+def collect_hindi_output(source_text):
+    """Take the output text and find the hindi text from it."""
+
+    hindi_format = WXC(order="wx2utf", lang="hin")
+    generate_hindi_text = hindi_format.convert(source_text)
+    return generate_hindi_text
+#         previndex = data[0]
+#         prevword = data[1]
+#
+#     return resultant_data
+
+
+
+def join_compounds(transformed_data, construction_data):
     '''joins compound words without spaces'''
     resultant_data = []
+    intermediate_data = []
     prevword = ''
     previndex = -1
+    isPrev = False
+    length_index = 0
+    # if construction_data != '':
+    #     conj_type = construction_data.split(':')[0].strip().lower()
+    #     index = construction_data.split(':')[1].strip('][').split(',')
+    #     length_index = len(index)
+    #
+    # i = 0
+    # for data in sorted(transformed_data):
+    #     if i < length_index and data[0] == int(index[i]):
+    #         i = i+1
+    #         if i == length_index:
+    #             intermediate_data.append(data)
+    #         elif i == length_index-1:
+    #             temp = list(data)
+    #             if conj_type == 'conj':
+    #                 temp[1] = temp[1] + ' Ora '
+    #             elif conj_type == 'disjunct':
+    #                 temp[1] = temp[1] + ' yA '
+    #             data = tuple(temp)
+    #             intermediate_data.append(data)
+    #         else:
+    #             temp = list(data)
+    #             temp[1] = temp[1] + ', '
+    #             data = tuple(temp)
+    #             intermediate_data.append(data)
+    #     else:
+    #         intermediate_data.append(data)
+
+    #for data in sorted(intermediate_data):
     for data in sorted(transformed_data):
         if (data[0]) == previndex and data[2] == 'n':
             temp = list(data)
@@ -1789,20 +1960,28 @@ def add_postposition(transformed_fulldata, processed_postpositions):
 
     return PPFulldata
 
+def add_construction(transformed_data, construction_dict):
+    Constructdata = []
+
+    for data in transformed_data:
+        index = data[0]
+        if str(index) in construction_dict:
+            temp = list(data)
+            construct = construction_dict[str(index)]
+            if construct == ',':
+                temp[1] = temp[1] + construct
+            else:
+                temp[1] = temp[1] + ' ' + construct
+            data = tuple(temp)
+        Constructdata.append(data)
+
+    return Constructdata
 
 def rearrange_sentence(fulldata):
     '''Function comments'''
     finalData = sorted(fulldata)
     final_words = [x[1].strip() for x in finalData]
     return " ".join(final_words)
-
-
-def collect_hindi_output(source_text):
-    """Take the output text and find the hindi text from it."""
-
-    hindi_format = WXC(order="wx2utf", lang="hin")
-    generate_hindi_text = hindi_format.convert(source_text)
-    return generate_hindi_text
 
 
 def write_hindi_text(hindi_output, POST_PROCESS_OUTPUT, OUTPUT_FILE):

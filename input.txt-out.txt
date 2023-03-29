@@ -1,6 +1,1 @@
-^karanA/karanA<cat:vn><case:d>/
-
-kara<cat:v><gen:m><num:s><per:a><tam:nA>/
-kara<cat:v><gen:m><num:s><per:u><tam:nA>/
-kara<cat:v><gen:m><num:s><per:m><tam:nA>/
-kara<cat:v><gen:m><num:s><per:m_h><tam:nA>$
+^mItaroM/mItara<cat:n><case:o><gen:m><num:p>$
