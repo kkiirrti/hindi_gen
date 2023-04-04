@@ -9,10 +9,11 @@ if __name__ == "__main__":
     except IndexError:
         log("No argument given. Please provide path for input file as an argument.", "ERROR")
         sys.exit()
-    
+
+
     file_data = read_file(path) #Reading USR
     rules_info = generate_rulesinfo(file_data)    #Extracting Rules from each row of USR
-    
+
     # Extracting Information
     src_sentence = rules_info[0]
     root_words = rules_info[1]
@@ -30,22 +31,26 @@ if __name__ == "__main__":
         construction_data = rules_info[10]
 
     # Making a collection of words and its rules as a list of tuples.
-    words_info = generate_wordinfo(root_words, index_data, seman_data, 
-                    gnp_data, depend_data, discourse_data, spkview_data, scope_data)
-    
+    words_info = generate_wordinfo(root_words, index_data, seman_data,
+                                   gnp_data, depend_data, discourse_data, spkview_data, scope_data)
+
     # Categorising words as Nound/Pronouns/Adjectives/..etc.
-    indeclinables_data, pronouns_data, nouns_data, adjectives_data, verbs_data, adverbs_data, others_data, nominal_forms_data = analyse_words(words_info)
+    indeclinables_data, pronouns_data, nouns_data, adjectives_data, verbs_data, adverbs_data, others_data, nominal_forms_data = analyse_words(
+        words_info)
     #  Processing Stage
     processed_indeclinables = process_indeclinables(indeclinables_data)
     processed_nouns = process_nouns(nouns_data, words_info, verbs_data)
-    processed_pronouns = process_pronouns(pronouns_data, processed_nouns, processed_indeclinables, words_info, verbs_data)
+    processed_pronouns = process_pronouns(pronouns_data, processed_nouns, processed_indeclinables, words_info,
+                                          verbs_data)
+    # if sentence_type in ('imperative', 'Imperative', 'neg-imperative'):
+    #     processed_pronouns = process_imp_sentence(words_info, processed_pronouns)
 
     processed_others = process_others(others_data)
     processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns, False)
     processed_adjectives = process_adjectives(adjectives_data, processed_nouns, processed_verbs)
     process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others)
     process_nominal_form = process_nominal_form(nominal_forms_data, processed_nouns, words_info, verbs_data)
-    
+
     # Todo : extract nouns / adjectives from Compound verbs with +
     # Todo : process nouns / adjectives got from verbs and add to processed_noun / processed_adjectives
 
@@ -56,7 +61,7 @@ if __name__ == "__main__":
     # Every word is collected into one and sorted by index number.
     processed_words = collect_processed_data(processed_pronouns,processed_nouns,processed_adjectives,
                                             processed_verbs, processed_auxverbs,processed_indeclinables, processed_others)
-    
+
     # calculating postpositions for words if applicable.
     #processed_words, processed_postpositions = preprocess_postposition_new(processed_words, words_info,processed_verbs)
     if HAS_CONSTRUCTION_DATA:
@@ -101,24 +106,26 @@ if __name__ == "__main__":
     #construction data is joined
     if HAS_CONSTRUCTION_DATA:
         PP_fulldata = add_construction(PP_fulldata, construction_dict)
-    
+
     POST_PROCESS_OUTPUT = rearrange_sentence(PP_fulldata)  # reaarange by index number
 
+    if has_ques_mark(sentence_type):
+        POST_PROCESS_OUTPUT = POST_PROCESS_OUTPUT + '?'
+
     # for yn_interrogative add kya in the beginning
-    if sentence_type in ("yn_interrogative","yn_interrogative_negative" ):
-        POST_PROCESS_OUTPUT = 'kyA ' + POST_PROCESS_OUTPUT + '?'
+    if sentence_type in ("yn_interrogative","yn_interrogative_negative", "pass-yn_interrogative"):
+        POST_PROCESS_OUTPUT = 'kyA ' + POST_PROCESS_OUTPUT
 
     hindi_output = collect_hindi_output(POST_PROCESS_OUTPUT)
     #next line for single line input
     write_hindi_text(hindi_output, POST_PROCESS_OUTPUT, OUTPUT_FILE)
 
     # next line code for bulk generation of results. All results are collated in test.csv. Run sh test.sh
-    #write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE, path)
+    # write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE, path)
 
     #for masked input -uncomment the following:
-    # masked_pp_list = masked_postposition(processed_words, words_info, processed_verbs)
+    # masked_pup_list = masked_postposition(processed_words, words_info, processed_verbs)
     # masked_pp_fulldata = add_postposition(transformed_data, masked_pp_list)
     # arranged_masked_output = rearrange_sentence(masked_pp_fulldata)
     # masked_hindi_data = collect_hindi_output(arranged_masked_output)
     # write_masked_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, masked_hindi_data, OUTPUT_FILE, path)
-

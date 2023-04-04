@@ -447,7 +447,15 @@ def read_file(file_path):
     try:
         with open(file_path, 'r') as file:
             lines = file.readlines()
-            lines = [line.strip() for line in lines if line.strip()]
+            file_rows = []
+            for i in range(len(lines)):
+                lineContent = lines[i]
+                if i == 10:
+                    if lineContent.strip() == '':
+                        break
+                    else:
+                        file_rows.append(lineContent)
+
             log('File data read.')
     except FileNotFoundError:
         log('No such File found.', 'ERROR')
@@ -678,13 +686,6 @@ def check_indeclinable(word_data):
     if word_data[2] == 'unit':
         return True
 
-    word = word_data[1]
-    if '_' in word:
-        w = word.split('_')
-        num = w[0]
-        if num.isdigit():
-            return True
-
     units = (
         'semI,kimI,mItara'
     )
@@ -702,6 +703,17 @@ def check_indeclinable(word_data):
     indeclinable_list = indeclinable_words.split(",")
     if clean(word_data[1]) in indeclinable_list:
         return True
+
+    #Numbers appear without '_' in the USR
+    num = word_data[1]
+    if num.isdigit():
+        return True
+    else:
+        try:
+            float_value = float(num)
+            return True
+        except ValueError:
+            return False
 
     return False
 
@@ -853,27 +865,44 @@ def process_adverbs(adverbs, processed_nouns, processed_verbs, processed_indecli
                     log(f'adverb {adverb[1]} processed indeclinable with form {term}, no processing done')
                     return
 
-def get_root_for_kim(relation, anim):
-    if relation in ('k1', 'k1s'):
+def get_root_for_kim(relation, anim, gnp):
+    # kOna is root for - kisakA, kisakI, kisake, kinakA, kinake, kinakI, kOna, kisa, kisane, kise, kisako,
+    # kisase, kisake, kisameM, kisameM_se, isapara, kina, inhoMne, kinheM, kinako, kinase, kinpara, kinake, kinameM, kinameM_se, kisI, kisa
+
+    # kyA = k1s, gnp, inanimate
+    # kyA = k2, non anim
+    # kOna = k1s, gnp, animate
+    # kEsA = k1s, no gnp, inanimate
+    animate = ['anim', 'per']
+    inanimate = ['']
+    if relation == 'k1s' and len(gnp) > 0 and anim in animate:
         return 'kOna'
-    elif relation == 'k2' and anim == '':
+    #generate kisane, kOna
+    elif relation == 'k1':
+        return 'kOna'
+    #generate kisase, kisako
+    elif relation in ('k2', 'k2g', 'k5', 'k3'):
+        return 'kOna'
+
+    elif relation == 'k1s' and len(gnp) > 0 and anim in inanimate:
         return 'kyA'
+    elif relation == 'k2' and anim in inanimate:
+        return 'kyA'
+
     elif relation in ('k2p', 'k7p'):
         return 'kahAz'
     elif relation == 'k5':
         return 'kahAz se'
+
     elif relation == 'kr_vn':
         return 'kEse'
-    elif relation == 'k3':
-        return 'kisa se'
-    elif relation == 'k1s':
+    elif relation == 'k1s' and len(gnp) == 0 and anim in inanimate:
         return 'kEsA'
     elif relation == 'rt':
         return 'kyoM'
     elif relation == 'k7t':
         return 'kaba'
-    elif relation in ('k2', 'k2g', 'k5'):
-        return 'kisa se'
+
     else :
         return 'kim'
 
@@ -881,16 +910,26 @@ def process_indeclinables(indeclinables):
     '''Processes indeclinable words index, word, 'indec'''
     processed_indeclinables = []
     for indec in indeclinables:
-        if '_' in indec[1]:
-            temp = indec[1].split('_')
-            num = temp[0]
-        if num.isdigit():
-                processed_indeclinables.append((indec[0], num, 'indec'))
+        term = indec[1]
+        if term.isdigit():
+            processed_indeclinables.append((indec[0], term, 'indec'))
         else:
-            clean_indec = clean(indec[1])
-            processed_indeclinables.append((indec[0], clean_indec, 'indec'))
+            try:
+                float_term = float(term)
+                processed_indeclinables.append((indec[0], float_term, 'indec'))
+            except:
+                clean_indec = clean(indec[1])
+                processed_indeclinables.append((indec[0], clean_indec, 'indec'))
     return processed_indeclinables
 
+
+def has_ques_mark(sentence_type):
+    interrogative_lst = ["yn_interrogative", "yn_interrogative_negative", "pass-yn_interrogative", "interrogative",
+                         "Interrogative", "pass-interrogative"]
+    for i in interrogative_lst:
+        if sentence_type == i:
+            return True
+    return False
 def process_others(other_words):
     '''Process other words. Right now being processed as noun with default gnp'''
 
@@ -933,9 +972,9 @@ def process_pronouns(pronouns, processed_nouns, processed_indeclinables, words_i
         term = clean(pronoun[1])
         relation = pronoun[4].strip().split(':')[1]
         anim = pronoun[2]
-
+        gnp = pronoun[3]
         if is_kim(term):
-            term = get_root_for_kim(relation, anim)
+            term = get_root_for_kim(relation, anim, gnp)
             if term in ('kahAz', 'kyoM', 'kaba'):
                 processed_indeclinables.append((pronoun[0], term, 'indec'))
                 continue
@@ -1016,8 +1055,15 @@ def process_nouns(nouns, words_info, verbs_data):
                 index = noun[0] + (k * 0.1)
                 noun_type = 'NC'
                 clean_dnouns = clean(dnouns[k])
-                processed_nouns.append((index, clean_dnouns, category, case, gender, number, person, noun_type, postposition))
-                noun_attribute[clean_dnouns] = [[],[]]
+                if k == len(dnouns) - 1:
+                    dict_index = index
+                    processed_nouns.append((index, clean_dnouns, category, case, gender, number, person, noun_type, postposition))
+                else:
+                    processed_nouns.append((index, clean_dnouns, category, case, gender, number, person, noun_type, ''))
+
+            if noun[0] in processed_postpositions_dict:
+                processed_postpositions_dict[dict_index] = processed_postpositions_dict.pop(noun[0])
+                # noun_attribute[clean_dnouns] = [[],[]]
         else:
             clean_noun = clean(noun[1])
             processed_nouns.append((noun[0], clean_noun, category, case, gender, number, person, noun_type, postposition))
@@ -1065,6 +1111,16 @@ def process_adjectives(adjectives, processed_nouns, processed_verbs):
         processed_adjectives.append((index, adj, category, case, gender, number))
         log(f'{adjective[1]} processed as an adjective with case:{case} gen:{gender} num:{number}')
     return processed_adjectives
+
+def process_imp_sentence(words_info, processed_pronouns):
+    # check if dependency does not have k1
+    # Add wuma postulate [0.9,  addressee, d, m,s,m, ' ' ]
+    k1exists = findExactMatch('k1', words_info, index=4)[0]
+    if not k1exists:
+        temp = (0.9, 'wU', 'p', 'd', 'm', 's', 'm_h1', 0, None)
+        processed_pronouns.insert(0, temp)
+
+    return processed_pronouns
 
 def get_gnpcase_from_concept(concept): #computes GNP values from noun or
 
@@ -1213,18 +1269,6 @@ def verb_agreement_with_CP(verb, CP):
         return CP[4], CP[5], CP[6]
     else:
         return verb.gender, verb.number, verb.person
-def process_plurality(processed_words, depend_data):
-    i = 1
-    if depend_data != '':
-        dependency = depend_data.strip().split(',')
-        for dep in dependency:
-            if dep != '':
-                dep_head = dep.strip().split(':')[0]
-                dep_val = dep.strip().split(':')[1]
-
-                if dep_val == 'k1s':
-                    pass
-
 
 def set_gender_make_plural(processed_words, g, num):
     process_data = []
@@ -1847,7 +1891,7 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
     elif data_case == 'ras_k1':
         ppost = 'ke sAWa'
     elif data_case == 'r6':
-        ppost = 'ke' #if data[4] == 'f' else 'kA'
+        ppost = 'kA' #if data[4] == 'f' else 'kA'
         nn_data = nextNounData(data_index, words_info)
         if nn_data != False:
             #print('Next Noun data:', nn_data)
