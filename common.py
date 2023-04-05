@@ -2062,7 +2062,7 @@ def write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FIL
 
     with open(OUTPUT_FILE, 'a') as file:
         file.write(path.strip('verified_sent/') + ',')
-        file.write(src_sentence.strip('#') + ',')
+        file.write(src_sentence.strip('#').strip('\n') + ',')
         file.write(POST_PROCESS_OUTPUT + ',')
         #file.write(hindi_output)
         file.write(hindi_output + ',')

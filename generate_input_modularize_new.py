@@ -116,12 +116,13 @@ if __name__ == "__main__":
     if sentence_type in ("yn_interrogative","yn_interrogative_negative", "pass-yn_interrogative"):
         POST_PROCESS_OUTPUT = 'kyA ' + POST_PROCESS_OUTPUT
 
+
     hindi_output = collect_hindi_output(POST_PROCESS_OUTPUT)
     #next line for single line input
-    write_hindi_text(hindi_output, POST_PROCESS_OUTPUT, OUTPUT_FILE)
+    #write_hindi_text(hindi_output, POST_PROCESS_OUTPUT, OUTPUT_FILE)
 
     # next line code for bulk generation of results. All results are collated in test.csv. Run sh test.sh
-    # write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE, path)
+    write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE, path)
 
     #for masked input -uncomment the following:
     # masked_pup_list = masked_postposition(processed_words, words_info, processed_verbs)
