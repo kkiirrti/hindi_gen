@@ -11,8 +11,19 @@ from concept import Concept
 noun_attribute = dict()
 USR_row_info = ['root_words', 'index_data', 'seman_data', 'gnp_data', 'depend_data', 'discourse_data', 'spkview_data', 'scope_data']
 nA_list = ['nA_paDa', 'nA_padZA', 'nA_padA', 'nA_hE', 'nA_tha', 'nA_thI', 'nA_ho', 'nA_hogA', 'nA_cAhie', 'nA_cAhiye']
+spkview_list = ['hI', 'BI', 'jI', 'wo', 'waka']
 processed_postpositions_dict = {}
 construction_dict = {}
+spkview_dict = {}
+
+
+def populate_spkview_dict(spkview_info):
+    populate_spk_dict = False
+    for i in range(len(spkview_info)):
+        if spkview_info[i] in spkview_list :
+            spkview_dict[i + 1] = spkview_info[i]
+            populate_spk_dict = True
+    return populate_spk_dict
 
 def add_adj_to_noun_attribute(key, value):
     if key is not None:
@@ -595,7 +606,7 @@ def check_noun(word_data):
 
     try:
         if word_data[3] != '':
-            if word_data[3][1:-1] not in ('superl', 'stative', 'causative'):
+            if word_data[3][1:-1] not in ('superl', 'stative', 'causative', 'double_causative'):
                 return True
         return False
     except IndexError:
@@ -728,7 +739,7 @@ def analyse_words(words_list):
     verbs = []
     others = []
     adverbs = []
-    nominal_form = []
+    nominal_verb = []
     for word_data in words_list:
         if check_indeclinable(word_data):
             log(f'{word_data[1]} identified as indeclinable.')
@@ -742,9 +753,9 @@ def analyse_words(words_list):
         elif check_adverb(word_data):
             log(f'{word_data[1]} identified as adverb.')
             adverbs.append(word_data)
-        elif check_nominal_form(word_data):
+        elif check_nominal_verb(word_data):
             log(f'{word_data[1]} identified as nominal form.')
-            nominal_form.append(word_data)
+            nominal_verb.append(word_data)
         elif check_noun(word_data):
             log(f'{word_data[1]} identified as noun.')
             nouns.append(word_data)
@@ -758,9 +769,9 @@ def analyse_words(words_list):
             log(f'{word_data[1]} identified as other word, but processed as noun with default GNP.')  # treating other words as noun
             # others.append(word_data) #modification by Kirti on 12/12 to handle other words
             nouns.append(word_data)
-    return indeclinables, pronouns, nouns, adjectives, verbs, adverbs, others, nominal_form
+    return indeclinables, pronouns, nouns, adjectives, verbs, adverbs, others, nominal_verb
 
-def check_nominal_form(word_data):
+def check_nominal_verb(word_data):
     rel_list = ['rt', 'rh', 'k7p', 'k7t', 'k2']
     if word_data[4].strip() != '':
         relation = word_data[4].strip().split(':')[1]
@@ -769,7 +780,7 @@ def check_nominal_form(word_data):
             return True
     return False
 
-def process_nominal_form(nominal_forms_data, processed_noun, words_info, verbs_data):
+def process_nominal_verb(nominal_verbs_data, processed_noun, words_info, verbs_data):
 
    nominal_verbs = []
    for verb in verbs_data:
@@ -777,9 +788,9 @@ def process_nominal_form(nominal_forms_data, processed_noun, words_info, verbs_d
            main_verb = verb
            break
 
-   for nominal_form in nominal_forms_data:
-        index = nominal_form[0]
-        term = clean(nominal_form[1])
+   for nominal_verb in nominal_verbs_data:
+        index = nominal_verb[0]
+        term = clean(nominal_verb[1])
         gender = 'm'
         number = 's'
         person = 'a'
@@ -790,10 +801,10 @@ def process_nominal_form(nominal_forms_data, processed_noun, words_info, verbs_d
         log_msg = f'{term} identified as nominal, re-identified as other word and processed as common noun with index {index} gen:{gender} num:{number} person:{person} noun_type:{noun_type} case:{case} and postposition:{postposition}'
 
         relation = ''
-        if nominal_form[4] != '':
-            relation = nominal_form[4].strip().split(':')[1]
+        if nominal_verb[4] != '':
+            relation = nominal_verb[4].strip().split(':')[1]
 
-        case, postposition = preprocess_postposition_new('noun', nominal_form, words_info, main_verb)
+        case, postposition = preprocess_postposition_new('noun', nominal_verb, words_info, main_verb)
         tags = find_tags_from_dix_as_list(term)
         for tag in tags:
             if (tag[0] == 'cat' and tag[1] == 'v'):
@@ -865,6 +876,12 @@ def process_adverbs(adverbs, processed_nouns, processed_verbs, processed_indecli
                     log(f'adverb {adverb[1]} processed indeclinable with form {term}, no processing done')
                     return
 
+def has_GNP(gnp_info):
+    gnp_data = gnp_info.strip('][').split(' ')
+    if len(gnp_data) != 3:
+        return False
+    return True
+
 def get_root_for_kim(relation, anim, gnp):
     # kOna is root for - kisakA, kisakI, kisake, kinakA, kinake, kinakI, kOna, kisa, kisane, kise, kisako,
     # kisase, kisake, kisameM, kisameM_se, isapara, kina, inhoMne, kinheM, kinako, kinase, kinpara, kinake, kinameM, kinameM_se, kisI, kisa
@@ -873,38 +890,64 @@ def get_root_for_kim(relation, anim, gnp):
     # kyA = k2, non anim
     # kOna = k1s, gnp, animate
     # kEsA = k1s, no gnp, inanimate
+
+    #     elif relation in ('k2p', 'k7p'):
+    #     return 'kahAz'
+    #
+    # elif relation == 'k5':
+    # return 'kahAz se'
+        #kaba
+        #kim + gnp + non anim - > kyA
+        #kim + gnp + anim -> kaun
+
     animate = ['anim', 'per']
-    inanimate = ['']
-    if relation == 'k1s' and len(gnp) > 0 and anim in animate:
-        return 'kOna'
-    #generate kisane, kOna
-    elif relation == 'k1':
-        return 'kOna'
-    #generate kisase, kisako
-    elif relation in ('k2', 'k2g', 'k5', 'k3'):
-        return 'kOna'
-
-    elif relation == 'k1s' and len(gnp) > 0 and anim in inanimate:
-        return 'kyA'
-    elif relation == 'k2' and anim in inanimate:
-        return 'kyA'
-
-    elif relation in ('k2p', 'k7p'):
+    if relation in ('k2p', 'k7p'):
         return 'kahAz'
-    elif relation == 'k5':
-        return 'kahAz se'
-
-    elif relation == 'kr_vn':
-        return 'kEse'
-    elif relation == 'k1s' and len(gnp) == 0 and anim in inanimate:
-        return 'kEsA'
-    elif relation == 'rt':
-        return 'kyoM'
+    elif relation == 'k5' and has_GNP(gnp):
+        return 'kahAz'
     elif relation == 'k7t':
         return 'kaba'
-
-    else :
+    elif relation == 'rh' and not has_GNP(gnp):
+        return 'kyoM'
+    elif relation == 'rt' and not has_GNP(gnp): #generate kisa
+        return 'kOna'
+    elif has_GNP(gnp) and anim not in animate:
+        return 'kyA'
+    elif has_GNP(gnp) and anim in animate:
+        return 'kOna'
+    else:
         return 'kim'
+
+    # if relation == 'k1s' and len(gnp) > 0 and anim in animate:
+    #     return 'kOna'
+    # #generate kisane, kOna
+    # elif relation == 'k1':
+    #     return 'kOna'
+    # #generate kisase, kisako
+    # elif relation in ('k2', 'k2g', 'k5', 'k3'):
+    #     return 'kOna'
+    #
+    # elif relation == 'k1s' and len(gnp) > 0 and anim not in animate:
+    #     return 'kyA'
+    # elif relation == 'k2' and anim not in animate:
+    #     return 'kyA'
+    #
+    # elif relation in ('k2p', 'k7p'):
+    #     return 'kahAz'
+    # elif relation == 'k5':
+    #     return 'kahAz se'
+    #
+    # elif relation == 'kr_vn':
+    #     return 'kEse'
+    # elif relation == 'k1s' and len(gnp) == 0 and anim in inanimate:
+    #     return 'kEsA'
+    # elif relation == 'rt':
+    #     return 'kyoM'
+    #
+    #
+    #
+    #else:
+    #    return 'kim'
 
 def process_indeclinables(indeclinables):
     '''Processes indeclinable words index, word, 'indec'''
@@ -975,7 +1018,7 @@ def process_pronouns(pronouns, processed_nouns, processed_indeclinables, words_i
         gnp = pronoun[3]
         if is_kim(term):
             term = get_root_for_kim(relation, anim, gnp)
-            if term in ('kahAz', 'kyoM', 'kaba'):
+            if term == 'kyoM':
                 processed_indeclinables.append((pronoun[0], term, 'indec'))
                 continue
 
@@ -998,7 +1041,7 @@ def process_pronouns(pronouns, processed_nouns, processed_indeclinables, words_i
 
         if pronoun[1] == 'addressee':
             addr_map = {'respect': 'Apa', 'informal': 'wU', '': 'wU'}
-            pronoun_per = {'respect': 'm', 'informal': 'm_h0', '': 'm_h1'}
+            pronoun_per = {'respect': 'm', 'informal': 'm', '': 'm_h1'}
             pronoun_number = {'respect': 'p', 'informal': 's', '': 'p'}
             word = addr_map.get(pronoun[6].strip().lower(), 'wU')
             person = pronoun_per.get(pronoun[6].strip().lower(), 'm_h1')
@@ -1009,7 +1052,6 @@ def process_pronouns(pronouns, processed_nouns, processed_indeclinables, words_i
             word = 'vaha'
         else:
             word = term
-
 
         # If dependency is r6 then add fnum and take gnp and case from following noun.
         if "r6" in pronoun[4]:
@@ -1024,7 +1066,6 @@ def process_pronouns(pronouns, processed_nouns, processed_indeclinables, words_i
         processed_pronouns.append((pronoun[0], word, category, case, gender, number, person, parsarg, fnum))
         log(f'{pronoun[1]} processed as pronoun with case:{case} par:{parsarg} gen:{gender} num:{number} per:{person} fnum:{fnum}')
     return processed_pronouns
-
 
 def process_nouns(nouns, words_info, verbs_data):
     '''Process nouns as Process nouns as (index, word, category, case, gender, number, proper/noun type= proper, common, NC, nominal_verb or CP_noun, postposition)'''
@@ -1043,7 +1084,6 @@ def process_nouns(nouns, words_info, verbs_data):
         if noun[6] == 'respect': # respect for nouns
             number = 'p'
         noun_type = 'common' if '_' in noun[1] else 'proper'
-
 
         # to fetch postposition and case logic and update each tuple
         case, postposition = preprocess_postposition_new('noun', noun, words_info, main_verb)
@@ -1252,7 +1292,7 @@ def process_main_CP(index, term):
     # if category == 'adj':
     #     CP = [CP_index, CP_term, 'adj', 'd', gender, number]
     # if category == 'n':
-        CP = [CP_index, CP_term, 'n','d', gender, number, person, 'CP_noun', postposition]
+    CP = [CP_index, CP_term, 'n','d', gender, number, person, 'CP_noun', postposition]
 
     return CP
 
@@ -2019,6 +2059,19 @@ def add_postposition(transformed_fulldata, processed_postpositions):
 
     return PPFulldata
 
+def add_spkview(full_data, spkview_dict):
+    transformed_data = []
+    for data in full_data:
+        index = data[0]
+        if index in spkview_dict:
+            temp = list(data)
+            spkview_info = spkview_dict[index]
+            temp[1] = temp[1] + ' ' + spkview_info
+            data = tuple(temp)
+        transformed_data.append(data)
+
+    return transformed_data
+
 def add_construction(transformed_data, construction_dict):
     Constructdata = []
 
@@ -2035,6 +2088,7 @@ def add_construction(transformed_data, construction_dict):
         Constructdata.append(data)
 
     return Constructdata
+
 
 def rearrange_sentence(fulldata):
     '''Function comments'''

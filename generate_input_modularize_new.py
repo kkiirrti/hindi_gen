@@ -1,5 +1,6 @@
 from common import *
 HAS_CONSTRUCTION_DATA = False
+HAS_SPKVIEW_DATA = False
 if __name__ == "__main__":
     log("Program Started", "START")
 
@@ -30,11 +31,14 @@ if __name__ == "__main__":
         HAS_CONSTRUCTION_DATA = True
         construction_data = rules_info[10]
 
+    if spkview_data != [] or len(spkview_data) > 0:
+        HAS_SPKVIEW_DATA = populate_spkview_dict(spkview_data)
+
     # Making a collection of words and its rules as a list of tuples.
     words_info = generate_wordinfo(root_words, index_data, seman_data,
                                    gnp_data, depend_data, discourse_data, spkview_data, scope_data)
 
-    # Categorising words as Nound/Pronouns/Adjectives/..etc.
+    # Categorising words as Nouns/Pronouns/Adjectives/..etc.
     indeclinables_data, pronouns_data, nouns_data, adjectives_data, verbs_data, adverbs_data, others_data, nominal_forms_data = analyse_words(
         words_info)
     #  Processing Stage
@@ -49,7 +53,7 @@ if __name__ == "__main__":
     processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns, False)
     processed_adjectives = process_adjectives(adjectives_data, processed_nouns, processed_verbs)
     process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others)
-    process_nominal_form = process_nominal_form(nominal_forms_data, processed_nouns, words_info, verbs_data)
+    process_nominal_form = process_nominal_verb(nominal_forms_data, processed_nouns, words_info, verbs_data)
 
     # Todo : extract nouns / adjectives from Compound verbs with +
     # Todo : process nouns / adjectives got from verbs and add to processed_noun / processed_adjectives
@@ -66,6 +70,7 @@ if __name__ == "__main__":
     #processed_words, processed_postpositions = preprocess_postposition_new(processed_words, words_info,processed_verbs)
     if HAS_CONSTRUCTION_DATA:
         processed_words = process_construction(processed_words, construction_data, depend_data, gnp_data, index_data)
+
     # Input for morph generator is generated and fed into it.
     # Generator outputs the result in a file named morph_input.txt-out.txt
     OUTPUT_FILE = generate_morph(processed_words)
@@ -107,6 +112,9 @@ if __name__ == "__main__":
     if HAS_CONSTRUCTION_DATA:
         PP_fulldata = add_construction(PP_fulldata, construction_dict)
 
+    if HAS_SPKVIEW_DATA:
+        PP_fulldata = add_spkview(PP_fulldata, spkview_dict)
+
     POST_PROCESS_OUTPUT = rearrange_sentence(PP_fulldata)  # reaarange by index number
 
     if has_ques_mark(sentence_type):
@@ -119,10 +127,10 @@ if __name__ == "__main__":
 
     hindi_output = collect_hindi_output(POST_PROCESS_OUTPUT)
     #next line for single line input
-    #write_hindi_text(hindi_output, POST_PROCESS_OUTPUT, OUTPUT_FILE)
+    write_hindi_text(hindi_output, POST_PROCESS_OUTPUT, OUTPUT_FILE)
 
     # next line code for bulk generation of results. All results are collated in test.csv. Run sh test.sh
-    write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE, path)
+    #write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE, path)
 
     #for masked input -uncomment the following:
     # masked_pup_list = masked_postposition(processed_words, words_info, processed_verbs)
