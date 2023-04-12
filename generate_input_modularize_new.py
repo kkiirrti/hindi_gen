@@ -1,6 +1,7 @@
 from common import *
 HAS_CONSTRUCTION_DATA = False
 HAS_SPKVIEW_DATA = False
+ADD_GNP_DATA = False
 if __name__ == "__main__":
     log("Program Started", "START")
 
@@ -13,7 +14,7 @@ if __name__ == "__main__":
 
 
     file_data = read_file(path) #Reading USR
-    rules_info = generate_rulesinfo(file_data)    #Extracting Rules from each row of USR
+    rules_info = generate_rulesinfo(file_data) #Extracting Rules from each row of USR
 
     # Extracting Information
     src_sentence = rules_info[0]
@@ -29,7 +30,7 @@ if __name__ == "__main__":
     construction_data = ''
     if rules_info[10] != '' and len(rules_info) > 0:
         HAS_CONSTRUCTION_DATA = True
-        construction_data = rules_info[10]
+        construction_data = rules_info[10];
 
     if spkview_data != [] or len(spkview_data) > 0:
         HAS_SPKVIEW_DATA = populate_spkview_dict(spkview_data)
@@ -114,6 +115,10 @@ if __name__ == "__main__":
 
     if HAS_SPKVIEW_DATA:
         PP_fulldata = add_spkview(PP_fulldata, spkview_dict)
+
+    ADD_GNP_DATA = populate_GNP_dict(gnp_data, PP_fulldata)
+    if ADD_GNP_DATA:
+        PP_fulldata = add_GNP(PP_fulldata, GNP_dict)
 
     POST_PROCESS_OUTPUT = rearrange_sentence(PP_fulldata)  # reaarange by index number
 

@@ -15,8 +15,62 @@ spkview_list = ['hI', 'BI', 'jI', 'wo', 'waka']
 processed_postpositions_dict = {}
 construction_dict = {}
 spkview_dict = {}
+GNP_dict = {}
+
+def populate_GNP_dict(gnp_info, PPfull_data):
+    populate_GNP_dict = False
+    morpho_seman = ['comper_more', 'comper_less', 'superl', 'mawupa', 'mawup']
+    a = 'after'
+    b = 'before'
+    for i in range(len(gnp_info)):
+        input_string = gnp_info[i]
+        matches = re.findall(r'\[(.*?)\]', input_string)
+        strings = [s.strip() for s in matches]
+
+        for term in strings:
+            if term in morpho_seman:
+                populate_GNP_dict = True
+                if term == 'superl':
+                    temp = (b, 'sabase')
+
+                elif term == 'comper_more':
+                    temp = (b, 'jyAxA')
+
+                elif term == 'comper_less':
+                    temp = (b, 'kama')
+
+                else:
+                    # fetch GNP of next noun
+                    curr_index = i + 1
+                    noun_data = nextNounData_fromFullData(curr_index + 1, PPfull_data)
+                    if noun_data != ():
+                        g = noun_data[4]
+                        n = noun_data[5]
+                        p = noun_data[6]
+                        if g == 'f':
+                            temp = (a, 'vAlI')
+                        elif n == 'p':
+                            temp = (a, 'vAle')
+                        elif n == 's':
+                            temp = (a, 'vAlA')
+                if i + 1 in GNP_dict:
+                    GNP_dict[i + 1].append(temp)
+                else:
+                    GNP_dict[i + 1] = [temp]
 
 
+    # for i in range(len(gnp_info)):
+    #     term = gnp_info[i].strip().strip('][')
+    #     if term == 'superl':
+    #         GNP_dict[i+1] = 'sabase'
+    #         populate_GNP_dict = True
+    #     elif term == 'comper_more':
+    #         GNP_dict[i+1] = 'jyAxA'
+    #         populate_GNP_dict = True
+    #     elif term == 'comper_less':
+    #         GNP_dict[i+1] = 'kama'
+    #         populate_GNP_dict = True
+    return populate_GNP_dict
 def populate_spkview_dict(spkview_info):
     populate_spk_dict = False
     for i in range(len(spkview_info)):
@@ -1721,6 +1775,14 @@ def join_indeclinables(transformed_data, processed_indeclinables, processed_othe
     """Joins Indeclinable data with transformed data and sort it by index number."""
     return sorted(transformed_data + processed_indeclinables + processed_others)
 
+def nextNounData_fromFullData(fromIndex, PP_FullData):
+    index = fromIndex
+    for data in PP_FullData:
+        if index == data[0]:
+            if data[2] == 'n':
+                return data
+
+    return ()
 def nextNounData(fromIndex, word_info):
     index = fromIndex
     for i in range(len(word_info)):
@@ -1921,9 +1983,15 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
     elif data_case == 'rsk':
         ppost = 'hue'
     elif data_case == 'ru':
+        # next_word_info = getDataByIndex(data_index+1, words_info)
+        # if next_word_info != ():
+        #     gnp_info = next_word_info[3].strip().strip('][')
+        #     if gnp_info == 'comper_more' or gnp_info == 'comper_less':
+        #         ppost = ''
+        # else:
         ppost = 'jEsI'
     elif data_case == 'rv':
-        ppost = 'kI tulanA meM'
+        ppost = 'se'
     elif data_case == 'rh':
         ppost = 'ke_kAraNa'
     elif data_case == 'rd':
@@ -2067,6 +2135,25 @@ def add_spkview(full_data, spkview_dict):
             temp = list(data)
             spkview_info = spkview_dict[index]
             temp[1] = temp[1] + ' ' + spkview_info
+            data = tuple(temp)
+        transformed_data.append(data)
+
+    return transformed_data
+
+def add_GNP(full_data, GNP_dict):
+    transformed_data = []
+    for data in full_data:
+        index = data[0]
+        if index in GNP_dict:
+            temp = list(data)
+            term = GNP_dict[index]
+            for t in term:
+                tag = t[0]
+                val = t[1]
+                if tag == 'before':
+                    temp[1] = val + ' ' + temp[1]
+                else:
+                    temp[1] = temp[1] + ' ' + val
             data = tuple(temp)
         transformed_data.append(data)
 
