@@ -769,7 +769,22 @@ def check_indeclinable(word_data):
     if clean(word_data[1]) in indeclinable_list:
         return True
 
-    #Numbers appear without '_' in the USR
+    # #Numbers appear without '_' in the USR
+    # num = word_data[1]
+    # if num.isdigit():
+    #     return True
+    # else:
+    #     try:
+    #         float_value = float(num)
+    #         return True
+    #     except ValueError:
+    #         return False
+
+    return False
+
+def check_digit(word_data):
+    # Numbers appear without '_' in the USR
+    # check for yoc and dom
     num = word_data[1]
     if num.isdigit():
         return True
@@ -779,7 +794,6 @@ def check_indeclinable(word_data):
             return True
         except ValueError:
             return False
-
     return False
 
 def analyse_words(words_list):
@@ -798,6 +812,9 @@ def analyse_words(words_list):
         if check_indeclinable(word_data):
             log(f'{word_data[1]} identified as indeclinable.')
             indeclinables.append(word_data)
+        elif check_digit(word_data):
+            log(f'{word_data[1]} identified as noun.')
+            nouns.append(word_data)
         elif check_pronoun(word_data):
             log(f'{word_data[1]} identified as pronoun.')
             pronouns.append(word_data)
@@ -1956,12 +1973,14 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
         else:
             log('inside tam ya else')
             #new_case = 'd'
+    elif data_case == 'k2g':
+        ppost = 'ko'
+    elif data_case == 'k2':
+        if data_seman in ("anim", "per"):
+            ppost = 'ko'
+        else:
+            new_case = 'd'
 
-    elif data_case in ('k2g', 'k2'):
-            if data_seman in ("anim", "per"):
-                ppost = 'ko'
-            else:
-                new_case = 'd'
     elif data_case == 'k2p':
         ppost = 'meM'
     elif data_case in ('k3', 'k5', 'k5prk'):

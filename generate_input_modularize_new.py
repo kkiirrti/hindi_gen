@@ -129,6 +129,8 @@ if __name__ == "__main__":
     if sentence_type in ("yn_interrogative","yn_interrogative_negative", "pass-yn_interrogative"):
         POST_PROCESS_OUTPUT = 'kyA ' + POST_PROCESS_OUTPUT
 
+    if sentence_type in ('affirmative', 'Affirmative'):
+        POST_PROCESS_OUTPUT = POST_PROCESS_OUTPUT + '|'
 
     hindi_output = collect_hindi_output(POST_PROCESS_OUTPUT)
     #next line for single line input
