@@ -1176,12 +1176,27 @@ def process_nouns(nouns, words_info, verbs_data):
                 processed_postpositions_dict[dict_index] = processed_postpositions_dict.pop(noun[0])
                 # noun_attribute[clean_dnouns] = [[],[]]
         else:
-            clean_noun = clean(noun[1])
+            term = noun[1]
+            if check_is_digit(term):
+                clean_noun = term
+            else:
+                clean_noun = clean(noun[1])
             processed_nouns.append((noun[0], clean_noun, category, case, gender, number, person, noun_type, postposition))
             noun_attribute[clean_noun] = [[], []]
         log(f'{noun[1]} processed as noun with case:{case} gen:{gender} num:{number} noun_type:{noun_type} postposition: {postposition}.')
 
     return processed_nouns
+
+def check_is_digit(num):
+    if num.isdigit():
+        return True
+    else:
+        try:
+            float_value = float(num)
+            return True
+        except ValueError:
+            return False
+    return False
 
 def get_default_GNP():
     gender = 'm'
@@ -1952,6 +1967,14 @@ def preprocess_postposition(processed_words, words_info, is_tam_ya):
         new_processed_words.append(data)
     return new_processed_words, PPdata
 
+def fetchNextWord(index, words_info):
+    next_word = ''
+    for data in words_info:
+        if index == data[0]:
+            next_word = clean(data[1])
+
+    return next_word
+
 def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
     '''Calculates postposition to words wherever applicable according to rules.'''
     if np_data != ():
@@ -2009,6 +2032,21 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
         #         ppost = ''
         # else:
         ppost = 'jEsI'
+    elif data_case == 'rkl':
+        next_word = fetchNextWord(data_index + 1, words_info)
+        if next_word == 'bAxa':
+            ppost = 'ke'
+        elif next_word == 'pahale':
+            ppost = 'se'
+
+    elif data_case == 'rdl':
+        next_word = fetchNextWord(data_index + 1, words_info)
+        if next_word in ('anxara', 'bAhara', 'Age', 'sAmane', 'pICe', 'Upara', 'nIce', 'xAyeM',
+                         'bAyeM', 'cAroM ora', 'bIca', 'pAsa'):
+            ppost = 'ke'
+        elif next_word == 'xUra':
+            ppost = 'se'
+
     elif data_case == 'rv':
         ppost = 'se'
     elif data_case == 'rh':
