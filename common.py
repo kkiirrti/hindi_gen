@@ -34,7 +34,7 @@ def populate_GNP_dict(gnp_info, PPfull_data):
                     temp = (b, 'sabase')
 
                 elif term == 'comper_more':
-                    temp = (b, 'jyAxA')
+                    temp = (b, 'aXika')
 
                 elif term == 'comper_less':
                     temp = (b, 'kama')
@@ -1054,15 +1054,33 @@ def process_others(other_words):
         person = 'a'
         processed_others.append((word[0], clean(word[1]), 'other', gender, number, person))
     return processed_others
+def extract_gnp_noun(noun_term, gnp_info):
+    gnp_data = gnp_info.strip('][').split(' ')
+    if len(gnp_data) != 3:
+        return 'm', 's', 'a'
+    if gnp_data[0].lower() == 'm':
+        gender = 'm'
+    elif gnp_data[0].lower() == 'f':
+        gender = 'f'
+    elif gnp_data[0] == '-':
+        tags = find_tags_from_dix(noun_term)
+        if '*' not in tags['form']:
+            gender = tags['gen']
 
+    number = 's' if gnp_data[1].lower(
+    ) == 'sg' else 'p' if gnp_data[1].lower() == 'pl' else 's'
+    person = 'a' if gnp_data[2] in ('-', '') else gnp_data[2]
 
+    return gender, number, person
 def extract_gnp(gnp_info):
     '''Extract GNP info from string format to tuple (gender,number,person) format.'''
     gnp_data = gnp_info.strip('][').split(' ')
     if len(gnp_data) != 3:
         return 'm', 's', 'a'
-    gender = 'm' if gnp_data[0].lower(
-    ) == 'm' else 'f' if gnp_data[0].lower() == 'f' else 'm'
+    if gnp_data[0].lower( ) == 'm':
+        gender = 'm'
+    elif gnp_data[0].lower() == 'f':
+        gender = 'f'
     number = 's' if gnp_data[1].lower(
     ) == 'sg' else 'p' if gnp_data[1].lower() == 'pl' else 's'
     person = 'a' if gnp_data[2] in ('-', '') else gnp_data[2]
@@ -1138,6 +1156,25 @@ def process_pronouns(pronouns, processed_nouns, processed_indeclinables, words_i
         log(f'{pronoun[1]} processed as pronoun with case:{case} par:{parsarg} gen:{gender} num:{number} per:{person} fnum:{fnum}')
     return processed_pronouns
 
+def handle_compound_nouns(noun, processed_nouns, category, case, gender, number, person, postposition):
+    dnouns = noun[1].split('+')
+    for k in range(len(dnouns)):
+        index = noun[0] + (k * 0.1)
+        noun_type = 'NC'
+        clean_dnouns = clean(dnouns[k])
+        if k == len(dnouns) - 1:
+            noun_type = 'NC_head'
+            dict_index = index
+            processed_nouns.append(
+                (index, clean_dnouns, category, case, gender, number, person, noun_type, postposition))
+        else:
+            processed_nouns.append((index, clean_dnouns, category, case, gender, number, person, noun_type, ''))
+
+    if noun[0] in processed_postpositions_dict:
+        processed_postpositions_dict[dict_index] = processed_postpositions_dict.pop(noun[0])
+
+    return processed_nouns
+
 def process_nouns(nouns, words_info, verbs_data):
     '''Process nouns as Process nouns as (index, word, category, case, gender, number, proper/noun type= proper, common, NC, nominal_verb or CP_noun, postposition)'''
     #noun_attribute dict to store all nouns as keys
@@ -1151,7 +1188,8 @@ def process_nouns(nouns, words_info, verbs_data):
 
     for noun in nouns:
         category = 'n'
-        gender, number, person = extract_gnp(noun[3])
+        #for digits clean will give empty
+        gender, number, person = extract_gnp_noun(clean(noun[1]), noun[3])
         if noun[6] == 'respect': # respect for nouns
             number = 'p'
         noun_type = 'common' if '_' in noun[1] else 'proper'
@@ -1161,20 +1199,7 @@ def process_nouns(nouns, words_info, verbs_data):
 
         # For Noun compound words
         if '+' in noun[1]:
-            dnouns = noun[1].split('+')
-            for k in range(len(dnouns)):
-                index = noun[0] + (k * 0.1)
-                noun_type = 'NC'
-                clean_dnouns = clean(dnouns[k])
-                if k == len(dnouns) - 1:
-                    dict_index = index
-                    processed_nouns.append((index, clean_dnouns, category, case, gender, number, person, noun_type, postposition))
-                else:
-                    processed_nouns.append((index, clean_dnouns, category, case, gender, number, person, noun_type, ''))
-
-            if noun[0] in processed_postpositions_dict:
-                processed_postpositions_dict[dict_index] = processed_postpositions_dict.pop(noun[0])
-                # noun_attribute[clean_dnouns] = [[],[]]
+            processed_nouns = handle_compound_nouns(noun, processed_nouns, category, case, gender, number, person, postposition)
         else:
             term = noun[1]
             if check_is_digit(term):
@@ -1793,8 +1818,9 @@ def handle_unprocessed(outputData, processed_nouns):
         dataIndex = dataIndex + 1
         if data[0] == '#':
             for i in range(len(processed_nouns)):
+                ind = round(processed_nouns[i][0])
                 if round(processed_nouns[i][0]) == dataIndex:
-                    if processed_nouns[i][7] != 'proper':
+                    if not processed_nouns[i][7] == 'proper' and not processed_nouns[i][7] == 'NC':
                         has_changes = True
                         temp = list(processed_nouns[i])
                         temp[4] = 'f' if processed_nouns[i][4] == 'm' else 'm'
@@ -1816,6 +1842,7 @@ def nextNounData_fromFullData(fromIndex, PP_FullData):
 
     return ()
 def nextNounData(fromIndex, word_info):
+    #for NC go till NC_head and return that tuple
     index = fromIndex
     for i in range(len(word_info)):
         for data in word_info:
@@ -2053,8 +2080,11 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
         ppost = 'ke_kAraNa'
     elif data_case == 'rd':
         ppost = 'kI ora'
-    elif data_case == 'ras_k1':
+    elif 'rask' in data_case:
         ppost = 'ke sAWa'
+    # elif data_case == 'ras_k1':
+    #     ppost = 'ke sAWa'
+
     elif data_case == 'r6':
         ppost = 'kA' #if data[4] == 'f' else 'kA'
         nn_data = nextNounData(data_index, words_info)

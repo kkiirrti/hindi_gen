@@ -30,7 +30,7 @@ if __name__ == "__main__":
     construction_data = ''
     if rules_info[10] != '' and len(rules_info) > 0:
         HAS_CONSTRUCTION_DATA = True
-        construction_data = rules_info[10];
+        construction_data = rules_info[10]
 
     if spkview_data != [] or len(spkview_data) > 0:
         HAS_SPKVIEW_DATA = populate_spkview_dict(spkview_data)
@@ -123,14 +123,14 @@ if __name__ == "__main__":
     POST_PROCESS_OUTPUT = rearrange_sentence(PP_fulldata)  # reaarange by index number
 
     if has_ques_mark(sentence_type):
-        POST_PROCESS_OUTPUT = POST_PROCESS_OUTPUT + '?'
+        POST_PROCESS_OUTPUT = POST_PROCESS_OUTPUT + ' ?'
 
     # for yn_interrogative add kya in the beginning
     if sentence_type in ("yn_interrogative","yn_interrogative_negative", "pass-yn_interrogative"):
         POST_PROCESS_OUTPUT = 'kyA ' + POST_PROCESS_OUTPUT
 
     if sentence_type in ('affirmative', 'Affirmative'):
-        POST_PROCESS_OUTPUT = POST_PROCESS_OUTPUT + '|'
+        POST_PROCESS_OUTPUT = POST_PROCESS_OUTPUT + ' |'
 
     hindi_output = collect_hindi_output(POST_PROCESS_OUTPUT)
     #next line for single line input
