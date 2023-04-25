@@ -28,9 +28,12 @@ if __name__ == "__main__":
     scope_data = rules_info[8]
     sentence_type = rules_info[9]
     construction_data = ''
-    if rules_info[10] != '' and len(rules_info) > 0:
-        HAS_CONSTRUCTION_DATA = True
-        construction_data = rules_info[10]
+    if len(rules_info) > 10 and rules_info[10] != '':
+        if 'speaker not found in dictionary' in rules_info[10]:
+            construction_data = ''
+        else:
+            HAS_CONSTRUCTION_DATA = True
+            construction_data = rules_info[10]
 
     if spkview_data != [] or len(spkview_data) > 0:
         HAS_SPKVIEW_DATA = populate_spkview_dict(spkview_data)
@@ -51,7 +54,7 @@ if __name__ == "__main__":
     #     processed_pronouns = process_imp_sentence(words_info, processed_pronouns)
 
     processed_others = process_others(others_data)
-    processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns, False)
+    processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, spkview_data,processed_nouns, processed_pronouns, False)
     processed_adjectives = process_adjectives(adjectives_data, processed_nouns, processed_verbs)
     process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others)
     process_nominal_form = process_nominal_verb(nominal_forms_data, processed_nouns, words_info, verbs_data)
@@ -60,15 +63,15 @@ if __name__ == "__main__":
     # Todo : process nouns / adjectives got from verbs and add to processed_noun / processed_adjectives
 
     # processing postpositions for pronouns and nouns only
-    #processed_pronouns, pp_pronouns = preprocess_postposition_new(processed_pronouns, words_info, processed_verbs) # to get parsarg
-    #positions = pp_nouns | pp_pronouns #merging postpositions of nouns and pronouns in single dict
+    # processed_pronouns, pp_pronouns = preprocess_postposition_new(processed_pronouns, words_info, processed_verbs) # to get parsarg
+    # positions = pp_nouns | pp_pronouns #merging postpositions of nouns and pronouns in single dict
 
     # Every word is collected into one and sorted by index number.
     processed_words = collect_processed_data(processed_pronouns,processed_nouns,processed_adjectives,
                                             processed_verbs, processed_auxverbs,processed_indeclinables, processed_others)
 
     # calculating postpositions for words if applicable.
-    #processed_words, processed_postpositions = preprocess_postposition_new(processed_words, words_info,processed_verbs)
+    # processed_words, processed_postpositions = preprocess_postposition_new(processed_words, words_info,processed_verbs)
     if HAS_CONSTRUCTION_DATA:
         processed_words = process_construction(processed_words, construction_data, depend_data, gnp_data, index_data)
 
@@ -89,7 +92,7 @@ if __name__ == "__main__":
     # Adjectives and verbs are re-processed as they might be dependent on it.
     if has_changes:
         # Reprocessing adjectives and verbs based on new noun info
-        processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns, True)
+        processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, spkview_data, processed_nouns, processed_pronouns, True)
         processed_adjectives = process_adjectives(adjectives_data, processed_nouns, processed_verbs)
         process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others)
 
