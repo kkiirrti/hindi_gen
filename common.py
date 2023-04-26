@@ -1044,6 +1044,7 @@ def has_ques_mark(sentence_type):
         if sentence_type == i:
             return True
     return False
+
 def process_others(other_words):
     '''Process other words. Right now being processed as noun with default gnp'''
 
@@ -1055,6 +1056,8 @@ def process_others(other_words):
         processed_others.append((word[0], clean(word[1]), 'other', gender, number, person))
     return processed_others
 def extract_gnp_noun(noun_term, gnp_info):
+
+    gender = 'm'
     gnp_data = gnp_info.strip('][').split(' ')
     if len(gnp_data) != 3:
         return 'm', 's', 'a'
@@ -1072,8 +1075,10 @@ def extract_gnp_noun(noun_term, gnp_info):
     person = 'a' if gnp_data[2] in ('-', '') else gnp_data[2]
 
     return gender, number, person
+
 def extract_gnp(gnp_info):
     '''Extract GNP info from string format to tuple (gender,number,person) format.'''
+    gender = 'm'
     gnp_data = gnp_info.strip('][').split(' ')
     if len(gnp_data) != 3:
         return 'm', 's', 'a'
