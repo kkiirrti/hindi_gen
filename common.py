@@ -19,7 +19,7 @@ GNP_dict = {}
 
 def populate_GNP_dict(gnp_info, PPfull_data):
     populate_GNP_dict = False
-    morpho_seman = ['comper_more', 'comper_less', 'superl', 'mawupa', 'mawup']
+    morpho_seman = ['comper_more', 'comper-more', 'comper_less', 'comper-less', 'superl', 'mawupa', 'mawup']
     a = 'after'
     b = 'before'
     for i in range(len(gnp_info)):
@@ -33,10 +33,10 @@ def populate_GNP_dict(gnp_info, PPfull_data):
                 if term == 'superl':
                     temp = (b, 'sabase')
 
-                elif term == 'comper_more':
+                elif term in ('comper_more', 'comper-more'):
                     temp = (b, 'aXika')
 
-                elif term == 'comper_less':
+                elif term in ('comper_less', 'comper-less'):
                     temp = (b, 'kama')
 
                 else:
@@ -73,10 +73,18 @@ def populate_GNP_dict(gnp_info, PPfull_data):
     return populate_GNP_dict
 def populate_spkview_dict(spkview_info):
     populate_spk_dict = False
+    a = 'after'
+    b = 'before'
     for i in range(len(spkview_info)):
         if spkview_info[i] in spkview_list:
-            spkview_dict[i + 1] = spkview_info[i]
             populate_spk_dict = True
+            temp = (a, spkview_info[i])
+            spkview_dict[i + 1] = temp
+
+        elif spkview_info[i] == 'result':
+            populate_spk_dict = True
+            temp = (b, 'pariNAmasvarUpa,')
+            spkview_dict[i + 1] = temp
 
     return populate_spk_dict
 
@@ -306,7 +314,7 @@ def getGNP_using_k2(k2exists, searchList):
 def getGNP_using_k1(k1exists, searchList):
     casedata = getDataByIndex(k1exists, searchList)
     if (casedata == False):
-        log('Something went wrong. Cannot determine GNP for verb.', 'ERROR')
+        log('Something went wrong. Cannot determine GNP for verb k1 is missing.', 'ERROR')
         sys.exit()
     verb_gender, verb_number, verb_person = casedata[4], casedata[5], casedata[6]
     return verb_gender, verb_number, verb_person
@@ -985,6 +993,9 @@ def extract_gnp_noun(noun_term, gnp_info):
     # For nouns terms with '-' in gender -> fetch gender from dix, if not present set 'm' as default
     # For CN terms -> if '-' in gender -> fetch gender for head term and that will be copied for all the CN terms
     # For numbers default gnp is 'msa'
+    gender = 'm'
+    number = 's'
+    person = 'a'
     if '+' in noun_term:
         cn_terms = noun_term.strip().split('+')
         for i in range(len(cn_terms)):
@@ -1012,6 +1023,10 @@ def extract_gnp_noun(noun_term, gnp_info):
     return gender, number, person
 def extract_gnp(gnp_info):
     '''Extract GNP info from string format to tuple (gender,number,person) format.'''
+    gender = 'm'
+    number = 's'
+    person = 'a'
+
     gnp_data = gnp_info.strip('][').split(' ')
     gnp_data = gnp_info.strip('][').split(' ')
     if len(gnp_data) != 3:
@@ -1413,40 +1428,52 @@ def process_construction(processed_words, construction_data, depend_data, gnp_da
             conj_type = cons.split(':')[0].strip().lower()
             index = cons.split(':')[1].strip().strip('][').split(',')
             length_index = len(index)
-            cnt_m = 0
-            cnt_f = 0
-            PROCESS = False
-            for i in index:
-                relation = dep_gender_dict[i]
-                dep = relation.split(':')[0]
-                gen = relation.split(':')[1]
+            if conj_type == 'conj' or conj_type == 'disjunct':
+                cnt_m = 0
+                cnt_f = 0
+                PROCESS = False
+                for i in index:
+                    relation = dep_gender_dict[i]
+                    dep = relation.split(':')[0]
+                    gen = relation.split(':')[1]
 
-                if dep == 'k1':
-                    PROCESS = True
-                    if gen == 'm':
-                        cnt_m = cnt_m + 1
-                    elif gen == 'f':
-                        cnt_f = cnt_f + 1
+                    if dep == 'k1':
+                        PROCESS = True
+                        if gen == 'm':
+                            cnt_m = cnt_m + 1
+                        elif gen == 'f':
+                            cnt_f = cnt_f + 1
 
-            if PROCESS:
-                if cnt_f == length_index:
-                    g = 'f'
-                    num = 'p'
-                else:
-                    g = 'm'
-                    num = 'p'
-                process_data = set_gender_make_plural(processed_words, g, num)
+                if PROCESS:
+                    if cnt_f == length_index:
+                        g = 'f'
+                        num = 'p'
+                    else:
+                        g = 'm'
+                        num = 'p'
+                    process_data = set_gender_make_plural(processed_words, g, num)
 
-            update_index = index[length_index - 2]
-            for i in index:
-                if i == update_index:
-                    if conj_type == 'conj':
-                        construction_dict[update_index] = 'Ora'
-                    elif conj_type == 'disjunct':
-                        construction_dict[update_index] = 'yA'
-                    break
-                else:
-                    construction_dict[i] = ','
+                update_index = index[length_index - 2]
+                for i in index:
+                    if i == update_index:
+                        if conj_type == 'conj':
+                            construction_dict[update_index] = 'Ora'
+                        elif conj_type == 'disjunct':
+                            construction_dict[update_index] = 'yA'
+                        break
+                    else:
+                        construction_dict[i] = ','
+
+            elif conj_type == 'list':
+                # apart from indexes in list, first index - 1, pr jEse lagana hai.
+                update_index = int(index[0]) - 1
+                construction_dict[str(update_index)] = 'jEse'
+
+                for i in range(len(index)):
+                    if i == len(index) - 1:
+                        break
+                    else:
+                        construction_dict[index[i]] = ','
 
     return process_data
 
@@ -2158,7 +2185,12 @@ def add_spkview(full_data, spkview_dict):
         if index in spkview_dict:
             temp = list(data)
             spkview_info = spkview_dict[index]
-            temp[1] = temp[1] + ' ' + spkview_info
+            tag = spkview_info[0]
+            val = spkview_info[1]
+            if tag == 'before':
+                temp[1] = val + ' ' + temp[1]
+            elif tag == 'after':
+                temp[1] = temp[1] + ' ' + val
             data = tuple(temp)
         transformed_data.append(data)
 
