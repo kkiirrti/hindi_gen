@@ -40,7 +40,7 @@ def populate_GNP_dict(gnp_info, PPfull_data):
                     temp = (b, 'kama')
 
                 else:
-                    # fetch GNP of next noun
+                    # fetch GNP of next noun # mawup - the previous noun should be converted to verbal noun. added to nominal list
                     curr_index = i + 1
                     noun_data = nextNounData_fromFullData(curr_index + 1, PPfull_data)
                     if noun_data != ():
