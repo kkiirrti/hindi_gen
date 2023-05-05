@@ -79,12 +79,12 @@ def populate_spkview_dict(spkview_info):
         if spkview_info[i] in spkview_list:
             populate_spk_dict = True
             temp = (a, spkview_info[i])
-            spkview_dict[i + 1] = temp
+            spkview_dict[i + 1] = [temp]
 
         elif spkview_info[i] == 'result':
             populate_spk_dict = True
             temp = (b, 'pariNAmasvarUpa,')
-            spkview_dict[i + 1] = temp
+            spkview_dict[i + 1] = [temp]
 
     return populate_spk_dict
 
@@ -1401,8 +1401,12 @@ def process_construction(processed_words, construction_data, depend_data, gnp_da
     # cons list - can be more than one conj
     # k1 ka m/f/mix nikalkr k1s and verb ko g milega    index dep:gen
     # map to hold conj kaha aega
+
+    construction_dict.clear()
     process_data = processed_words
     dep_gender_dict = {}
+    a = 'after'
+    b = 'before'
     if gnp_data != []:
         gender = []
         for i in range(len(gnp_data)):
@@ -1455,25 +1459,47 @@ def process_construction(processed_words, construction_data, depend_data, gnp_da
 
                 update_index = index[length_index - 2]
                 for i in index:
+                    #put break properly..
                     if i == update_index:
                         if conj_type == 'conj':
-                            construction_dict[update_index] = 'Ora'
+                            temp = (a, 'Ora')
                         elif conj_type == 'disjunct':
-                            construction_dict[update_index] = 'yA'
+                            temp = (a, 'yA')
                         break
                     else:
-                        construction_dict[i] = ','
+                        temp = (a, ',')
+                        if i in construction_dict:
+                            construction_dict[i].append(temp)
+                        else:
+                            construction_dict[i] = [temp]
+
+                if i in construction_dict:
+                    construction_dict[i].append(temp)
+                else:
+                    construction_dict[i] = [temp]
 
             elif conj_type == 'list':
-                # apart from indexes in list, first index - 1, pr jEse lagana hai.
-                update_index = int(index[0]) - 1
-                construction_dict[str(update_index)] = 'jEse'
-
+                length_list = len(index)
+                construction_dict
                 for i in range(len(index)):
-                    if i == len(index) - 1:
+                    if i == length_list - 1:
                         break
+
+                    if i == 0:
+                        temp = (b, 'jEse')
+                        if index[i] in construction_dict:
+                            construction_dict[index[i]].append(temp)
+                        else:
+                            construction_dict[index[i]] = [temp]
+                        temp = (a, ',')
+
+                    elif i < length_list - 1:
+                        temp = (a, ',')
+
+                    if index[i] in construction_dict:
+                        construction_dict[index[i]].append(temp)
                     else:
-                        construction_dict[index[i]] = ','
+                        construction_dict[index[i]] = [temp]
 
     return process_data
 
@@ -2012,6 +2038,18 @@ def fetchNextWord(index, words_info):
 
     return next_word
 
+def process_dep_k2g(data_case, main_verb):
+    # if k2g comes with certain set of verbs(rAma 3:k2g check if 3 is verb or not
+    # se savAla pUCA) ppost - se, we need to maintain that list else - ppost - ko
+    verb_lst = ['pUCa', 'nikAla', 'mAzga']
+    ppost = ''
+    verb = identify_main_verb(main_verb[1])
+    if verb in verb_lst:
+        ppost = 'se'
+    else:
+        ppost = 'ko'
+    return ppost
+
 def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
     '''Calculates postposition to words wherever applicable according to rules.'''
     if np_data != ():
@@ -2033,8 +2071,9 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
         else:
             log('inside tam ya else')
             #new_case = 'd'
+
     elif data_case == 'k2g':
-        ppost = 'ko'
+        ppost = process_dep_k2g(data_case, main_verb)
     elif data_case == 'k2':
         if data_seman in ("anim", "per"):
             ppost = 'ko'
@@ -2185,13 +2224,14 @@ def add_spkview(full_data, spkview_dict):
         if index in spkview_dict:
             temp = list(data)
             spkview_info = spkview_dict[index]
-            tag = spkview_info[0]
-            val = spkview_info[1]
-            if tag == 'before':
-                temp[1] = val + ' ' + temp[1]
-            elif tag == 'after':
-                temp[1] = temp[1] + ' ' + val
-            data = tuple(temp)
+            for info in spkview_info:
+                tag = info[0]
+                val = info[1]
+                if tag == 'before':
+                    temp[1] = val + ' ' + temp[1]
+                elif tag == 'after':
+                    temp[1] = temp[1] + ' ' + val
+                data = tuple(temp)
         transformed_data.append(data)
 
     return transformed_data
@@ -2222,11 +2262,17 @@ def add_construction(transformed_data, construction_dict):
         index = data[0]
         if str(index) in construction_dict:
             temp = list(data)
-            construct = construction_dict[str(index)]
-            if construct == ',':
-                temp[1] = temp[1] + construct
-            else:
-                temp[1] = temp[1] + ' ' + construct
+            term = construction_dict[str(index)]
+            for t in term:
+                tag = t[0]
+                val = t[1]
+                if tag == 'before':
+                    temp[1] = val + ' ' + temp[1]
+                else:
+                    if val == ',':
+                        temp[1] = temp[1] + val
+                    else:
+                        temp[1] = temp[1] + ' ' +val
             data = tuple(temp)
         Constructdata.append(data)
 
