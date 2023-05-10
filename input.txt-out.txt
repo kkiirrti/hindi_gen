@@ -1,1 +1,1 @@
-^mItaroM/mItara<cat:n><case:o><gen:m><num:p>$
+^xiKAI/xiKA<cat:v><gen:f><num:s><per:a><tam:yA>/xiKA<cat:v><gen:f><num:s><per:u><tam:yA>/xiKA<cat:v><gen:f><num:s><per:m><tam:yA>/xiKA<cat:v><gen:f><num:s><per:m_h><tam:yA>/xiKAI<cat:n><case:d><gen:f><num:s>/xiKAI<cat:n><case:d><gen:f><num:p>/xiKAI<cat:n><case:o><gen:f><num:s>/xiKAI<cat:n><case:o><gen:f><num:p>$
