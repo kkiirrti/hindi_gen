@@ -692,7 +692,7 @@ def check_indeclinable(word_data):
         return True
 
     units = (
-        'semI,kimI,mItara'
+        'semI,kimI,mItara, lItara, kilomItara, kilolItara, '
     )
     unit_list = units.split(",")
     if clean(word_data[1]) in unit_list:
