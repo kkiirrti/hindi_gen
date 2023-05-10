@@ -1044,25 +1044,12 @@ def is_kim(term):
         return True
     return False
 
-def process_pronouns(pronouns, processed_nouns, processed_indeclinables, words_info, verbs_data):
-    '''Process pronouns as (index, word, category, case, gender, number, person, parsarg, fnum)'''
-    processed_pronouns = []
-    # fetch the main verb
-    for verb in verbs_data:
-        if verb[4].strip().split(':')[1] == 'main':
-            main_verb = verb
-            break
-    for pronoun in pronouns:
-        term = clean(pronoun[1])
-        relation = pronoun[4].strip().split(':')[1]
-        anim = pronoun[2]
-        gnp = pronoun[3]
-        if is_kim(term):
-            term = get_root_for_kim(relation, anim, gnp)
-            if term == 'kyoM':
-                processed_indeclinables.append((pronoun[0], term, 'indec'))
-                continue
+def process_kim(index, relation, anim, gnp, pronoun, words_info, main_verb, processed_pronouns, processed_indeclinables, processed_nouns):
+    term = get_root_for_kim(relation, anim, gnp)
+    if term == 'kyoM':
+        processed_indeclinables.append((index, term, 'indec'))
 
+    else:
         category = 'p'
         case = 'o'
         parsarg = 0
@@ -1072,29 +1059,7 @@ def process_pronouns(pronouns, processed_nouns, processed_indeclinables, words_i
 
         fnum = None
         gender, number, person = extract_gnp(pronoun[3])
-        # if "k1" in pronoun[4] or 'dem' in pronoun[4]:
-        #     if clean(pronoun[1]) in ('kOna', 'kyA', 'vaha', 'yaha') and pronoun[2] != 'per':
-        #         #if findValue('yA', processed_verbs, index=6)[0]: TAM not 'yA'
-        #             case = "d"
-        # else:
-        #if "k2" in pronoun[4] and pronoun[2] in ('anim', 'per'):
-        #    case = 'd'
 
-        if pronoun[1] == 'addressee':
-            addr_map = {'respect': 'Apa', 'informal': 'wU', '': 'wU'}
-            pronoun_per = {'respect': 'm', 'informal': 'm', '': 'm_h1'}
-            pronoun_number = {'respect': 'p', 'informal': 's', '': 'p'}
-            word = addr_map.get(pronoun[6].strip().lower(), 'wU')
-            person = pronoun_per.get(pronoun[6].strip().lower(), 'm_h1')
-            number = pronoun_number.get(pronoun[6].strip(), 'p')
-        elif pronoun[1] == 'speaker':
-            word = 'mEM'
-        elif pronoun[1] == 'vaha':
-            word = 'vaha'
-        else:
-            word = term
-
-        # If dependency is r6 then add fnum and take gnp and case from following noun.
         if "r6" in pronoun[4]:
             fnoun = int(pronoun[4][0])
             fnoun_data = getDataByIndex(fnoun, processed_nouns, index=0)
@@ -1104,8 +1069,79 @@ def process_pronouns(pronouns, processed_nouns, processed_indeclinables, words_i
             if term == 'apanA':
                 parsarg = '0'
 
-        processed_pronouns.append((pronoun[0], word, category, case, gender, number, person, parsarg, fnum))
-        log(f'{pronoun[1]} processed as pronoun with case:{case} par:{parsarg} gen:{gender} num:{number} per:{person} fnum:{fnum}')
+        if term in ('kahAz'):
+            parsarg = 0
+        processed_pronouns.append((pronoun[0], term, category, case, gender, number, person, parsarg, fnum))
+        log(f'kim processed as pronoun with term: {term} case:{case} par:{parsarg} gen:{gender} num:{number} per:{person} fnum:{fnum}')
+
+    return processed_pronouns, processed_indeclinables
+
+def process_pronouns(pronouns, processed_nouns, processed_indeclinables, words_info, verbs_data):
+    '''Process pronouns as (index, word, category, case, gender, number, person, parsarg, fnum)'''
+    processed_pronouns = []
+    # fetch the main verb
+    for verb in verbs_data:
+        if verb[4].strip().split(':')[1] == 'main':
+            main_verb = verb
+            break
+    for pronoun in pronouns:
+        index = pronoun[0]
+        term = clean(pronoun[1])
+        relation = pronoun[4].strip().split(':')[1]
+        anim = pronoun[2]
+        gnp = pronoun[3]
+        if is_kim(term):
+            # returns a tuple
+            # term = get_root_for_kim(relation, anim, gnp)
+            # if term == 'kyoM':
+            #     processed_indeclinables.append((pronoun[0], term, 'indec'))
+            #     continue
+            processed_pronouns, processed_indeclinables = process_kim(index, relation, anim, gnp, pronoun, words_info,
+                                                                      main_verb, processed_pronouns, processed_indeclinables, processed_nouns)
+        else:
+            category = 'p'
+            case = 'o'
+            parsarg = 0
+            case, postposition = preprocess_postposition_new('pronoun', pronoun, words_info, main_verb)
+            if postposition != '':
+                parsarg = postposition
+
+            fnum = None
+            gender, number, person = extract_gnp(pronoun[3])
+            # if "k1" in pronoun[4] or 'dem' in pronoun[4]:
+            #     if clean(pronoun[1]) in ('kOna', 'kyA', 'vaha', 'yaha') and pronoun[2] != 'per':
+            #         #if findValue('yA', processed_verbs, index=6)[0]: TAM not 'yA'
+            #             case = "d"
+            # else:
+            #if "k2" in pronoun[4] and pronoun[2] in ('anim', 'per'):
+            #    case = 'd'
+
+            if pronoun[1] == 'addressee':
+                addr_map = {'respect': 'Apa', 'informal': 'wU', '': 'wU'}
+                pronoun_per = {'respect': 'm', 'informal': 'm', '': 'm_h1'}
+                pronoun_number = {'respect': 'p', 'informal': 's', '': 'p'}
+                word = addr_map.get(pronoun[6].strip().lower(), 'wU')
+                person = pronoun_per.get(pronoun[6].strip().lower(), 'm_h1')
+                number = pronoun_number.get(pronoun[6].strip(), 'p')
+            elif pronoun[1] == 'speaker':
+                word = 'mEM'
+            elif pronoun[1] == 'vaha':
+                word = 'vaha'
+            else:
+                word = term
+
+            # If dependency is r6 then add fnum and take gnp and case from following noun.
+            if "r6" in pronoun[4]:
+                fnoun = int(pronoun[4][0])
+                fnoun_data = getDataByIndex(fnoun, processed_nouns, index=0)
+                gender = fnoun_data[4]  # To-ask
+                fnum = number = fnoun_data[5]
+                case = fnoun_data[3]
+                if term == 'apanA':
+                    parsarg = '0'
+
+            processed_pronouns.append((pronoun[0], word, category, case, gender, number, person, parsarg, fnum))
+            log(f'{pronoun[1]} processed as pronoun with case:{case} par:{parsarg} gen:{gender} num:{number} per:{person} fnum:{fnum}')
     return processed_pronouns
 
 def handle_compound_nouns(noun, processed_nouns, category, case, gender, number, person, postposition):
@@ -1872,7 +1908,7 @@ def join_indeclinables(transformed_data, processed_indeclinables, processed_othe
 def nextNounData_fromFullData(fromIndex, PP_FullData):
     index = fromIndex
     for data in PP_FullData:
-        if index == data[0]:
+        if data[0] > index:
             if data[2] == 'n':
                 return data
 
@@ -2090,7 +2126,7 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
         ppost = 'meM'
     elif data_case =='k7':
         ppost = 'para'
-    elif data_case == 'kr_vn' and data_seman == 'abs':
+    elif data_case == 'krvn' and data_seman == 'abs':
         ppost = 'se'
     elif data_case == 'rt':
         ppost = 'ke lie'
