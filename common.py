@@ -1495,7 +1495,6 @@ def process_construction(processed_words, construction_data, depend_data, gnp_da
 
                 update_index = index[length_index - 2]
                 for i in index:
-                    #put break properly..
                     if i == update_index:
                         if conj_type == 'conj':
                             temp = (a, 'Ora')
@@ -1509,14 +1508,19 @@ def process_construction(processed_words, construction_data, depend_data, gnp_da
                         else:
                             construction_dict[i] = [temp]
 
+                        # if i in ppost_dict remove ppost rAma kA Ora SAma kA -> rAma Ora SAma kA
+                        if int(i) in processed_postpositions_dict:
+                            del processed_postpositions_dict[int(i)]
+
                 if i in construction_dict:
                     construction_dict[i].append(temp)
                 else:
                     construction_dict[i] = [temp]
+                if int(i) in processed_postpositions_dict:
+                    del processed_postpositions_dict[int(i)]
 
             elif conj_type == 'list':
                 length_list = len(index)
-                construction_dict
                 for i in range(len(index)):
                     if i == length_list - 1:
                         break
@@ -1607,6 +1611,10 @@ def to_tuple(verb: Verb):
     return (verb.index, verb.term, verb.category, verb.gender, verb.number, verb.person, verb.tam, verb.case, verb.type)
 
 
+def set_main_verb_tam_zero(verb: Verb):
+    verb.tam = 0
+    return verb
+
 def process_auxiliary_verbs(verb: Verb, concept_term: str, spkview_data) -> [Verb]:
     """
     >>> [to_tuple(aux) for aux in process_auxiliary_verbs(Verb(index=4, term = 'kara', gender='m', number='s', person='a', tam='hE', type= 'Auxillary'), concept_term='kara_17-0_sakawA_hE_1')]
@@ -1625,7 +1633,8 @@ def process_auxiliary_verbs(verb: Verb, concept_term: str, spkview_data) -> [Ver
     if HAS_SHADE_DATA:
         temp = (term, tam)
         auxiliary_term_tam.append(temp)
-
+        # set main verb tam to 0
+        verb = set_main_verb_tam_zero(verb)
     auxiliary_verb_terms = identify_auxillary_verb_terms(concept_term)
     for v in auxiliary_verb_terms:
         term, tam = auxmap_hin(v)
