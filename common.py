@@ -616,7 +616,8 @@ def check_pronoun(word_data):
                 'addressee', 'speaker', 'kyA', 'Apa', 'jo', 'koI', 'kOna', 'mEM', 'saba', 'vaha', 'wU', 'wuma', 'yaha', 'kim'):
             return True
         elif 'coref' in word_data[5]:
-            return True
+            if 'r6' not in word_data[4]: # for words like apanA
+                return True
         else:
             return False
     except IndexError:
@@ -631,8 +632,13 @@ def check_adjective(word_data):
         rel = word_data[4].strip().split(':')[1]
         if rel in ('card', 'mod', 'meas', 'ord', 'intf'):
             return True
-        if rel == 'k1s' and word_data[3] == '':
+        if rel == 'k1s' and word_data[3] == '': # k1s and no GNP -> adj
             return True
+
+        if word_data[5] != '':
+            coref = word_data[5].strip().split(':')[1]
+            if rel == 'r6' and coref == 'coref': # for words like apanA
+                return True
     return False
 
 
