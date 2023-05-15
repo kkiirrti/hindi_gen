@@ -322,7 +322,6 @@ def getGNP_using_k1(k1exists, searchList):
 def getVerbGNP_new(concept_term, full_tam, is_cp, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns):
     '''
     '''
-
     #for imperative sentences
     if sentence_type in ('Imperative','imperative') :
         verb_gender = 'm'
@@ -2125,7 +2124,7 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
 
     elif data_case == 'k2g':
         ppost = process_dep_k2g(data_case, main_verb)
-    elif data_case == 'k2':
+    elif data_case == 'k2': #if CP present, and if concept is k2 for verb of CP, and the verb is not in specific list, then kA
         if data_seman in ("anim", "per"):
             ppost = 'ko'
         else:
