@@ -10,8 +10,8 @@ from concept import Concept
 
 noun_attribute = dict()
 USR_row_info = ['root_words', 'index_data', 'seman_data', 'gnp_data', 'depend_data', 'discourse_data', 'spkview_data', 'scope_data']
-nA_list = ['nA_paDa', 'nA_padZA', 'nA_padA', 'nA_hE', 'nA_tha', 'nA_thI', 'nA_ho', 'nA_hogA', 'nA_cAhie', 'nA_cAhiye']
-spkview_list = ['hI', 'BI', 'jI', 'wo', 'waka', 'lagaBaga', 'lagAtAra', 'kewala']
+nA_list = ['nA_paDa', 'nA_padZA', 'nA_padA', 'nA_hE', 'nA_WA', 'nA_hogA', 'nA_cAhie', 'nA_cAhiye']
+spkview_list = ['hI', 'BI', 'jI', 'wo', 'waka', 'lagaBaga', 'lagAwAra', 'kewala']
 processed_postpositions_dict = {}
 construction_dict = {}
 spkview_dict = {}
