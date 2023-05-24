@@ -9,8 +9,13 @@ hE,hE,hE
 hogA,ho,gA
 howA,ho,wA
 huA,ho,yA
+jA,jA,0
 jAwA,jA,wA
 jAyegA,jA,gA
+lagawA,laga,wA
+lagegA,laga,gA
+lagA,laga,0
+lagayA,laga,yA
 legA,le,gA
 lewA,le,wA
 liyA,le,yA
