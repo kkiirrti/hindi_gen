@@ -10,8 +10,10 @@ from concept import Concept
 
 noun_attribute = dict()
 USR_row_info = ['root_words', 'index_data', 'seman_data', 'gnp_data', 'depend_data', 'discourse_data', 'spkview_data', 'scope_data']
-nA_list = ['nA_paDa', 'nA_padZA', 'nA_padA', 'nA_hE', 'nA_tha', 'nA_thI', 'nA_ho', 'nA_hogA', 'nA_cAhie', 'nA_cAhiye']
-spkview_list = ['hI', 'BI', 'jI', 'wo', 'waka', 'lagaBaga', 'lagAtAra', 'kevala']
+
+nA_list = ['nA_paDa', 'nA_padZA', 'nA_padA', 'nA_hE', 'nA_WA', 'nA_hogA', 'nA_cAhie', 'nA_cAhiye']
+spkview_list = ['hI', 'BI', 'jI', 'wo', 'waka', 'lagaBaga', 'lagAwAra', 'kevala']
+
 processed_postpositions_dict = {}
 construction_dict = {}
 spkview_dict = {}
@@ -71,6 +73,8 @@ def populate_GNP_dict(gnp_info, PPfull_data):
     #         GNP_dict[i+1] = 'kama'
     #         populate_GNP_dict = True
     return populate_GNP_dict
+
+
 def populate_spkview_dict(spkview_info):
     populate_spk_dict = False
     a = 'after'
@@ -80,7 +84,6 @@ def populate_spkview_dict(spkview_info):
             populate_spk_dict = True
             temp = (a, spkview_info[i])
             spkview_dict[i + 1] = [temp]
-
         elif spkview_info[i] == 'result':
             populate_spk_dict = True
             temp = (b, 'pariNAmasvarUpa,')
@@ -322,7 +325,6 @@ def getGNP_using_k1(k1exists, searchList):
 def getVerbGNP_new(concept_term, full_tam, is_cp, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns):
     '''
     '''
-
     #for imperative sentences
     if sentence_type in ('Imperative','imperative') :
         verb_gender = 'm'
@@ -599,7 +601,9 @@ def check_noun(word_data):
     '''Check if word is a noun by the USR info'''
 
     try:
-        if word_data[3] != '':
+        if word_data[2] in ('place','Place','ne','NE'):  # identifying nouns from sem_cat
+            return True
+        if word_data[3] != '': # GNP present for a concept- but its not one of the
             if word_data[3][1:-1] not in ('superl', 'stative', 'causative', 'double_causative'):
                 return True
         return False
@@ -616,7 +620,8 @@ def check_pronoun(word_data):
                 'addressee', 'speaker', 'kyA', 'Apa', 'jo', 'koI', 'kOna', 'mEM', 'saba', 'vaha', 'wU', 'wuma', 'yaha', 'kim'):
             return True
         elif 'coref' in word_data[5]:
-            return True
+            if 'r6' not in word_data[4]: # for words like apanA
+                return True
         else:
             return False
     except IndexError:
@@ -631,13 +636,17 @@ def check_adjective(word_data):
         rel = word_data[4].strip().split(':')[1]
         if rel in ('card', 'mod', 'meas', 'ord', 'intf'):
             return True
-        elif rel == 'k1s' and word_data[3] == '':
+
+        if rel == 'k1s' and word_data[3] == '': # k1s and no GNP -> adj
             return True
-        elif word_data[1] == 'kim' and rel == 'krvn':
-            return True
+
+        if word_data[5] != '':
+            if ':' in word_data[5]:
+                coref = word_data[5].strip().split(':')[1]
+                if rel == 'r6' and coref == 'coref': # for words like apanA
+                    return True
 
     return False
-
 
 def check_nonfinite_verb(word_data):
     '''Check if word is a non-fininte verb by the USR info'''
@@ -1664,11 +1673,15 @@ def process_auxiliary_verbs(verb: Verb, concept_term: str, spkview_data) -> [Ver
                 tam = identify_default_tam_for_main_verb(concept_term)
                 HAS_SHADE_DATA = True
                 break
+
     if HAS_SHADE_DATA:
+        if term == 'jA' and tam == 'yA':
+            tam = 'yA1'   # to generate gayA from jA-yA
         temp = (term, tam)
         auxiliary_term_tam.append(temp)
         # set main verb tam to 0
         verb = set_main_verb_tam_zero(verb)
+
     auxiliary_verb_terms = identify_auxillary_verb_terms(concept_term)
     for v in auxiliary_verb_terms:
         term, tam = auxmap_hin(v)
@@ -1762,7 +1775,7 @@ def process_nonfinite_verb(concept, seman_data, depend_data, sentence_type, proc
     verb.gender = gender
     verb.number = number
     verb.person = person
-    verb.case = 'o' # to be updated
+    verb.case = 'o' # to be updated - agreement with following noun
     log(f'{verb.term} processed as nonfinite verb with index {verb.index} gen:{verb.gender} num:{verb.number} case:{verb.case}, and tam:{verb.tam}')
     return verb
 
@@ -2178,7 +2191,7 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
 
     elif data_case == 'k2g':
         ppost = process_dep_k2g(data_case, main_verb)
-    elif data_case == 'k2':
+    elif data_case == 'k2': #if CP present, and if concept is k2 for verb of CP, and the verb is not in specific list, then kA
         if data_seman in ("anim", "per"):
             if clean(root_main) in ['bola', 'mila', 'pyAra']:
                 ppost = 'se'
@@ -2245,12 +2258,12 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
     # elif data_case == 'ras_k1':
     #     ppost = 'ke sAWa'
 
-    elif data_case == 'r6':
+    elif data_case == 'r6': # to be updated - ke if nextnoun is o case
         ppost = 'kA' #if data[4] == 'f' else 'kA'
         nn_data = nextNounData(data_index, words_info)
         if nn_data != False:
             #print('Next Noun data:', nn_data)
-            if nn_data[4].split(':')[1] in ('k3', 'k4', 'k5', 'k7', 'k7p', 'k7t', 'r6', 'mk1', 'jk1', 'rt'):
+            if nn_data[4].split(':')[1] in ('k3', 'k4', 'k5', 'k7', 'k7p', 'k7t', 'r6', 'mk1', 'jk1', 'rt', 'rh'):
                 ppost = 'ke'
                 if nn_data[3][2] == 's':#agreement with gnp
                     if nn_data[3][1] == 'f':

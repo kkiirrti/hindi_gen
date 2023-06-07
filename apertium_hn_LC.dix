@@ -80,6 +80,7 @@
 <pardef n="parsarg">
 <e><p><l></l><r><s n="cat:prsg"/></r></p></e>
 </pardef>
+
 <pardef n="conjunct">
 <e><p><l></l><r><s n="cat:cnj"/></r></p></e>
 </pardef>
@@ -3175,6 +3176,7 @@ addition ended by Kirti Garg kirti.garg@gmail.com on 7/12/22-->
 <!--  <e>           <p><l></l>      <r></r></p><par n="vAl/A__adj"/></e> -->
   <e>           <p><l></l>      <r></r></p><par n="ladak/A__n"/></e>
   <e>           <p><l></l>      <r></r></p><par n="ladak/I__n"/></e>
+
   </pardef>
 
 <!--Added by Kirti Garg kirti.garg@gmail.com for the LC project -->
@@ -5545,6 +5547,7 @@ addition ended by Kirti Garg kirti.garg@gmail.com on 7/12/22-->
 <e lm="aMwawaH"><i>aMwawaH</i><par n="kroXa/__n"/></e>
 <e lm="aMwevAsI"><i>aMwevAs</i><par n="Axam/I__n"/></e>
 <e lm="aMwima"><i>aMwima</i><par n="kroXa/__n"/></e>
+<e lm="aMwima"><i>aMwima</i><par n="regular__adj-noun"/></e>
 <e lm="aMwra"><i>aMwr</i><par n="Gar/a__n"/></e>
 <e lm="aMwya"><i>aMwya</i><par n="amIra/__adj"/></e>
 <e lm="aMwyaja"><i>aMwyaj</i><par n="Gar/a__n"/></e>
@@ -6414,7 +6417,7 @@ addition ended by Kirti Garg kirti.garg@gmail.com on 7/12/22-->
 <e lm="aPanA"><i>aPanA</i><par n="KA/__v"/></e>
 <e lm="apAna"><i>apAna</i><par n="kroXa/__n"/></e>
 <e lm="ApaNa"><i>ApaN</i><par n="Gar/a__n"/></e>
-<e lm="apanA"><i>apan</i><par n="regular__adj-noun"/></e>
+
 <e lm="apanAma"><i>apanAma</i><par n="kroXa/__n"/></e>
 <e lm="apanApana"><i>apanApana</i><par n="kroXa/__n"/></e>
 <e lm="apanawva"><i>apanawv</i><par n="Gar/a__n"/></e>
