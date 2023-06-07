@@ -10,8 +10,10 @@ from concept import Concept
 
 noun_attribute = dict()
 USR_row_info = ['root_words', 'index_data', 'seman_data', 'gnp_data', 'depend_data', 'discourse_data', 'spkview_data', 'scope_data']
+
 nA_list = ['nA_paDa', 'nA_padZA', 'nA_padA', 'nA_hE', 'nA_WA', 'nA_hogA', 'nA_cAhie', 'nA_cAhiye']
 spkview_list = ['hI', 'BI', 'jI', 'wo', 'waka', 'lagaBaga', 'lagAwAra', 'kevala']
+
 processed_postpositions_dict = {}
 construction_dict = {}
 spkview_dict = {}
@@ -634,6 +636,7 @@ def check_adjective(word_data):
         rel = word_data[4].strip().split(':')[1]
         if rel in ('card', 'mod', 'meas', 'ord', 'intf'):
             return True
+
         if rel == 'k1s' and word_data[3] == '': # k1s and no GNP -> adj
             return True
 
@@ -642,8 +645,8 @@ def check_adjective(word_data):
                 coref = word_data[5].strip().split(':')[1]
                 if rel == 'r6' and coref == 'coref': # for words like apanA
                     return True
-    return False
 
+    return False
 
 def check_nonfinite_verb(word_data):
     '''Check if word is a non-fininte verb by the USR info'''
@@ -767,12 +770,12 @@ def analyse_words(words_list):
         elif check_digit(word_data):
             log(f'{word_data[1]} identified as noun.')
             nouns.append(word_data)
-        elif check_pronoun(word_data):
-            log(f'{word_data[1]} identified as pronoun.')
-            pronouns.append(word_data)
         elif check_adjective(word_data):
             log(f'{word_data[1]} identified as adjective.')
             adjectives.append(word_data)
+        elif check_pronoun(word_data):
+            log(f'{word_data[1]} identified as pronoun.')
+            pronouns.append(word_data)
         elif check_adverb(word_data):
             log(f'{word_data[1]} identified as adverb.')
             adverbs.append(word_data)
@@ -934,6 +937,10 @@ def get_root_for_kim(relation, anim, gnp):
         return 'kyoM'
     elif relation == 'rt' and not has_GNP(gnp): #generate kisa
         return 'kOna'
+    elif relation == 'krvn': #generate kEse
+        return 'kEsA'
+    elif relation == 'k1s':
+        return 'kEsA'
     elif has_GNP(gnp) and anim not in animate:
         return 'kyA'
     elif has_GNP(gnp) and anim in animate:
@@ -1203,7 +1210,10 @@ def process_nouns(nouns, words_info, verbs_data):
         else:
             term = noun[1]
             if check_is_digit(term):
-                clean_noun = term
+                if '_' in term:
+                    clean_noun = term.strip().split('_')[0]
+                else:
+                    clean_noun = term
                 noun_type = 'digit'
             else:
                 clean_noun = clean(noun[1])
@@ -1242,11 +1252,12 @@ def process_adjectives(adjectives, processed_nouns, processed_verbs):
         category = 'adj'
         adj = clean(adjective[1])
 
-
         relConcept = int(adjective[4].strip().split(':')[0]) # noun for regular adjcetives, and verb for k1s-samaadhikaran
         relation = adjective[4].strip().split(':')[1]
         if relation == 'k1s':
-             relConcept_data = getDataByIndex(relConcept, processed_verbs)
+            if adj =='kim':
+                adj = 'kEsA'
+            relConcept_data = getDataByIndex(relConcept, processed_verbs)
         else:
             relConcept_data = getDataByIndex(relConcept, processed_nouns)
 
@@ -1259,7 +1270,8 @@ def process_adjectives(adjectives, processed_nouns, processed_verbs):
 
         # noun = relConcept_data[1]
         # add_adj_to_noun_attribute(noun, adj)
-
+        if adj == 'kim' and relation == 'krvn':
+            adj = 'kEsA'
         adjective = (index, adj, category, case, gender, number)
         processed_adjectives.append((index, adj, category, case, gender, number))
         log(f'{adjective[1]} processed as an adjective with case:{case} gen:{gender} num:{number}')
@@ -1439,6 +1451,23 @@ def set_gender_make_plural(processed_words, g, num):
         process_data.append(tuple(word_list))
 
     return process_data
+
+
+def is_update_index_NC(i, processed_words):
+    for data in processed_words:
+        temp = tuple(data)
+        if float(i) == temp[0] and temp[7] == 'NC':
+            return True
+
+    return False
+
+
+def fetch_NC_head(i, processed_words):
+    for data in processed_words:
+        temp = tuple(data)
+        if int(temp[0]) == int(i) and temp[7] == 'NC_head':
+            return temp[0]
+
 def process_construction(processed_words, construction_data, depend_data, gnp_data, index_data):
     # Adding Ora or yA as a tuple to be sent to morph/ adding it at join_compounds only
     # if k1 in conj, all k1s and main verb g - m and n - pl
@@ -1459,7 +1488,6 @@ def process_construction(processed_words, construction_data, depend_data, gnp_da
             gnp_info = gnp_info.strip().strip('][')
             gnp = gnp_info.split(' ')
             gender.append(gnp[0])
-
 
     if depend_data != []:
         dependency = []
@@ -1503,8 +1531,13 @@ def process_construction(processed_words, construction_data, depend_data, gnp_da
                     process_data = set_gender_make_plural(processed_words, g, num)
 
                 update_index = index[length_index - 2]
+                # check if update index is NC
+                #if true then go till NC_head index update same index in construction dict and remove ppost if any from processed
                 for i in index:
                     if i == update_index:
+                        if is_update_index_NC(i, processed_words):
+                            index_NC_head = fetch_NC_head(i, processed_words)
+                            i = index_NC_head
                         if conj_type == 'conj':
                             temp = (a, 'Ora')
                         elif conj_type == 'disjunct':
@@ -1512,21 +1545,22 @@ def process_construction(processed_words, construction_data, depend_data, gnp_da
                         break
                     else:
                         temp = (a, ',')
-                        if i in construction_dict:
-                            construction_dict[i].append(temp)
+                        if float(i) in construction_dict:
+                            construction_dict[float(i)].append(temp)
                         else:
-                            construction_dict[i] = [temp]
+                            construction_dict[float(i)] = [temp]
 
                         # if i in ppost_dict remove ppost rAma kA Ora SAma kA -> rAma Ora SAma kA
-                        if int(i) in processed_postpositions_dict:
-                            del processed_postpositions_dict[int(i)]
+                        if float(i) in processed_postpositions_dict:
+                            del processed_postpositions_dict[float(i)]
 
-                if i in construction_dict:
-                    construction_dict[i].append(temp)
+                if float(i) in construction_dict:
+                    construction_dict[float(i)].append(temp)
                 else:
-                    construction_dict[i] = [temp]
-                if int(i) in processed_postpositions_dict:
-                    del processed_postpositions_dict[int(i)]
+                    construction_dict[float(i)] = [temp]
+
+                if float(i) in processed_postpositions_dict:
+                    del processed_postpositions_dict[float(i)]
 
             elif conj_type == 'list':
                 length_list = len(index)
@@ -2108,8 +2142,33 @@ def process_dep_k2g(data_case, main_verb):
         ppost = 'ko'
     return ppost
 
+
+def update_ppost_dict(data_index, param):
+    if data_index in processed_postpositions_dict:
+        processed_postpositions_dict[data_index] = param
+
+def postposition_finalization(processed_nouns, processed_pronouns, words_info):
+    for data in words_info:
+        data_index = data[0]
+        dep = data[4].strip().split(':')[1]
+        head = data[4].strip().split(':')[0]
+
+        if dep == 'r6':
+            for noun in processed_nouns:
+                index = noun[0]
+                case = noun[3]
+                if head == str(index) and case == 'o':
+                    update_ppost_dict(data_index, 'ke')
+
+            for pronoun in processed_pronouns:
+                index = noun[0]
+                case = noun[3]
+                if head == str(index) and case == 'o':
+                    update_ppost_dict(data_index, 'ke')
+
 def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
     '''Calculates postposition to words wherever applicable according to rules.'''
+    root_main = main_verb[1].strip().split('-')[0].split('_')[0]
     if np_data != ():
         data_case = np_data[4].strip().split(':')[1]
         data_index = np_data[0]
@@ -2134,7 +2193,10 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
         ppost = process_dep_k2g(data_case, main_verb)
     elif data_case == 'k2': #if CP present, and if concept is k2 for verb of CP, and the verb is not in specific list, then kA
         if data_seman in ("anim", "per"):
-            ppost = 'ko'
+            if clean(root_main) in ['bola', 'mila', 'pyAra']:
+                ppost = 'se'
+            else:
+                ppost = 'ko'
         else:
             new_case = 'd'
 
@@ -2318,9 +2380,9 @@ def add_construction(transformed_data, construction_dict):
 
     for data in transformed_data:
         index = data[0]
-        if str(index) in construction_dict:
+        if index in construction_dict:
             temp = list(data)
-            term = construction_dict[str(index)]
+            term = construction_dict[index]
             for t in term:
                 tag = t[0]
                 val = t[1]
@@ -2362,11 +2424,11 @@ def write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FIL
             file.write("")
 
     with open(OUTPUT_FILE, 'a') as file:
-        file.write(path.strip('verified_sent/') + ',')
-        file.write(src_sentence.strip('#').strip('\n') + ',')
-        file.write(POST_PROCESS_OUTPUT + ',')
+        file.write(path.strip('../hindi_gen/Test_data/week5/') + '\t')
+        file.write(src_sentence.strip('"').strip('\n').strip('#') + '\t')
+        file.write(POST_PROCESS_OUTPUT + '    ')
         #file.write(hindi_output)
-        file.write(hindi_output + ',')
+        file.write(hindi_output + '\t')
         file.write('\n')
         log('Output data write successfully')
     return "Output data write successfully"

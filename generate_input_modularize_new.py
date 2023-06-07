@@ -58,7 +58,7 @@ if __name__ == "__main__":
     processed_adjectives = process_adjectives(adjectives_data, processed_nouns, processed_verbs)
     process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others)
     process_nominal_form = process_nominal_verb(nominal_forms_data, processed_nouns, words_info, verbs_data)
-
+    postposition_finalization(processed_nouns, processed_pronouns, words_info)
     # Todo : extract nouns / adjectives from Compound verbs with +
     # Todo : process nouns / adjectives got from verbs and add to processed_noun / processed_adjectives
 
@@ -69,6 +69,7 @@ if __name__ == "__main__":
     # Every word is collected into one and sorted by index number.
     processed_words = collect_processed_data(processed_pronouns,processed_nouns,processed_adjectives,
                                             processed_verbs, processed_auxverbs,processed_indeclinables, processed_others)
+
 
     # calculating postpositions for words if applicable.
     # processed_words, processed_postpositions = preprocess_postposition_new(processed_words, words_info,processed_verbs)
