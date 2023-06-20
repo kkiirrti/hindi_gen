@@ -12,6 +12,10 @@ noun_attribute = dict()
 USR_row_info = ['root_words', 'index_data', 'seman_data', 'gnp_data', 'depend_data', 'discourse_data', 'spkview_data', 'scope_data']
 nA_list = ['nA_paDa', 'nA_padZA', 'nA_padA', 'nA_hE', 'nA_tha', 'nA_thI', 'nA_ho', 'nA_hogA', 'nA_cAhie', 'nA_cAhiye']
 spkview_list = ['hI', 'BI', 'jI', 'wo', 'waka', 'lagaBaga', 'lagAtAra', 'kevala']
+kisase_k2g_verbs = ['bola', 'pUCa', 'kaha', 'nikAla', 'mAzga']
+kisase_k2_verbs = ['mila', 'pyAra']
+kisase_k5_verbs = ['dara', 'baca', 'rakSA']
+kahAz_k5_verbs = ['A', 'uga', 'gira']
 processed_postpositions_dict = {}
 construction_dict = {}
 spkview_dict = {}
@@ -899,76 +903,49 @@ def has_GNP(gnp_info):
         return False
     return True
 
-def get_root_for_kim(relation, anim, gnp):
+def get_root_for_kim(relation, anim, gnp, main_verb):
     # kOna is root for - kisakA, kisakI, kisake, kinakA, kinake, kinakI, kOna, kisa, kisane, kise, kisako,
     # kisase, kisake, kisameM, kisameM_se, isapara, kina, inhoMne, kinheM, kinako, kinase, kinpara, kinake, kinameM, kinameM_se, kisI, kisa
 
-    # kyA = k1s, gnp, inanimate
-    # kyA = k2, non anim
-    # kOna = k1s, gnp, animate
-    # kEsA = k1s, no gnp, inanimate
-
-    #     elif relation in ('k2p', 'k7p'):
-    #     return 'kahAz'
-    #
-    # elif relation == 'k5':
-    # return 'kahAz se'
-        #kaba
-        #kim + gnp + non anim - > kyA
-        #kim + gnp + anim -> kaun
-
     animate = ['anim', 'per']
-    if relation in ('k2p', 'k7p'):
+    # kisase_k2g_verbs = ['bola', 'pUca', 'kaha']
+    # kisase_k2_verbs = ['mila', 'pyAra']
+    # kisase_k5_verbs = ['dara', 'baca', 'rakSA']
+
+    if (relation == 'k2p' or relation == 'k7p') and has_GNP(gnp) and anim not in animate:
         return 'kahAz'
-    elif relation == 'k5' and has_GNP(gnp):
-        return 'kahAz'
-    elif relation == 'k7t':
-        return 'kaba'
-    elif relation == 'rh' and not has_GNP(gnp):
-        return 'kyoM'
-    elif relation == 'rt' and not has_GNP(gnp): #generate kisa
+    elif (relation == 'k1' or relation == 'k1s') and has_GNP(gnp) and anim in animate:
         return 'kOna'
     elif relation == 'krvn': #generate kEse
         return 'kEsA'
-    elif relation == 'k1s':
+    elif relation == 'k1s' and not has_GNP(gnp) and anim not in animate:
         return 'kEsA'
-    elif has_GNP(gnp) and anim not in animate:
+    elif relation == 'k7t' and anim not in animate:
+        return 'kaba'
+    elif relation == 'rh':
+        return 'kyoM'
+    elif relation == 'rt' and not has_GNP(gnp) and anim not in animate: #generate kisaliye
+        return 'kisaliye'
+    elif relation == 'k2' and has_GNP(gnp) and main_verb in kisase_k2_verbs: #generate kisase
+        return 'kOna'
+    elif relation == 'k2' and has_GNP(gnp) and anim not in animate: #generate kyA
         return 'kyA'
-    elif has_GNP(gnp) and anim in animate:
+    elif relation == 'r6': #generate kisaka
+        return 'kOna'
+    elif relation == 'k3' and has_GNP(gnp) and anim not in animate: #generate kisase
+        return 'kOna'
+    elif relation == 'k2g' and has_GNP(gnp) and anim in animate and main_verb in kisase_k2g_verbs : #generate kisase
+        return 'kOna'
+    elif relation == 'k2' and has_GNP(gnp) and main_verb in kisase_k2_verbs: #generate kisase
+        return 'kOna'
+    elif relation =='k5' and main_verb in kisase_k5_verbs: #generate kisase
+        return 'kOna'
+    elif relation == 'k5' and main_verb in kahAz_k5_verbs: #generate kahAz se
+        return 'kahAz se'
+    elif relation == 'k4' or relation == 'k2g': #generate kisako
         return 'kOna'
     else:
         return 'kim'
-
-    # if relation == 'k1s' and len(gnp) > 0 and anim in animate:
-    #     return 'kOna'
-    # #generate kisane, kOna
-    # elif relation == 'k1':
-    #     return 'kOna'
-    # #generate kisase, kisako
-    # elif relation in ('k2', 'k2g', 'k5', 'k3'):
-    #     return 'kOna'
-    #
-    # elif relation == 'k1s' and len(gnp) > 0 and anim not in animate:
-    #     return 'kyA'
-    # elif relation == 'k2' and anim not in animate:
-    #     return 'kyA'
-    #
-    # elif relation in ('k2p', 'k7p'):
-    #     return 'kahAz'
-    # elif relation == 'k5':
-    #     return 'kahAz se'
-    #
-    # elif relation == 'kr_vn':
-    #     return 'kEse'
-    # elif relation == 'k1s' and len(gnp) == 0 and anim in inanimate:
-    #     return 'kEsA'
-    # elif relation == 'rt':
-    #     return 'kyoM'
-    #
-    #
-    #
-    #else:
-    #    return 'kim'
 
 def process_indeclinables(indeclinables):
     '''Processes indeclinable words index, word, 'indec'''
@@ -1052,8 +1029,10 @@ def is_kim(term):
     return False
 
 def process_kim(index, relation, anim, gnp, pronoun, words_info, main_verb, processed_pronouns, processed_indeclinables, processed_nouns):
-    term = get_root_for_kim(relation, anim, gnp)
-    if term == 'kyoM':
+    if main_verb != () or len(main_verb) > 0:
+        root_main_verb = identify_main_verb(main_verb[1])
+    term = get_root_for_kim(relation, anim, gnp, root_main_verb)
+    if term == 'kyoM' or term == 'kisaliye' or term == 'kaba' or term == 'kahAz se':
         processed_indeclinables.append((index, term, 'indec'))
 
     else:
@@ -1098,11 +1077,6 @@ def process_pronouns(pronouns, processed_nouns, processed_indeclinables, words_i
         anim = pronoun[2]
         gnp = pronoun[3]
         if is_kim(term):
-            # returns a tuple
-            # term = get_root_for_kim(relation, anim, gnp)
-            # if term == 'kyoM':
-            #     processed_indeclinables.append((pronoun[0], term, 'indec'))
-            #     continue
             processed_pronouns, processed_indeclinables = process_kim(index, relation, anim, gnp, pronoun, words_info,
                                                                       main_verb, processed_pronouns, processed_indeclinables, processed_nouns)
         else:
@@ -1884,7 +1858,6 @@ def analyse_output_data(output_data, morph_input):
         combine_data.append(tuple(morph_input_list))
     return combine_data
 
-
 def change_gender(current_gender):
     """
     >>> change_gender('m')
@@ -2118,17 +2091,12 @@ def fetchNextWord(index, words_info):
     return next_word
 
 def process_dep_k2g(data_case, main_verb):
-    # if k2g comes with certain set of verbs(rAma 3:k2g check if 3 is verb or not
-    # se savAla pUCA) ppost - se, we need to maintain that list else - ppost - ko
-    verb_lst = ['pUCa', 'nikAla', 'mAzga']
-    ppost = ''
     verb = identify_main_verb(main_verb[1])
-    if verb in verb_lst:
+    if verb in kisase_k2g_verbs:
         ppost = 'se'
     else:
         ppost = 'ko'
     return ppost
-
 
 def update_ppost_dict(data_index, param):
     if data_index in processed_postpositions_dict:
@@ -2180,7 +2148,7 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
         ppost = process_dep_k2g(data_case, main_verb)
     elif data_case == 'k2':
         if data_seman in ("anim", "per"):
-            if clean(root_main) in ['bola', 'mila', 'pyAra']:
+            if clean(root_main) in kisase_k2_verbs:
                 ppost = 'se'
             else:
                 ppost = 'ko'
