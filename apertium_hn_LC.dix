@@ -68,6 +68,7 @@
 <sdef n="tam:ie" c="ie"/>
 <sdef n="tam:o" c="o"/>
 <sdef n="tam:iegA" c="iegA"/>
+<sdef n="tam:e" c="e"/>
 </sdefs>
 
 <pardefs>
@@ -143,12 +144,14 @@
 <e><p><l></l><r><s n="cat:adj"/><s n="case:d"/><s n="gen:f"/><s n="num:p"/></r></p></e>
 <e><p><l></l><r><s n="cat:adj"/><s n="case:o"/><s n="gen:f"/><s n="num:p"/></r></p></e>
 </pardef>
+
 <pardef n="bAlikA/__adj">
 <e><p><l></l><r><s n="cat:adj"/><s n="case:d"/><s n="gen:f"/><s n="num:s"/></r></p></e>
 <e><p><l></l><r><s n="cat:adj"/><s n="case:o"/><s n="gen:f"/><s n="num:s"/></r></p></e>
 <e><p><l></l><r><s n="cat:adj"/><s n="case:d"/><s n="gen:f"/><s n="num:p"/></r></p></e>
 <e><p><l></l><r><s n="cat:adj"/><s n="case:o"/><s n="gen:f"/><s n="num:p"/></r></p></e>
 </pardef>
+
 <pardef n="bAlaka/__adj">
 <e><p><l></l><r><s n="cat:adj"/><s n="case:d"/><s n="gen:m"/><s n="num:s"/></r></p></e>
 <e><p><l></l><r><s n="cat:adj"/><s n="case:o"/><s n="gen:m"/><s n="num:s"/></r></p></e>
@@ -17096,6 +17099,7 @@ addition ended by Kirti Garg kirti.garg@gmail.com on 7/12/22-->
 <e lm="lavaNasamuxra"><i>lavaNasamuxra</i><par n="kroXa/__n"/></e>
 <e lm="lAvanI"><i>lAvan</i><par n="ladak/I__n"/></e>
 <e lm="lAvaNika"><i>lAvaNika</i><par n="amIra/__adj"/></e>
+<e lm="lavaNIya"><i>lavaNIya</i><par n="amIra/__adj"/></e>
 <e lm="lAvaNyA"><i>lAvaNyA</i><par n="ASA/__n"/></e>
 <e lm="lAvaNya"><i>lAvaNya</i><par n="kroXa/__n"/></e>
 <e lm="lAvAparaCana"><i>lAvAparaCana</i><par n="kroXa/__n"/></e>
