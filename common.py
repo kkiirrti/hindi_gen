@@ -1032,7 +1032,7 @@ def process_kim(index, relation, anim, gnp, pronoun, words_info, main_verb, proc
     if main_verb != () or len(main_verb) > 0:
         root_main_verb = identify_main_verb(main_verb[1])
     term = get_root_for_kim(relation, anim, gnp, root_main_verb)
-    if term == 'kyoM' or term == 'kisaliye' or term == 'kaba' or term == 'kahAz se':
+    if term == 'kyoM' or term == 'kisaliye' or term == 'kaba':
         processed_indeclinables.append((index, term, 'indec'))
 
     else:
@@ -1055,9 +1055,16 @@ def process_kim(index, relation, anim, gnp, pronoun, words_info, main_verb, proc
             if term == 'apanA':
                 parsarg = '0'
 
-        if term in ('kahAz'):
+        if term == 'kahAz':
             parsarg = 0
-        processed_pronouns.append((pronoun[0], term, category, case, gender, number, person, parsarg, fnum))
+        elif term == 'kahAz se':
+            parsarg = 0
+            kim_term = term.strip().split(' ')[0]
+            tag = term.strip().split(' ')[1]
+            processed_postpositions_dict[index] = tag
+            term = kim_term
+            
+        processed_pronouns.append((index, term, category, case, gender, number, person, parsarg, fnum))
         log(f'kim processed as pronoun with term: {term} case:{case} par:{parsarg} gen:{gender} num:{number} per:{person} fnum:{fnum}')
 
     return processed_pronouns, processed_indeclinables
@@ -1847,7 +1854,6 @@ def read_output_data(output_file):
         data = file.read()
     return data
 
-
 def analyse_output_data(output_data, morph_input):
     output_data = output_data.strip().split(" ")
     combine_data = []
@@ -2372,16 +2378,16 @@ def write_hindi_text(hindi_output, POST_PROCESS_OUTPUT, OUTPUT_FILE):
 
 def write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE, path):
     """Append the hindi text into the file"""
-    OUTPUT_FILE = 'TestResults.csv'# temporary for presenting
+    OUTPUT_FILE = 'TestRes.csv'# temporary for presenting
     str = path.strip('verified_sent/')
     if str == '1':
         with open(OUTPUT_FILE, 'w') as file:
             file.write("")
 
     with open(OUTPUT_FILE, 'a') as file:
-        file.write(path.strip('../hindi_gen/Test_data/week5/') + '\t')
+        file.write(path.strip('../hindi_gen/lion_story/') + '\t')
         file.write(src_sentence.strip('"').strip('\n').strip('#') + '\t')
-        file.write(POST_PROCESS_OUTPUT + '    ')
+        file.write(POST_PROCESS_OUTPUT + '\t')
         #file.write(hindi_output)
         file.write(hindi_output + '\t')
         file.write('\n')
