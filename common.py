@@ -10,10 +10,12 @@ from concept import Concept
 
 noun_attribute = dict()
 USR_row_info = ['root_words', 'index_data', 'seman_data', 'gnp_data', 'depend_data', 'discourse_data', 'spkview_data', 'scope_data']
-
 nA_list = ['nA_paDa', 'nA_padZA', 'nA_padA', 'nA_hE', 'nA_WA', 'nA_hogA', 'nA_cAhie', 'nA_cAhiye']
 spkview_list = ['hI', 'BI', 'jI', 'wo', 'waka', 'lagaBaga', 'lagAwAra', 'kevala']
-
+kisase_k2g_verbs = ['bola', 'pUCa', 'kaha', 'nikAla', 'mAzga']
+kisase_k2_verbs = ['mila', 'pyAra']
+kisase_k5_verbs = ['dara', 'baca', 'rakSA']
+kahAz_k5_verbs = ['A', 'uga', 'gira']
 processed_postpositions_dict = {}
 construction_dict = {}
 spkview_dict = {}
@@ -2193,7 +2195,7 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
         ppost = process_dep_k2g(data_case, main_verb)
     elif data_case == 'k2': #if CP present, and if concept is k2 for verb of CP, and the verb is not in specific list, then kA
         if data_seman in ("anim", "per"):
-            if clean(root_main) in ['bola', 'mila', 'pyAra']:
+            if clean(root_main) in kisase_k2_verbs:
                 ppost = 'se'
             else:
                 ppost = 'ko'
@@ -2258,12 +2260,12 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
     # elif data_case == 'ras_k1':
     #     ppost = 'ke sAWa'
 
-    elif data_case == 'r6': # to be updated - ke if nextnoun is o case
+    elif data_case == 'r6':
         ppost = 'kA' #if data[4] == 'f' else 'kA'
         nn_data = nextNounData(data_index, words_info)
         if nn_data != False:
             #print('Next Noun data:', nn_data)
-            if nn_data[4].split(':')[1] in ('k3', 'k4', 'k5', 'k7', 'k7p', 'k7t', 'r6', 'mk1', 'jk1', 'rt', 'rh'):
+            if nn_data[4].split(':')[1] in ('k3', 'k4', 'k5', 'k7', 'k7p', 'k7t', 'r6', 'mk1', 'jk1', 'rt'):
                 ppost = 'ke'
                 if nn_data[3][2] == 's':#agreement with gnp
                     if nn_data[3][1] == 'f':
