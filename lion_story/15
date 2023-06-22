@@ -1,11 +1,12 @@
 #Sera usa jAla meM PaMsa gayA.
-Sera_1,vaha_1,jAla_1,Pazsa+jA_2-yA_1
+Sera_1,vaha_1,jAla_1,Pazsa_1-yA_1
 1,2,3,4
 anim,,,
 [m sg a],,[- sg a],
 4:k1,3:dem,4:k7p,0:main
 ,,,
-def,,,
+def,,,[shade:jA_1]
 ,,,
 affirmative
+
 
