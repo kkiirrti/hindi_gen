@@ -1,5 +1,5 @@
 #Sera ne jAla se nikalane kA prayAsa kiyA.
-Sera_1,jAla_1,nikala_7,prayAsa+kara_1-yA_1
+Sera_1,jAla_1,nikala_7, prayAsa+kara_1-yA_1
 1,2,3,4
 anim,,,
 [m sg a],[- sg a],,
@@ -8,3 +8,4 @@ def,def,,
 ,,,
 ,,,
 affirmative
+

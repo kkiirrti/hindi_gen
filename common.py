@@ -655,7 +655,7 @@ def check_nonfinite_verb(word_data):
 
     if word_data[4] != '':
         rel = word_data[4].strip().split(':')[1]
-        if rel in ('rpk','rbk', 'rvks', 'rbks','rsk'):
+        if rel in ('rpk','rbk', 'rvks', 'rbks','rsk', 'rbplk'):
             return True
     return False
 
@@ -686,7 +686,7 @@ def check_verb(word_data):
     else:
         if word_data[4] != '':
             rel = word_data[4].strip().split(':')[1]
-            if rel in ('rpk','rbk', 'rvks', 'rbks','rsk'):
+            if rel in ('rpk','rbk', 'rvks', 'rbks','rsk', 'rblpk'):
                 return True
     return False
 
@@ -1613,12 +1613,12 @@ def process_main_verb(concept: Concept, seman_data, dependency_data, sentence_ty
         verb.tam = 'yA1'
     is_cp = is_CP(concept.term)
     verb.gender, verb.number, verb.person = getVerbGNP_new(concept.term, full_tam, is_cp, seman_data, dependency_data, sentence_type, processed_nouns, processed_pronouns)
-    if is_CP(concept.term):
-        if not reprocessing:
-            CP = process_main_CP(concept.index, concept.term)
-            if CP != [] and CP[2] == 'n':
-                log(f'{CP[1]} processed as noun with index {CP[0]} case:d gen:{CP[4]} num:{CP[5]} per:{CP[6]}, noun_type:{CP[7]}, default postposition:{CP[8]}.')
-                processed_nouns.append(tuple(CP))
+    # if is_CP(concept.term):
+    #     if not reprocessing:
+    #         CP = process_main_CP(concept.index, concept.term)
+    #         if CP != [] and CP[2] == 'n':
+    #             log(f'{CP[1]} processed as noun with index {CP[0]} case:d gen:{CP[4]} num:{CP[5]} per:{CP[6]}, noun_type:{CP[7]}, default postposition:{CP[8]}.')
+    #             processed_nouns.append(tuple(CP))
             #verb.gender, verb.number, verb.person = verb_agreement_with_CP(verb, CP)
         # elif reprocessing:
         #     if findValue('CP_noun', processed_nouns, index=0)[0]:
@@ -1752,6 +1752,8 @@ def set_tam_for_nonfinite(dependency):
     else:
         if dependency == 'rbks':
             tam = 'adj_yA_huA'
+        if dependency == 'rblpk':
+            tam = 'nA'
     return tam
 
 
@@ -1770,8 +1772,9 @@ def process_nonfinite_verb(concept, seman_data, depend_data, sentence_type, proc
     verb.tam = ''
     #verb.category = 'v'
     relation = concept.dependency.strip().split(':')[1]
-    full_tam = identify_complete_tam_for_verb(concept.term)
+    # full_tam = identify_complete_tam_for_verb(concept.term)
     verb.tam = set_tam_for_nonfinite(relation)
+    full_tam = verb.tam
     is_cp = is_CP(verb.term)
     gender, number, person = getVerbGNP_new(verb.term, full_tam, is_cp, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns)
     verb.gender = gender
@@ -1786,8 +1789,15 @@ def process_verbs(concepts: [tuple], seman_data, depend_data, sentence_type, spk
     processed_auxverbs = []
     for concept in concepts:
         concept = Concept(index=concept[0], term=concept[1], dependency=concept[4])
-        verb_type = identify_verb_type(concept)
+        is_cp = is_CP(concept.term)
+        if is_cp:
+            if not reprocess:
+                CP = process_main_CP(concept.index, concept.term)
+                if CP != [] and CP[2] == 'n':
+                    log(f'{CP[1]} processed as noun with index {CP[0]} case:d gen:{CP[4]} num:{CP[5]} per:{CP[6]}, noun_type:{CP[7]}, default postposition:{CP[8]}.')
+                    processed_nouns.append(tuple(CP))
 
+        verb_type = identify_verb_type(concept)
         if verb_type == 'nonfinite':
             verb = process_nonfinite_verb(concept, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns)
             processed_verbs.append(to_tuple(verb))
@@ -1809,7 +1819,7 @@ def identify_verb_type(verb_concept):
     v_type = ''
     if dep_rel == 'main':
         v_type = "main"
-    elif dep_rel in ('rpk', 'rbk', 'rvks', 'rbks', 'rsk'):
+    elif dep_rel in ('rpk', 'rbk', 'rvks', 'rbks', 'rsk', 'rblpk'):
         v_type = "nonfinite"
     else:
         v_type = "undetermined"
@@ -2168,9 +2178,18 @@ def postposition_finalization(processed_nouns, processed_pronouns, words_info):
                 if head == str(index) and case == 'o':
                     update_ppost_dict(data_index, 'ke')
 
+
+def get_main_verb(term):
+    ''' return main verb from a term'''
+
+
+    pass
+
 def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
     '''Calculates postposition to words wherever applicable according to rules.'''
+
     root_main = main_verb[1].strip().split('-')[0].split('_')[0]
+    # root_main = identify_main_verb(main_verb)
     if np_data != ():
         data_case = np_data[4].strip().split(':')[1]
         data_index = np_data[0]

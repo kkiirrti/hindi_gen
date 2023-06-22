@@ -1,10 +1,11 @@
-#usI samaya vaha cUhA vahAz AyA.
-usa+samaya_1,vaha_1,cUhA_1,vahAz_1,A_1-yA_1
+#usane xeKA ki Sera jAla meM PaMsa gayA  hE.
+vaha,xeKa_1-yA_1,Sera_1,jAla_1,Pazsa+jA_2-yA_hE_1
 1,2,3,4,5
 ,,anim,,
-[- - a],,[m sg a],,
-5:k7t,3:dem,5:k1,5:k7p,0:main
-,,,Hin_Name of the Book_Story 1_Sentence 011.3:coref,
-emphasis,,,,
+,,[m sg a],[- sg a],
+2:k1,0:main,5:k1,5:k7p,2:vk2
+Hin_story_book1_story1_018.3:coref,,,,
+,,def,def,
 ,,,,
 affirmative
+
