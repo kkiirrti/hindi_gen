@@ -1,10 +1,11 @@
-#Sera bahuwa pareSAna ho gayA
-Sera_1, bahuwa_7, pareSAna+ho_1-yA_1
+#vaha jZora se xahAdZA.
+vaha,jZora+se_2,xahAdZa_3-yA_1
 1,2,3
-anim,,
-[m sg a],,
-3:k1,3:intf,0:main
 ,,
-def,,[shade:jA_1]
+,,
+3:k1,3:krvn,0:main
+Hin_story_book1_story1_016.1:coref,,
+,,
 ,,
 affirmative
+

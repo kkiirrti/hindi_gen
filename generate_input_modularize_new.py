@@ -2,6 +2,7 @@ from common import *
 HAS_CONSTRUCTION_DATA = False
 HAS_SPKVIEW_DATA = False
 ADD_GNP_DATA = False
+HAS_DISCOURSE_DATA = False
 if __name__ == "__main__":
     log("Program Started", "START")
 
@@ -37,6 +38,10 @@ if __name__ == "__main__":
 
     if spkview_data != [] or len(spkview_data) > 0:
         HAS_SPKVIEW_DATA = populate_spkview_dict(spkview_data)
+
+    if discourse_data != [] or len(discourse_data) > 0:
+        HAS_DISCOURSE_DATA = True
+
 
     # Making a collection of words and its rules as a list of tuples.
     words_info = generate_wordinfo(root_words, index_data, seman_data,
@@ -128,6 +133,14 @@ if __name__ == "__main__":
 
     if has_ques_mark(sentence_type):
         POST_PROCESS_OUTPUT = POST_PROCESS_OUTPUT + ' ?'
+
+
+    if HAS_DISCOURSE_DATA:
+        # discourse element added
+        subs = 'karya-karana'
+        found = [i for i in discourse_data if subs in i]
+        if found:
+            POST_PROCESS_OUTPUT = 'isase ' + POST_PROCESS_OUTPUT
 
     # for yn_interrogative add kya in the beginning
     if sentence_type in ("yn_interrogative","yn_interrogative_negative", "pass-yn_interrogative"):

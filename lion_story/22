@@ -1,10 +1,11 @@
-#usI samaya vaha cUhA vahAz AyA.
-vaha_1,samaya_1,vaha,cUhA_1,vahAz_1,A_1-yA_1
-1,2,3,4,5,6
-,,,anim,,
-[- - a],,[m sg a],,
-2:dem,6:k7t,4:dem,6:k1,6:k7p,0:main
-,,,,Hin_Name of the Book_Story 1_Sentence 011.3:coref,
-,emphasis,,,,
-,,,,,
+#vaha wejI se jAla ko apane pEne xanwoM se kAtane lagA.
+vaha,wejI+se_1,jAla_1,apanA,pEnA_5,xanwa_1,kAta_17-yA_1
+1,2,3,4,5,6,7
+,,,,,,
+,,[- sg a],,,[- pl a],
+7:k1,7:krvn,7:k2,6:r6,6:mod,7:k3,0:main
+Hin_story_book1_story1_018.4:coref,,,1:coref,,,
+,,,,,,[shade:lagA_1]
+,,,,,,
 affirmative
+
