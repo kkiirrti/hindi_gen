@@ -96,7 +96,7 @@ def populate_spkview_dict(spkview_info):
 
 
 def add_discourse_elements(discourse_data, POST_PROCESS_OUTPUT):
-    # discourse element added
+    # discourse element value added to sentence as per the element
     #
     found = False
     if len(discourse_data) <= 0:
@@ -108,7 +108,6 @@ def add_discourse_elements(discourse_data, POST_PROCESS_OUTPUT):
                 if element in data_values:
                     word = discourse_dict[element]
                     found = True
-
         if found:
             POST_PROCESS_OUTPUT = word + " " +POST_PROCESS_OUTPUT
 
