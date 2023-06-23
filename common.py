@@ -20,6 +20,7 @@ processed_postpositions_dict = {}
 construction_dict = {}
 spkview_dict = {}
 GNP_dict = {}
+discourse_dict = {'vyabhicara': 'paranwu', 'samuccaya': 'Ora', 'karya-karana': 'isase'}
 
 def populate_GNP_dict(gnp_info, PPfull_data):
     populate_GNP_dict = False
@@ -92,6 +93,26 @@ def populate_spkview_dict(spkview_info):
             spkview_dict[i + 1] = [temp]
 
     return populate_spk_dict
+
+
+def add_discourse_elements(discourse_data, POST_PROCESS_OUTPUT):
+    # discourse element value added to sentence as per the element
+    #
+    found = False
+    if len(discourse_data) <= 0:
+        return POST_PROCESS_OUTPUT
+    else:
+        word = ''
+        for data_values in discourse_data:
+            for element in discourse_dict:
+                if element in data_values:
+                    word = discourse_dict[element]
+                    found = True
+        if found:
+            POST_PROCESS_OUTPUT = word + " " +POST_PROCESS_OUTPUT
+
+    return POST_PROCESS_OUTPUT
+
 
 def add_adj_to_noun_attribute(key, value):
     if key is not None:
@@ -328,7 +349,7 @@ def getVerbGNP_new(concept_term, full_tam, is_cp, seman_data, depend_data, sente
     '''
     '''
     #for imperative sentences
-    if sentence_type in ('Imperative','imperative') :
+    if sentence_type in ('Imperative','imperative') or 'o' in full_tam:
         verb_gender = 'm'
         verb_number = 's'
         verb_person = 'm'
@@ -665,7 +686,7 @@ def check_adverb(word_data, verbs_data):
     if word_data[4] != '':
         concept_index = word_data[4].strip().split(':')[0]
         rel = word_data[4].strip().split(':')[1]
-        if rel in ('kr_vn'):
+        if rel in ('krvn', 'kr_vn'):
                 index = getDataByIndex(int(concept_index), verbs_data)
                 if concept_index == index:
                     return True
@@ -696,7 +717,7 @@ def check_adverb(word_data):
     '''
     if word_data[4] != '':
         rel = word_data[4].strip().split(':')[1]
-        if rel in ('kr_vn'):
+        if rel in ('kr_vn','krvn'):
             return True
     return False
 
@@ -713,7 +734,7 @@ def check_indeclinable(word_data):
         return True
 
     indeclinable_words = (
-        'aBI,waWA,Ora,paranwu,kinwu,evaM,waWApi,Bale hI,'
+        'aBI,waWA,Ora,paranwu,kinwu,evaM,waWApi,Bale hI,kuCa,'
         'wo,agara,magara,awaH,cUMki,cUzki,jisa waraha,'
         'jisa prakAra,lekina,waba,waBI,yA,varanA,anyaWA,'
         'wAki,baSarweM,jabaki,yaxi,varana,paraMwu,kiMwu,'
@@ -772,6 +793,9 @@ def analyse_words(words_list):
         elif check_digit(word_data):
             log(f'{word_data[1]} identified as noun.')
             nouns.append(word_data)
+        elif check_verb(word_data):
+            log(f'{word_data[1]} identified as verb.')
+            verbs.append(word_data)
         elif check_adjective(word_data):
             log(f'{word_data[1]} identified as adjective.')
             adjectives.append(word_data)
@@ -787,9 +811,6 @@ def analyse_words(words_list):
         elif check_noun(word_data):
             log(f'{word_data[1]} identified as noun.')
             nouns.append(word_data)
-        elif check_verb(word_data):
-            log(f'{word_data[1]} identified as verb.')
-            verbs.append(word_data)
         elif check_named_entity(word_data):
             log(f'{word_data[1]} identified as named entity and processed as other word.')
             others.append(word_data)
@@ -850,20 +871,23 @@ def process_nominal_verb(nominal_verbs_data, processed_noun, words_info, verbs_d
 
 def process_adverb_as_noun(concept, processed_nouns):
     index = concept[0]
-    term = clean(concept[1])
+    case = 'd'
+    if ('+se_') in concept[1]:
+        draft_term = concept[1].strip().split('+')[0]
+        term = clean(draft_term)
+        case = 'o'
     category = 'n'
     gender = 'm'
     number = 'p'
     person = 'a'
     noun_type = 'abstract'
-    case = 'd'
     postposition = 'se'
+    processed_postpositions_dict[index] = postposition
     #index, word, category, case, gender, number, proper / nountype = proper or CP_noun, postposition
     adverb = (index, term, category, case, gender, number, person, noun_type, postposition)
     processed_nouns.append(adverb)
     log(f' Adverb {term} processed as an abstract noun with index {index} gen:{gender} num:{number} case:{case},noun_type:{noun_type} and postposition:{postposition}')
     return
-
 
 def process_adverb_as_verb(concept, processed_verbs):
     adverb = []
@@ -886,7 +910,9 @@ def process_adverb_as_verb(concept, processed_verbs):
 
 def process_adverbs(adverbs, processed_nouns, processed_verbs, processed_indeclinables):
     for adverb in adverbs:
-        if adverb[2] =='abs':
+        if ('+se_') in adverb[1]:  # for jora+se kind of adverbs
+                process_adverb_as_noun(adverb,processed_nouns)
+        elif adverb[2] =='abs':
            process_adverb_as_noun(adverb, processed_nouns)
         else: #check morph tags
             term = clean(adverb[1])
@@ -1767,13 +1793,18 @@ def process_nonfinite_verb(concept, seman_data, depend_data, sentence_type, proc
     '''
     >>process_nonfinite_verb([], [()],[()])
     '''
-
     gender = 'm'
     number = 's'
     person = 'a'
     verb = Verb()
     verb.index = concept.index
-    verb.term = clean(concept.term)
+    is_cp = is_CP(concept.term)
+    if is_cp: #only CP_head as nonfinite verb
+        draft_concept = concept.term.split('+')[1]
+        verb.term  = clean(draft_concept)
+    else:
+        verb.term = clean(concept.term)
+
     verb.type = 'nonfinite'
     verb.tam = ''
     #verb.category = 'v'
@@ -1781,7 +1812,7 @@ def process_nonfinite_verb(concept, seman_data, depend_data, sentence_type, proc
     # full_tam = identify_complete_tam_for_verb(concept.term)
     verb.tam = set_tam_for_nonfinite(relation)
     full_tam = verb.tam
-    is_cp = is_CP(verb.term)
+
     gender, number, person = getVerbGNP_new(verb.term, full_tam, is_cp, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns)
     verb.gender = gender
     verb.number = number
@@ -1802,7 +1833,6 @@ def process_verbs(concepts: [tuple], seman_data, depend_data, sentence_type, spk
                 if CP != [] and CP[2] == 'n':
                     log(f'{CP[1]} processed as noun with index {CP[0]} case:d gen:{CP[4]} num:{CP[5]} per:{CP[6]}, noun_type:{CP[7]}, default postposition:{CP[8]}.')
                     processed_nouns.append(tuple(CP))
-
         verb_type = identify_verb_type(concept)
         if verb_type == 'nonfinite':
             verb = process_nonfinite_verb(concept, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns)
@@ -1825,10 +1855,10 @@ def identify_verb_type(verb_concept):
     v_type = ''
     if dep_rel == 'main':
         v_type = "main"
-    elif dep_rel in ('rpk', 'rbk', 'rvks', 'rbks', 'rsk', 'rblpk'):
+    elif dep_rel in ('rpk', 'rbk', 'rvks', 'rbks', 'rsk', 'rblpk','rblak'):
         v_type = "nonfinite"
     else:
-        v_type = "undetermined"
+        v_type = "main"
     return v_type
 
 
@@ -2117,7 +2147,6 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
     new_case = 'o'
     if data_case in ('k1', 'pk1'):
         if is_tam_ya(main_verb): # has TAM "yA" or "yA_hE" or "yA_WA" marA WA
-
             k2exists = find_match_with_same_head('k2', words_info, data_head, index=4) # or if CP_present, then also ne - add #get exact k2, not k2x
             vk2exists = find_match_with_same_head('vk2', words_info, data_head, index=4)
             if k2exists:
@@ -2147,7 +2176,7 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
             new_case = 'd'
 
     elif data_case == 'k2p':
-        ppost = 'meM'
+        ppost = '' # modified from meM 22/06
     elif data_case in ('k3', 'k5', 'k5prk'):
         ppost = 'se'
     elif data_case in ('k4', 'k4a', 'k7t', 'jk1'):
