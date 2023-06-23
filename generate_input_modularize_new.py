@@ -3,7 +3,7 @@ HAS_CONSTRUCTION_DATA = False
 HAS_SPKVIEW_DATA = False
 ADD_GNP_DATA = False
 HAS_DISCOURSE_DATA = False
-
+HAS_ADDITIONAL_WORDS = False
 
 
 if __name__ == "__main__":
@@ -67,6 +67,9 @@ if __name__ == "__main__":
     process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others)
     process_nominal_form = process_nominal_verb(nominal_forms_data, processed_nouns, words_info, verbs_data)
     postposition_finalization(processed_nouns, processed_pronouns, words_info)
+    if len(additional_words_dict) > 0:
+        HAS_ADDITIONAL_WORDS = True
+
     # Todo : extract nouns / adjectives from Compound verbs with +
     # Todo : process nouns / adjectives got from verbs and add to processed_noun / processed_adjectives
 
@@ -132,15 +135,16 @@ if __name__ == "__main__":
     if ADD_GNP_DATA:
         PP_fulldata = add_GNP(PP_fulldata, GNP_dict)
 
+    if HAS_ADDITIONAL_WORDS:
+        PP_fulldata = add_additional_words(additional_words_dict, PP_fulldata)
+
     POST_PROCESS_OUTPUT = rearrange_sentence(PP_fulldata)  # reaarange by index number
 
     if has_ques_mark(sentence_type):
         POST_PROCESS_OUTPUT = POST_PROCESS_OUTPUT + ' ?'
 
-
     if HAS_DISCOURSE_DATA:
         POST_PROCESS_OUTPUT = add_discourse_elements(discourse_data, POST_PROCESS_OUTPUT)
-
 
     # for yn_interrogative add kya in the beginning
     if sentence_type in ("yn_interrogative","yn_interrogative_negative", "pass-yn_interrogative"):
@@ -157,8 +161,8 @@ if __name__ == "__main__":
     #write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE, path)
 
     #for masked input -uncomment the following:
-    # masked_pup_list = masked_postposition(processed_words, words_info, processed_verbs)
-    # masked_pp_fulldata = add_postposition(transformed_data, masked_pup_list)
-    # arranged_masked_output = rearrange_sentence(masked_pp_fulldata)
-    # masked_hindi_data = collect_hindi_output(arranged_masked_output)
-    # write_masked_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, masked_hindi_data, OUTPUT_FILE, path)
+    masked_pup_list = masked_postposition(processed_words, words_info, processed_verbs)
+    masked_pp_fulldata = add_postposition(transformed_data, masked_pup_list)
+    arranged_masked_output = rearrange_sentence(masked_pp_fulldata)
+    masked_hindi_data = collect_hindi_output(arranged_masked_output)
+    write_masked_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, masked_hindi_data, OUTPUT_FILE, path)
