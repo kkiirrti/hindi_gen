@@ -1660,21 +1660,26 @@ def set_main_verb_tam_zero(verb: Verb):
     verb.tam = 0
     return verb
 
-def process_auxiliary_verbs(verb: Verb, concept_term: str, spkview_data) -> [Verb]:
+def process_auxiliary_verbs(verb: Verb, concept, spkview_data) -> [Verb]:
+#def process_auxiliary_verbs(verb: Verb, concept_term: str, spkview_data) -> [Verb]:
     """
     >>> [to_tuple(aux) for aux in process_auxiliary_verbs(Verb(index=4, term = 'kara', gender='m', number='s', person='a', tam='hE', type= 'Auxillary'), concept_term='kara_17-0_sakawA_hE_1')]
     [(4.1, 'saka', 'v', 'm', 's', 'a', 'wA', 'Auxillary'), (4.2, 'hE', 'v', 'm', 's', 'a', 'hE',''Auxillary'')]
     """
+    concept_term = concept.term
+    concept_index = concept.index
     HAS_SHADE_DATA = False
     auxiliary_term_tam = []
+    shade_index = 1
     for data in spkview_data:
         if data != '':
             data = data.strip().strip('][')
-            if 'shade' in data:
+            if 'shade' in data and concept_index == shade_index:
                 term = clean(data.split(':')[1])
                 tam = identify_default_tam_for_main_verb(concept_term)
                 HAS_SHADE_DATA = True
                 break
+        shade_index = shade_index + 1
 
     if HAS_SHADE_DATA:
         if term == 'jA' and tam == 'yA':
@@ -1723,7 +1728,8 @@ def process_verb(concept: Concept, seman_data, dependency_data, sentence_type, s
     *Aux root and Aux TAM identified from auxillary mapping File
     """
     verb = process_main_verb(concept, seman_data, dependency_data, sentence_type, processed_nouns, processed_pronouns, reprocessing)
-    auxiliary_verbs = process_auxiliary_verbs(verb, concept.term, spkview_data)
+    #auxiliary_verbs = process_auxiliary_verbs(verb, concept.term, spkview_data)
+    auxiliary_verbs = process_auxiliary_verbs(verb, concept, spkview_data)
     return verb, auxiliary_verbs
 
 
@@ -2047,93 +2053,6 @@ def masked_postposition(processed_words, words_info, processed_verbs):
             masked_PPdata[data[0]] = ppost
     return masked_PPdata
 
-def preprocess_postposition(processed_words, words_info, is_tam_ya):
-    '''Calculates postposition to words wherever applicable according to rules.'''
-    PPdata = {}
-    new_processed_words = []
-    for data in processed_words:
-        if data[2] not in ('p', 'n', 'other'): #postpositions only for nouns, pronouns and other words
-            new_processed_words.append(data)
-            continue
-        data_info = getDataByIndex(data[0], words_info)
-        try:
-            data_case = False if data_info == False else data_info[4].split(':')[1].strip()
-
-        except IndexError:
-            data_case = False
-        ppost = ''
-        if data_case in ('k1', 'pk1'):
-           # if is_tam_ya:  # has TAM "yA"
-                if findValue('k2', words_info, index=4)[0]: # or if CP_present, then also ne - add
-                    ppost = 'ne'
-                    if data[2] != 'other':
-                        temp = list(data)
-                        temp[3] = 'o'
-                        data = tuple(temp)
-            # elif tam in (nA_list):
-            #         ppost = 'ko'
-            # else:
-            #         ppost = '0'
-
-
-        elif data_case in ('k3', 'k5', 'k5prk'):
-            ppost = 'se'
-        elif data_case in ('k4', 'k4a', 'k7t', 'jk1'):
-            ppost = 'ko'
-        elif data_case == 'k7p':
-            ppost = 'meM'
-        elif data_case =='k7':
-            ppost = 'para'
-        elif data_case == 'kr_vn' and data_info[2] == 'abs':
-            ppost = 'se'
-        elif data_case in ('k2g', 'k2') and data_info[2] in ("anim", "per"):
-            ppost = 'ko'
-        elif data_case == 'rt':
-            ppost = 'ke lie'
-        elif data_case in ('rsm', 'rsma'):
-            ppost = 'ke pAsa'
-        elif data_case == 'rsk':
-            ppost = 'hue'
-        elif data_case == 'ru':
-            ppost = 'jEsI'
-        elif data_case == 'rv':
-            ppost = 'kI tulanA meM'
-        elif data_case == 'rh':
-            ppost = 'ke_kAraNa'
-        elif data_case == 'rd':
-            ppost = 'kI ora'
-        elif data_case == 'r6':
-            ppost = 'kA' #if data[4] == 'f' else 'kA'
-            nn_data = nextNounData(data[0], words_info)
-            if nn_data != False:
-                print('Next Noun data:', nn_data)
-                if nn_data[4].split(':')[1] in ('k3', 'k4', 'k5', 'k7', 'k7p', 'k7t', 'r6', 'mk1', 'jk1', 'rt'):
-                    ppost = 'ke'
-                elif nn_data[3][1] != 'f' and nn_data[3][3] == 'p':
-                    ppost = 'kA'
-                else:
-                    pass
-        else:
-            pass
-
-        if data[2] == 'p':
-            temp = list(data)
-            temp[3] = 'o'
-            temp[7] = ppost if ppost != '' else 0
-            data = tuple(temp)
-        if data[2] == 'n' or data[2] == 'other':
-            temp = list(data)
-            if ppost != '':
-                temp[8] = ppost
-                temp[3] = 'o'
-            else:
-                temp[8] = None
-                temp[3] = 'd'
-            data = tuple(temp)
-            PPdata[data[0]] = ppost
-        new_processed_words.append(data)
-    return new_processed_words, PPdata
-
 def fetchNextWord(index, words_info):
     next_word = ''
     for data in words_info:
@@ -2143,17 +2062,12 @@ def fetchNextWord(index, words_info):
     return next_word
 
 def process_dep_k2g(data_case, main_verb):
-    # if k2g comes with certain set of verbs(rAma 3:k2g check if 3 is verb or not
-    # se savAla pUCA) ppost - se, we need to maintain that list else - ppost - ko
-    verb_lst = ['pUCa', 'nikAla', 'mAzga']
-    ppost = ''
     verb = identify_main_verb(main_verb[1])
-    if verb in verb_lst:
+    if verb in kisase_k2g_verbs:
         ppost = 'se'
     else:
         ppost = 'ko'
     return ppost
-
 
 def update_ppost_dict(data_index, param):
     if data_index in processed_postpositions_dict:
@@ -2178,31 +2092,42 @@ def postposition_finalization(processed_nouns, processed_pronouns, words_info):
                 if head == str(index) and case == 'o':
                     update_ppost_dict(data_index, 'ke')
 
-
 def get_main_verb(term):
     ''' return main verb from a term'''
 
-
     pass
+
+def find_match_with_same_head(term, words_info, data_head, index):
+    for dataele in words_info:
+        dep_head = dataele[index].strip().split(':')[0]
+        dep_value = dataele[index].strip().split(':')[1]
+        if data_head == dep_head and term == dep_value:
+            return True
+    return False
 
 def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
     '''Calculates postposition to words wherever applicable according to rules.'''
-
     root_main = main_verb[1].strip().split('-')[0].split('_')[0]
-    # root_main = identify_main_verb(main_verb)
     if np_data != ():
         data_case = np_data[4].strip().split(':')[1]
+        data_head = np_data[4].strip().split(':')[0]
         data_index = np_data[0]
         data_seman = np_data[2]
     ppost = ''
     new_case = 'o'
     if data_case in ('k1', 'pk1'):
         if is_tam_ya(main_verb): # has TAM "yA" or "yA_hE" or "yA_WA" marA WA
-            k2exists = findExactMatch('k2', words_info, index=4)[0] # or if CP_present, then also ne - add #get exact k2, not k2x
+
+            k2exists = find_match_with_same_head('k2', words_info, data_head, index=4) # or if CP_present, then also ne - add #get exact k2, not k2x
+            vk2exists = find_match_with_same_head('vk2', words_info, data_head, index=4)
             if k2exists:
                 ppost = 'ne'
+            elif vk2exists:
+                ppost = 'ne'
             else:
+                ppost = ''
                 log('Karma k2 not found. Output may be incorrect')
+
         elif identify_complete_tam_for_verb(main_verb[1]) in nA_list:
         #elif findValue('nA', verbs_data, index=6)[0]: #tam in (nA_list):
             ppost = 'ko'
@@ -2276,9 +2201,9 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
         ppost = 'kI ora'
     elif 'rask' in data_case:
         ppost = 'ke sAWa'
-    # elif data_case == 'ras_k1':
-    #     ppost = 'ke sAWa'
-
+    elif data_case == 'vk2':
+        data_index = data_head
+        ppost = 'ki'
     elif data_case == 'r6':
         ppost = 'kA' #if data[4] == 'f' else 'kA'
         nn_data = nextNounData(data_index, words_info)
