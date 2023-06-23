@@ -158,7 +158,7 @@ if __name__ == "__main__":
 
     #for masked input -uncomment the following:
     # masked_pup_list = masked_postposition(processed_words, words_info, processed_verbs)
-    # masked_pp_fulldata = add_postposition(transformed_data, masked_pp_list)
+    # masked_pp_fulldata = add_postposition(transformed_data, masked_pup_list)
     # arranged_masked_output = rearrange_sentence(masked_pp_fulldata)
     # masked_hindi_data = collect_hindi_output(arranged_masked_output)
     # write_masked_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, masked_hindi_data, OUTPUT_FILE, path)

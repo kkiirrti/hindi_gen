@@ -1686,21 +1686,26 @@ def set_main_verb_tam_zero(verb: Verb):
     verb.tam = 0
     return verb
 
-def process_auxiliary_verbs(verb: Verb, concept_term: str, spkview_data) -> [Verb]:
+def process_auxiliary_verbs(verb: Verb, concept, spkview_data) -> [Verb]:
+#def process_auxiliary_verbs(verb: Verb, concept_term: str, spkview_data) -> [Verb]:
     """
     >>> [to_tuple(aux) for aux in process_auxiliary_verbs(Verb(index=4, term = 'kara', gender='m', number='s', person='a', tam='hE', type= 'Auxillary'), concept_term='kara_17-0_sakawA_hE_1')]
     [(4.1, 'saka', 'v', 'm', 's', 'a', 'wA', 'Auxillary'), (4.2, 'hE', 'v', 'm', 's', 'a', 'hE',''Auxillary'')]
     """
+    concept_term = concept.term
+    concept_index = concept.index
     HAS_SHADE_DATA = False
     auxiliary_term_tam = []
+    shade_index = 1
     for data in spkview_data:
         if data != '':
             data = data.strip().strip('][')
-            if 'shade' in data:
+            if 'shade' in data and concept_index == shade_index:
                 term = clean(data.split(':')[1])
                 tam = identify_default_tam_for_main_verb(concept_term)
                 HAS_SHADE_DATA = True
                 break
+        shade_index = shade_index + 1
 
     if HAS_SHADE_DATA:
         if term == 'jA' and tam == 'yA':
@@ -1749,7 +1754,8 @@ def process_verb(concept: Concept, seman_data, dependency_data, sentence_type, s
     *Aux root and Aux TAM identified from auxillary mapping File
     """
     verb = process_main_verb(concept, seman_data, dependency_data, sentence_type, processed_nouns, processed_pronouns, reprocessing)
-    auxiliary_verbs = process_auxiliary_verbs(verb, concept.term, spkview_data)
+    #auxiliary_verbs = process_auxiliary_verbs(verb, concept.term, spkview_data)
+    auxiliary_verbs = process_auxiliary_verbs(verb, concept, spkview_data)
     return verb, auxiliary_verbs
 
 
@@ -2086,17 +2092,12 @@ def fetchNextWord(index, words_info):
     return next_word
 
 def process_dep_k2g(data_case, main_verb):
-    # if k2g comes with certain set of verbs(rAma 3:k2g check if 3 is verb or not
-    # se savAla pUCA) ppost - se, we need to maintain that list else - ppost - ko
-    verb_lst = ['pUCa', 'nikAla', 'mAzga']
-    ppost = ''
     verb = identify_main_verb(main_verb[1])
-    if verb in verb_lst:
+    if verb in kisase_k2g_verbs:
         ppost = 'se'
     else:
         ppost = 'ko'
     return ppost
-
 
 def update_ppost_dict(data_index, param):
     if data_index in processed_postpositions_dict:
@@ -2121,32 +2122,41 @@ def postposition_finalization(processed_nouns, processed_pronouns, words_info):
                 if head == str(index) and case == 'o':
                     update_ppost_dict(data_index, 'ke')
 
-
 def get_main_verb(term):
     ''' return main verb from a term'''
 
-
     pass
+
+def find_match_with_same_head(term, words_info, data_head, index):
+    for dataele in words_info:
+        dep_head = dataele[index].strip().split(':')[0]
+        dep_value = dataele[index].strip().split(':')[1]
+        if data_head == dep_head and term == dep_value:
+            return True
+    return False
 
 def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
     '''Calculates postposition to words wherever applicable according to rules.'''
-
     root_main = main_verb[1].strip().split('-')[0].split('_')[0]
-    # root_main = identify_main_verb(main_verb)
     if np_data != ():
         data_case = np_data[4].strip().split(':')[1]
+        data_head = np_data[4].strip().split(':')[0]
         data_index = np_data[0]
         data_seman = np_data[2]
     ppost = ''
     new_case = 'o'
     if data_case in ('k1', 'pk1'):
         if is_tam_ya(main_verb): # has TAM "yA" or "yA_hE" or "yA_WA" marA WA
-            k2exists = findExactMatch('k2', words_info, index=4)[0] # or if CP_present, then also ne - add #get exact k2, not k2x
-            if k2exists: #with same index
+            k2exists = find_match_with_same_head('k2', words_info, data_head, index=4) # or if CP_present, then also ne - add #get exact k2, not k2x
+            vk2exists = find_match_with_same_head('vk2', words_info, data_head, index=4)
+            if k2exists:
+                ppost = 'ne'
+            elif vk2exists:
                 ppost = 'ne'
             else:
                 ppost = ''
                 log('Karma k2 not found. Output may be incorrect')
+
         elif identify_complete_tam_for_verb(main_verb[1]) in nA_list:
         #elif findValue('nA', verbs_data, index=6)[0]: #tam in (nA_list):
             ppost = 'ko'
@@ -2220,9 +2230,9 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
         ppost = 'kI ora'
     elif 'rask' in data_case:
         ppost = 'ke sAWa'
-    # elif data_case == 'ras_k1':
-    #     ppost = 'ke sAWa'
-
+    elif data_case == 'vk2':
+        data_index = data_head
+        ppost = 'ki'
     elif data_case == 'r6':
         ppost = 'kA' #if data[4] == 'f' else 'kA'
         nn_data = nextNounData(data_index, words_info)
