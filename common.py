@@ -1238,7 +1238,7 @@ def process_nouns(nouns, words_info, verbs_data):
         else:
             gender, number, person = extract_gnp_noun(clean(noun[1]), noun[3])
 
-        if number == 's' and noun[5] != 'def':
+        if number == 's' and noun[6] != 'def':
             update_additional_words_dict(index, 'before', 'eka')
 
         if noun[6] == 'respect': # respect for nouns
