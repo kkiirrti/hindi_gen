@@ -20,6 +20,7 @@ processed_postpositions_dict = {}
 construction_dict = {}
 spkview_dict = {}
 GNP_dict = {}
+additional_words_dict = {}
 discourse_dict = {'vyabhicara': 'paranwu', 'samuccaya': 'Ora', 'karya-karana': 'isase'}
 
 def populate_GNP_dict(gnp_info, PPfull_data):
@@ -272,7 +273,7 @@ def findValue(value: int, searchList: list, index=0):
 
     try:
         for dataele in searchList:
-            if value in dataele[index]:
+            if value == dataele[index]:
                 return (True, dataele)
     except IndexError:
         log(f'Index out of range while searching index:{value} in {searchList}', 'WARNING')
@@ -1231,10 +1232,14 @@ def process_nouns(nouns, words_info, verbs_data):
 
     for noun in nouns:
         category = 'n'
+        index = noun[0]
         if check_is_digit(noun[1]):
             gender, number, person =extract_gnp_noun(noun[1], noun[3])
         else:
             gender, number, person = extract_gnp_noun(clean(noun[1]), noun[3])
+
+        if number == 's' and noun[5] != 'def':
+            update_additional_words_dict(index, 'before', 'eka')
 
         if noun[6] == 'respect': # respect for nouns
             number = 'p'
@@ -1832,11 +1837,23 @@ def process_nonfinite_verb(concept, seman_data, depend_data, sentence_type, proc
     log(f'{verb.term} processed as nonfinite verb with index {verb.index} gen:{verb.gender} num:{verb.number} case:{verb.case}, and tam:{verb.tam}')
     return verb
 
+
+def update_additional_words_dict(index, tag, value):
+    temp = (tag, value)
+    if index in additional_words_dict:
+        additional_words_dict[index].append(temp)
+    else:
+        additional_words_dict[index] = [temp]
+
 def process_verbs(concepts: [tuple], seman_data, depend_data, sentence_type, spkview_data, processed_nouns, processed_pronouns, reprocess=False):
     processed_verbs = []
     processed_auxverbs = []
     for concept in concepts:
+        concept_dep_head = concept[4].strip().split(':')[0]
+        concept_dep_val = concept[4].strip().split(':')[1]
         concept = Concept(index=concept[0], term=concept[1], dependency=concept[4])
+        if(concept_dep_val == 'vk2'):
+            update_additional_words_dict(int(concept_dep_head), 'after', 'ki')
         is_cp = is_CP(concept.term)
         if is_cp:
             if not reprocess:
@@ -2057,7 +2074,7 @@ def masked_postposition(processed_words, words_info, processed_verbs):
         ppost_value = '<>'
         if data_case in ('k1', 'pk1'):
             if findValue('yA', processed_verbs, index=6)[0]:  # has TAM "yA"
-                if findValue('k2', words_info, index=4)[0]: # or findValue('k2p', words_info, index=4)[0]:
+                if findValue('k2', words_info, index=4)[0]: # or findExactMatch('k2p', words_info, index=4)[0]:
                     ppost = ppost_value
         elif data_case in ('r6', 'k3', 'k5', 'k5prk', 'k4', 'k4a', 'k7t', 'jk1','k7', 'k7p','k2g', 'k2','rsk', 'ru' ):
             ppost = ppost_value
@@ -2141,14 +2158,16 @@ def get_main_verb(term):
 
 def find_match_with_same_head(term, words_info, data_head, index):
     for dataele in words_info:
+        dataele_index = dataele[0]
         dep_head = dataele[index].strip().split(':')[0]
         dep_value = dataele[index].strip().split(':')[1]
         if data_head == dep_head and term == dep_value:
-            return True
-    return False
+            return True, dataele_index
+    return False, -1
 
 def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
     '''Calculates postposition to words wherever applicable according to rules.'''
+    cp_verb_list = ['prayAsa+kara']
     root_main = main_verb[1].strip().split('-')[0].split('_')[0]
     if np_data != ():
         data_case = np_data[4].strip().split(':')[1]
@@ -2159,10 +2178,20 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
     new_case = 'o'
     if data_case in ('k1', 'pk1'):
         if is_tam_ya(main_verb): # has TAM "yA" or "yA_hE" or "yA_WA" marA WA
-            k2exists = find_match_with_same_head('k2', words_info, data_head, index=4) # or if CP_present, then also ne - add #get exact k2, not k2x
-            vk2exists = find_match_with_same_head('vk2', words_info, data_head, index=4)
+            k2exists, k2_index = find_match_with_same_head('k2', words_info, data_head, index=4) # or if CP_present, then also ne - add #get exact k2, not k2x
+            vk2exists, vk2_index = find_match_with_same_head('vk2', words_info, data_head, index=4)
             if k2exists:
                 ppost = 'ne'
+                if is_CP(main_verb[1]):
+                    cp_parts = main_verb[1].strip().split('+')
+                    clean_cp_term = ''
+                    for part in cp_parts:
+                        part = part.split("-")[0]
+                        clean_cp_term = clean_cp_term + clean(part) + '+'
+                    clean_cp_term = clean_cp_term[0:-1]
+                    if clean_cp_term in cp_verb_list:
+                        update_additional_words_dict(k2_index, 'after', 'kA')
+
             elif vk2exists:
                 ppost = 'ne'
             else:
@@ -2242,9 +2271,6 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
         ppost = 'kI ora'
     elif 'rask' in data_case:
         ppost = 'ke sAWa'
-    elif data_case == 'vk2':
-        data_index = data_head
-        ppost = 'ki'
     elif data_case == 'r6':
         ppost = 'kA' #if data[4] == 'f' else 'kA'
         nn_data = nextNounData(data_index, words_info)
@@ -2385,6 +2411,26 @@ def add_construction(transformed_data, construction_dict):
 
     return Constructdata
 
+def add_additional_words(additional_words_dict, processed_data):
+    additionalData = []
+
+    for data in processed_data:
+        index = data[0]
+        if index in additional_words_dict:
+            temp = list(data)
+            term = additional_words_dict[index]
+            for t in term:
+                tag = t[0]
+                val = t[1]
+                if tag == 'before':
+                    temp[1] = val + ' ' + temp[1]
+                else:
+                    temp[1] = temp[1] + ' ' + val
+            data = tuple(temp)
+        additionalData.append(data)
+
+    return additionalData
+
 
 def rearrange_sentence(fulldata):
     '''Function comments'''
@@ -2411,10 +2457,9 @@ def write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FIL
             file.write("")
 
     with open(OUTPUT_FILE, 'a') as file:
-        file.write(path.strip('../hindi_gen/Test_data/week5/') + '\t')
+        file.write(path.strip('../hindi_gen/lion_story') + '\t')
         file.write(src_sentence.strip('"').strip('\n').strip('#') + '\t')
-        file.write(POST_PROCESS_OUTPUT + '    ')
-        #file.write(hindi_output)
+        file.write(POST_PROCESS_OUTPUT + '\t')
         file.write(hindi_output + '\t')
         file.write('\n')
         log('Output data write successfully')
