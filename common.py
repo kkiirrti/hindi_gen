@@ -681,7 +681,7 @@ def check_nonfinite_verb(word_data):
             return True
     return False
 
-def check_adverb(word_data, verbs_data):
+def check_adverb_old(word_data, verbs_data):
     '''Check if word is an adverb (kriya_visheshan) by using the USR info'''
 
     if word_data[4] != '':
@@ -909,12 +909,11 @@ def process_adverb_as_verb(concept, processed_verbs):
             log(f'{term} adverb processed as a verb with index {index} gen:{gender} num:{number} person:{person}, and tam:{tam}')
     return
 
-def process_adverbs(adverbs, processed_nouns, processed_verbs, processed_indeclinables):
+def process_adverbs(adverbs, processed_nouns, processed_verbs, processed_indeclinables, reprocessing):
     for adverb in adverbs:
-        if ('+se_') in adverb[1]:  # for jora+se kind of adverbs
-                process_adverb_as_noun(adverb,processed_nouns)
-        elif adverb[2] =='abs':
-           process_adverb_as_noun(adverb, processed_nouns)
+        if ('+se_') in adverb[1] or adverb[2] == 'abs':  # for jora+se kind of adverbs
+                if not reprocessing:
+                    process_adverb_as_noun(adverb,processed_nouns)
         else: #check morph tags
             term = clean(adverb[1])
             tags = find_tags_from_dix_as_list(term)
@@ -1016,7 +1015,6 @@ def process_indeclinables(indeclinables):
         processed_indeclinables.append((indec[0], clean_indec, 'indec'))
     return processed_indeclinables
 
-
 def has_ques_mark(sentence_type):
     interrogative_lst = ["yn_interrogative", "yn_interrogative_negative", "pass-yn_interrogative", "interrogative",
                          "Interrogative", "pass-interrogative"]
@@ -1093,7 +1091,6 @@ def process_kim(index, relation, anim, gnp, pronoun, words_info, main_verb, proc
     term = get_root_for_kim(relation, anim, gnp)
     if term == 'kyoM':
         processed_indeclinables.append((index, term, 'indec'))
-
     else:
         category = 'p'
         case = 'o'
@@ -1147,6 +1144,20 @@ def process_pronouns(pronouns, processed_nouns, processed_indeclinables, words_i
             category = 'p'
             case = 'o'
             parsarg = 0
+
+            if term == 'yahAz':
+                if pronoun[6] == 'emphasis':
+                    term = 'yahIM'
+                    category = 'indec'
+                    processed_indeclinables.append(index, term, category)
+                    break
+
+            if term == 'vahAz':
+                if pronoun[6] == 'emphasis':
+                    term = 'vahIM'
+                    category = 'indec'
+                    processed_indeclinables.append((index, term, category))
+                    break
             case, postposition = preprocess_postposition_new('pronoun', pronoun, words_info, main_verb)
             if postposition != '':
                 parsarg = postposition
@@ -1630,7 +1641,7 @@ def process_main_verb(concept: Concept, seman_data, dependency_data, sentence_ty
     >>>
     """
     verb = Verb()
-    verb.type = "main" if "0:main" in concept.dependency else "nonfinite"
+    verb.type = "main"
     verb.index = concept.index
     verb.term = identify_main_verb(concept.term)
     full_tam = identify_complete_tam_for_verb(concept.term)
@@ -2013,7 +2024,8 @@ def handle_unprocessed(outputData, processed_nouns):
             for i in range(len(processed_nouns)):
                 ind = round(processed_nouns[i][0])
                 if round(processed_nouns[i][0]) == dataIndex:
-                    if not processed_nouns[i][7] == 'proper' and not processed_nouns[i][7] == 'NC':
+                    if processed_nouns[i][7] not in ('proper','NC','CP_noun', 'abs', 'vn'):
+                    #if not processed_nouns[i][7] == 'proper' and not processed_nouns[i][7] == 'NC' and not processed_nouns[i][7] == 'CP_noun':
                         has_changes = True
                         temp = list(processed_nouns[i])
                         temp[4] = 'f' if processed_nouns[i][4] == 'm' else 'm'
@@ -2066,7 +2078,7 @@ def masked_postposition(processed_words, words_info, processed_verbs):
                     ppost = ppost_value
         elif data_case in ('r6', 'k3', 'k5', 'k5prk', 'k4', 'k4a', 'k7t', 'jk1','k7', 'k7p','k2g', 'k2','rsk', 'ru' ):
             ppost = ppost_value
-        elif data_case == 'kr_vn' and data_info[2] == 'abs':  #abstract noun as adverb
+        elif data_case == 'krvn' and data_info[2] == 'abs':  #abstract noun as adverb
             ppost = ppost_value
         elif data_case in ('k2g', 'k2') and data_info[2] in ("anim", "per"):
             ppost = ppost_value #'ko'
