@@ -1221,10 +1221,14 @@ def process_nouns(nouns, words_info, verbs_data):
 
     for noun in nouns:
         category = 'n'
+        index = noun[0]
         if check_is_digit(noun[1]):
             gender, number, person =extract_gnp_noun(noun[1], noun[3])
         else:
             gender, number, person = extract_gnp_noun(clean(noun[1]), noun[3])
+
+        if number == 's' and noun[5] != 'def':
+            update_additional_words_dict(index, 'before', 'eka')
 
         if noun[6] == 'respect': # respect for nouns
             number = 'p'
