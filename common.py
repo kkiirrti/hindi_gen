@@ -21,7 +21,7 @@ construction_dict = {}
 spkview_dict = {}
 GNP_dict = {}
 additional_words_dict = {}
-discourse_dict = {'vyabhicara': 'paranwu', 'samuccaya': 'Ora', 'karya-karana': 'isase', 'viroXI': 'lekina'}
+discourse_dict = {'vyabhicara': 'paranwu', 'samuccaya': 'Ora', 'karya-karana': 'isase', 'viroXI': 'leki
 
 def populate_GNP_dict(gnp_info, PPfull_data):
     populate_GNP_dict = False
