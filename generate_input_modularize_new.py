@@ -64,7 +64,7 @@ if __name__ == "__main__":
     processed_others = process_others(others_data)
     processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, spkview_data,processed_nouns, processed_pronouns, False)
     processed_adjectives = process_adjectives(adjectives_data, processed_nouns, processed_verbs)
-    process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others)
+    process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others, reprocessing=False)
     process_nominal_form = process_nominal_verb(nominal_forms_data, processed_nouns, words_info, verbs_data)
     postposition_finalization(processed_nouns, processed_pronouns, words_info)
     # Todo : extract nouns / adjectives from Compound verbs with +
@@ -103,7 +103,7 @@ if __name__ == "__main__":
         # Reprocessing adjectives and verbs based on new noun info
         processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, spkview_data, processed_nouns, processed_pronouns, True)
         processed_adjectives = process_adjectives(adjectives_data, processed_nouns, processed_verbs)
-        process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others)
+        process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others, reprocessing=True)
 
         # Sentence is generated again
         processed_words = collect_processed_data(processed_pronouns, processed_nouns,  processed_adjectives, processed_verbs,processed_auxverbs,processed_indeclinables,processed_others)

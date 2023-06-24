@@ -99,6 +99,28 @@
 </pardef>
 <!--added by Kirti Garg for LC project on Dec 7, 2022-->
 
+<pardef n="vahAz/__p">
+    <e><p><l></l><r><s n="cat:p"/><s n="case:d"/><s n="parsarg:0" /><s n="gen:m"/><s n="num:s"/><s n="per:a"/></r></p></e>
+    <e><p><l></l><r><s n="cat:p"/><s n="case:d"/><s n="parsarg:0" /><s n="gen:f"/><s n="num:s"/><s n="per:a"/></r></p></e>
+    <e><p><l></l><r><s n="cat:p"/><s n="case:d"/><s n="parsarg:0" /><s n="gen:m"/><s n="num:p"/><s n="per:a"/></r></p></e>
+    <e><p><l></l><r><s n="cat:p"/><s n="case:d"/><s n="parsarg:0" /><s n="gen:f"/><s n="num:p"/><s n="per:a"/></r></p></e>
+    <e><p><l></l><r><s n="cat:p"/><s n="case:o"/><s n="parsarg:0" /><s n="gen:m"/><s n="num:s"/><s n="per:a"/></r></p></e>
+    <e><p><l></l><r><s n="cat:p"/><s n="case:o"/><s n="parsarg:0" /><s n="gen:f"/><s n="num:s"/><s n="per:a"/></r></p></e>
+    <e><p><l></l><r><s n="cat:p"/><s n="case:o"/><s n="parsarg:0" /><s n="gen:m"/><s n="num:p"/><s n="per:a"/></r></p></e>
+    <e><p><l></l><r><s n="cat:p"/><s n="case:o"/><s n="parsarg:0" /><s n="gen:f"/><s n="num:p"/><s n="per:a"/></r></p></e>
+
+
+    <e><p><l></l><r><s n="cat:p"/><s n="case:d"/><s n="parsarg:ko" /><s n="gen:m"/><s n="num:s"/><s n="per:a"/></r></p></e>
+    <e><p><l></l><r><s n="cat:p"/><s n="case:d"/><s n="parsarg:ko" /><s n="gen:f"/><s n="num:s"/><s n="per:a"/></r></p></e>
+    <e><p><l></l><r><s n="cat:p"/><s n="case:d"/><s n="parsarg:ko" /><s n="gen:m"/><s n="num:p"/><s n="per:a"/></r></p></e>
+    <e><p><l></l><r><s n="cat:p"/><s n="case:d"/><s n="parsarg:ko" /><s n="gen:f"/><s n="num:p"/><s n="per:a"/></r></p></e>
+    <e><p><l></l><r><s n="cat:p"/><s n="case:o"/><s n="parsarg:ko" /><s n="gen:m"/><s n="num:s"/><s n="per:a"/></r></p></e>
+    <e><p><l></l><r><s n="cat:p"/><s n="case:o"/><s n="parsarg:ko" /><s n="gen:f"/><s n="num:s"/><s n="per:a"/></r></p></e>
+    <e><p><l></l><r><s n="cat:p"/><s n="case:o"/><s n="parsarg:ko" /><s n="gen:m"/><s n="num:p"/><s n="per:a"/></r></p></e>
+    <e><p><l></l><r><s n="cat:p"/><s n="case:o"/><s n="parsarg:ko" /><s n="gen:f"/><s n="num:p"/><s n="per:a"/></r></p></e>
+
+</pardef>
+
 <pardef n="kaba/__p">
     <e><p><l></l><r><s n="cat:p"/><s n="case:d"/><s n="parsarg:0" /><s n="gen:m"/><s n="num:s"/><s n="per:a"/></r></p></e>
     <e><p><l></l><r><s n="cat:p"/><s n="case:d"/><s n="parsarg:0" /><s n="gen:f"/><s n="num:s"/><s n="per:a"/></r></p></e>
@@ -29783,6 +29805,7 @@ addition ended by Kirti Garg kirti.garg@gmail.com on 7/12/22-->
 <e lm="vAgyamAna"><i>vAgyamAna</i><par n="kroXa/__n"/></e>
 <e lm="vAgyuxXa"><i>vAgyuxXa</i><par n="kroXa/__n"/></e>
 <e lm="vaha"><i></i><par n="/vaha__p"/></e>
+<e lm="vahAz"><i>vahAz</i><par n="vahAz/__p"/></e>
 <e lm="vahA"><i>vah</i><par n="gudiy/A__n"/></e>
 <e lm="vAhakaceka"><i>vAhakaceka</i><par n="kroXa/__n"/></e>
 <e lm="vAhaka"><i>vAhaka</i><par n="amIra/__adj"/></e>
