@@ -1218,6 +1218,14 @@ def handle_compound_nouns(noun, processed_nouns, category, case, gender, number,
         processed_postpositions_dict[dict_index] = processed_postpositions_dict.pop(noun[0])
 
     return processed_nouns
+def find_exact_dep_info_exists(index, dep_rel, words_info):
+    for word in words_info:
+        dep = word[4]
+        dep_head = word[4].strip().split(':')[0]
+        dep_val = word[4].strip().split(':')[1]
+        if dep_val == dep_rel and int(dep_head) == index:
+            return True
+    return False
 
 def process_nouns(nouns, words_info, verbs_data):
     '''Process nouns as Process nouns as (index, word, category, case, gender, number, proper/noun type= proper, common, NC, nominal_verb or CP_noun, postposition)'''
@@ -1233,13 +1241,16 @@ def process_nouns(nouns, words_info, verbs_data):
     for noun in nouns:
         category = 'n'
         index = noun[0]
+        dependency = noun[4].strip().split(':')[1]
         if check_is_digit(noun[1]):
             gender, number, person =extract_gnp_noun(noun[1], noun[3])
         else:
             gender, number, person = extract_gnp_noun(clean(noun[1]), noun[3])
 
         if number == 's' and noun[6] != 'def':
-            update_additional_words_dict(index, 'before', 'eka')
+            if not find_exact_dep_info_exists(index, 'dem', words_info) and not find_exact_dep_info_exists(index, 'quant', words_info) and not find_exact_dep_info_exists(index, 'card', words_info):
+                update_additional_words_dict(index, 'before', 'eka')
+
 
         if noun[6] == 'respect': # respect for nouns
             number = 'p'
