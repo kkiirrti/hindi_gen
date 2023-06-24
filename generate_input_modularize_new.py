@@ -2,6 +2,10 @@ from common import *
 HAS_CONSTRUCTION_DATA = False
 HAS_SPKVIEW_DATA = False
 ADD_GNP_DATA = False
+HAS_DISCOURSE_DATA = False
+
+
+
 if __name__ == "__main__":
     log("Program Started", "START")
 
@@ -38,6 +42,10 @@ if __name__ == "__main__":
     if spkview_data != [] or len(spkview_data) > 0:
         HAS_SPKVIEW_DATA = populate_spkview_dict(spkview_data)
 
+    if discourse_data != [] or len(discourse_data) > 0:
+        HAS_DISCOURSE_DATA = True
+
+
     # Making a collection of words and its rules as a list of tuples.
     words_info = generate_wordinfo(root_words, index_data, seman_data,
                                    gnp_data, depend_data, discourse_data, spkview_data, scope_data)
@@ -56,9 +64,9 @@ if __name__ == "__main__":
     processed_others = process_others(others_data)
     processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, spkview_data,processed_nouns, processed_pronouns, False)
     processed_adjectives = process_adjectives(adjectives_data, processed_nouns, processed_verbs)
-    process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others)
+    process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others, reprocessing=False)
     process_nominal_form = process_nominal_verb(nominal_forms_data, processed_nouns, words_info, verbs_data)
-
+    postposition_finalization(processed_nouns, processed_pronouns, words_info)
     # Todo : extract nouns / adjectives from Compound verbs with +
     # Todo : process nouns / adjectives got from verbs and add to processed_noun / processed_adjectives
 
@@ -69,6 +77,7 @@ if __name__ == "__main__":
     # Every word is collected into one and sorted by index number.
     processed_words = collect_processed_data(processed_pronouns,processed_nouns,processed_adjectives,
                                             processed_verbs, processed_auxverbs,processed_indeclinables, processed_others)
+
 
     # calculating postpositions for words if applicable.
     # processed_words, processed_postpositions = preprocess_postposition_new(processed_words, words_info,processed_verbs)
@@ -94,7 +103,7 @@ if __name__ == "__main__":
         # Reprocessing adjectives and verbs based on new noun info
         processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, spkview_data, processed_nouns, processed_pronouns, True)
         processed_adjectives = process_adjectives(adjectives_data, processed_nouns, processed_verbs)
-        process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others)
+        process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others, reprocessing=True)
 
         # Sentence is generated again
         processed_words = collect_processed_data(processed_pronouns, processed_nouns,  processed_adjectives, processed_verbs,processed_auxverbs,processed_indeclinables,processed_others)
@@ -128,6 +137,11 @@ if __name__ == "__main__":
     if has_ques_mark(sentence_type):
         POST_PROCESS_OUTPUT = POST_PROCESS_OUTPUT + ' ?'
 
+
+    if HAS_DISCOURSE_DATA:
+        POST_PROCESS_OUTPUT = add_discourse_elements(discourse_data, POST_PROCESS_OUTPUT)
+
+
     # for yn_interrogative add kya in the beginning
     if sentence_type in ("yn_interrogative","yn_interrogative_negative", "pass-yn_interrogative"):
         POST_PROCESS_OUTPUT = 'kyA ' + POST_PROCESS_OUTPUT
@@ -144,7 +158,7 @@ if __name__ == "__main__":
 
     #for masked input -uncomment the following:
     # masked_pup_list = masked_postposition(processed_words, words_info, processed_verbs)
-    # masked_pp_fulldata = add_postposition(transformed_data, masked_pp_list)
+    # masked_pp_fulldata = add_postposition(transformed_data, masked_pup_list)
     # arranged_masked_output = rearrange_sentence(masked_pp_fulldata)
     # masked_hindi_data = collect_hindi_output(arranged_masked_output)
     # write_masked_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, masked_hindi_data, OUTPUT_FILE, path)
