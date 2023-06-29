@@ -62,7 +62,7 @@ if __name__ == "__main__":
     #     processed_pronouns = process_imp_sentence(words_info, processed_pronouns)
 
     processed_others = process_others(others_data)
-    processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, spkview_data,processed_nouns, processed_pronouns, False)
+    processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, spkview_data,processed_nouns, processed_pronouns, words_info, False)
     processed_adjectives = process_adjectives(adjectives_data, processed_nouns, processed_verbs)
     process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others, reprocessing=False)
     process_nominal_form = process_nominal_verb(nominal_forms_data, processed_nouns, words_info, verbs_data)
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     # Adjectives and verbs are re-processed as they might be dependent on it.
     if has_changes:
         # Reprocessing adjectives and verbs based on new noun info
-        processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, spkview_data, processed_nouns, processed_pronouns, True)
+        processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, spkview_data, processed_nouns, processed_pronouns, words_info, True)
         processed_adjectives = process_adjectives(adjectives_data, processed_nouns, processed_verbs)
         process_adverbs(adverbs_data, processed_nouns, processed_verbs, processed_others, reprocessing=True)
 
