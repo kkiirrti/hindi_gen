@@ -1113,6 +1113,7 @@ def process_pronouns(pronouns, processed_nouns, processed_indeclinables, words_i
                     category = 'indec'
                     processed_indeclinables.append((index, term, category))
                     break
+
             case, postposition = preprocess_postposition_new('pronoun', pronoun, words_info, main_verb)
             if postposition != '':
                 parsarg = postposition
@@ -1205,15 +1206,11 @@ def process_nouns(nouns, words_info, verbs_data):
         else:
             gender, number, person = extract_gnp_noun(clean(noun[1]), noun[3])
 
+
+
         if noun[6] == 'respect': # respect for nouns
             number = 'p'
         noun_type = 'common' if '_' in noun[1] else 'proper'
-
-        if noun_type == 'common':
-            if number == 's' and noun[6] != 'def':
-                if not find_exact_dep_info_exists(index, 'dem', words_info) and not find_exact_dep_info_exists(index, 'quant', words_info) and \
-                        not find_exact_dep_info_exists(index, 'card', words_info):
-                    update_additional_words_dict(index, 'before', 'eka')
 
         # to fetch postposition and case logic and update each tuple
         case, postposition = preprocess_postposition_new('noun', noun, words_info, main_verb)
@@ -1233,7 +1230,14 @@ def process_nouns(nouns, words_info, verbs_data):
                 clean_noun = clean(noun[1])
 
             processed_nouns.append((noun[0], clean_noun, category, case, gender, number, person, noun_type, postposition))
-            #noun_attribute[clean_noun] = [[], []]
+
+            if number == 's' and noun[6] != 'def' and noun_type == 'common':
+                if not find_exact_dep_info_exists(index, 'dem', words_info) and not find_exact_dep_info_exists(index,
+                                                                                                               'quant',
+                                                                                                               words_info) and not find_exact_dep_info_exists(
+                        index, 'card', words_info):
+                    update_additional_words_dict(index, 'before', 'eka')
+
         log(f'{noun[1]} processed as noun with case:{case} gen:{gender} num:{number} noun_type:{noun_type} postposition: {postposition}.')
 
     return processed_nouns
