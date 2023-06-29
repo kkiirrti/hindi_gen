@@ -220,7 +220,7 @@ def clean(word, inplace=''):
 
 def is_tam_ya(verbs_data):
     ya_tam = '-yA_'
-    if verbs_data != ():
+    if len(verbs_data) > 0 and verbs_data != () :
         term = verbs_data[1]
         if ya_tam in term:
             return True
@@ -940,20 +940,6 @@ def get_root_for_kim(relation, anim, gnp):
     # kOna is root for - kisakA, kisakI, kisake, kinakA, kinake, kinakI, kOna, kisa, kisane, kise, kisako,
     # kisase, kisake, kisameM, kisameM_se, isapara, kina, inhoMne, kinheM, kinako, kinase, kinpara, kinake, kinameM, kinameM_se, kisI, kisa
 
-    # kyA = k1s, gnp, inanimate
-    # kyA = k2, non anim
-    # kOna = k1s, gnp, animate
-    # kEsA = k1s, no gnp, inanimate
-
-    #     elif relation in ('k2p', 'k7p'):
-    #     return 'kahAz'
-    #
-    # elif relation == 'k5':
-    # return 'kahAz se'
-        #kaba
-        #kim + gnp + non anim - > kyA
-        #kim + gnp + anim -> kaun
-
     animate = ['anim', 'per']
     if relation in ('k2p', 'k7p'):
         return 'kahAz'
@@ -975,37 +961,6 @@ def get_root_for_kim(relation, anim, gnp):
         return 'kOna'
     else:
         return 'kim'
-
-    # if relation == 'k1s' and len(gnp) > 0 and anim in animate:
-    #     return 'kOna'
-    # #generate kisane, kOna
-    # elif relation == 'k1':
-    #     return 'kOna'
-    # #generate kisase, kisako
-    # elif relation in ('k2', 'k2g', 'k5', 'k3'):
-    #     return 'kOna'
-    #
-    # elif relation == 'k1s' and len(gnp) > 0 and anim not in animate:
-    #     return 'kyA'
-    # elif relation == 'k2' and anim not in animate:
-    #     return 'kyA'
-    #
-    # elif relation in ('k2p', 'k7p'):
-    #     return 'kahAz'
-    # elif relation == 'k5':
-    #     return 'kahAz se'
-    #
-    # elif relation == 'kr_vn':
-    #     return 'kEse'
-    # elif relation == 'k1s' and len(gnp) == 0 and anim in inanimate:
-    #     return 'kEsA'
-    # elif relation == 'rt':
-    #     return 'kyoM'
-    #
-    #
-    #
-    #else:
-    #    return 'kim'
 
 def process_indeclinables(indeclinables):
     '''Processes indeclinable words index, word, 'indec'''
@@ -1234,9 +1189,12 @@ def process_nouns(nouns, words_info, verbs_data):
     main_verb = ''
     # fetch the main verb
     for verb in verbs_data:
-        if verb[4].strip().split(':')[1] == 'main':
+        if len(verb[4]) > 0 and verb[4].strip().split(':')[1] == 'main':
             main_verb = verb
             break
+    if not len(main_verb):
+        log('USR error. Main verb not identified. Check the USR.')
+        sys.exit()
 
     for noun in nouns:
         category = 'n'
@@ -1247,14 +1205,15 @@ def process_nouns(nouns, words_info, verbs_data):
         else:
             gender, number, person = extract_gnp_noun(clean(noun[1]), noun[3])
 
-        if number == 's' and noun[6] != 'def':
-            if not find_exact_dep_info_exists(index, 'dem', words_info) and not find_exact_dep_info_exists(index, 'quant', words_info) and not find_exact_dep_info_exists(index, 'card', words_info):
-                update_additional_words_dict(index, 'before', 'eka')
-
-
         if noun[6] == 'respect': # respect for nouns
             number = 'p'
         noun_type = 'common' if '_' in noun[1] else 'proper'
+
+        if noun_type == 'common':
+            if number == 's' and noun[6] != 'def':
+                if not find_exact_dep_info_exists(index, 'dem', words_info) and not find_exact_dep_info_exists(index, 'quant', words_info) and \
+                        not find_exact_dep_info_exists(index, 'card', words_info):
+                    update_additional_words_dict(index, 'before', 'eka')
 
         # to fetch postposition and case logic and update each tuple
         case, postposition = preprocess_postposition_new('noun', noun, words_info, main_verb)
@@ -1785,10 +1744,8 @@ def process_verb(concept: Concept, seman_data, dependency_data, sentence_type, s
     auxiliary_verbs = process_auxiliary_verbs(verb, concept, spkview_data)
     return verb, auxiliary_verbs
 
-
 def is_nonfinite_verb(concept):
     return concept.type == 'nonfinite'
-
 
 def set_tam_for_nonfinite(dependency):
     '''
@@ -1816,7 +1773,46 @@ def set_tam_for_nonfinite(dependency):
     return tam
 
 
-def process_nonfinite_verb(concept, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns):
+def update_case_and_ppost(data, case, ppost):
+    temp = list(data)
+    index = temp[0]
+
+    pass
+
+
+def process_dep_rbks(concept, words_info, processed_nouns, processed_pronouns):
+    finalData = []
+    k1_exists, k1_index = find_match_with_same_head(concept.index, 'k1', words_info, index=4)
+    k3_exists, k3_index = find_match_with_same_head(concept.index, 'k3', words_info, index=4)
+    if k1_exists:
+        case = 'o'
+        ppost = 'ke xvArA'
+
+        for i in range(len(processed_nouns)):
+            data = processed_nouns[i]
+            data_index = data[0]
+            if data_index == k1_index:
+                temp = list(data)
+                temp[3] = case
+                temp[8] = ppost
+                processed_nouns[i] = tuple(temp)
+                update_ppost_dict(data_index, ppost)
+
+    elif k3_exists:
+        case = 'o'
+        ppost = 'ke xvArA'
+
+        for i in range(len(processed_nouns)):
+            data = processed_nouns[i]
+            data_index = data[0]
+            if data_index == k3_index:
+                temp = list(data)
+                temp[3] = case
+                temp[8] = ppost
+                processed_nouns[i] = tuple(temp)
+                update_ppost_dict(data_index, ppost)
+
+def process_nonfinite_verb(concept, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns, words_info):
     '''
     >>process_nonfinite_verb([], [()],[()])
     '''
@@ -1836,7 +1832,9 @@ def process_nonfinite_verb(concept, seman_data, depend_data, sentence_type, proc
     verb.tam = ''
     #verb.category = 'v'
     relation = concept.dependency.strip().split(':')[1]
-    # full_tam = identify_complete_tam_for_verb(concept.term)
+    if relation == 'rbks':
+        process_dep_rbks(concept, words_info, processed_nouns, processed_pronouns)
+
     verb.tam = set_tam_for_nonfinite(relation)
     full_tam = verb.tam
 
@@ -1848,15 +1846,20 @@ def process_nonfinite_verb(concept, seman_data, depend_data, sentence_type, proc
     log(f'{verb.term} processed as nonfinite verb with index {verb.index} gen:{verb.gender} num:{verb.number} case:{verb.case}, and tam:{verb.tam}')
     return verb
 
-
-def update_additional_words_dict(index, tag, value):
-    temp = (tag, value)
+def update_additional_words_dict(index, tag, add_word):
+    value = (tag, add_word)
+    value_found = False
     if index in additional_words_dict:
-        additional_words_dict[index].append(temp)
+        value_list = additional_words_dict[index]
+        for data in value_list:
+            if data[0] == tag and data[1] == add_word:
+                value_found = True
+        if not value_found:
+            additional_words_dict[index].append(value)
     else:
-        additional_words_dict[index] = [temp]
+        additional_words_dict[index] = [value]
 
-def process_verbs(concepts: [tuple], seman_data, depend_data, sentence_type, spkview_data, processed_nouns, processed_pronouns, reprocess=False):
+def process_verbs(concepts: [tuple], seman_data, depend_data, sentence_type, spkview_data, processed_nouns, processed_pronouns, words_info, reprocess=False):
     processed_verbs = []
     processed_auxverbs = []
     for concept in concepts:
@@ -1874,7 +1877,7 @@ def process_verbs(concepts: [tuple], seman_data, depend_data, sentence_type, spk
                     processed_nouns.append(tuple(CP))
         verb_type = identify_verb_type(concept)
         if verb_type == 'nonfinite':
-            verb = process_nonfinite_verb(concept, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns)
+            verb = process_nonfinite_verb(concept, seman_data, depend_data, sentence_type, processed_nouns, processed_pronouns, words_info)
             processed_verbs.append(to_tuple(verb))
         else:
             verb, aux_verbs = process_verb(concept, seman_data, depend_data, sentence_type, spkview_data, processed_nouns, processed_pronouns, reprocess)
@@ -2140,8 +2143,8 @@ def process_dep_k2g(data_case, main_verb):
     return ppost
 
 def update_ppost_dict(data_index, param):
-    if data_index in processed_postpositions_dict:
-        processed_postpositions_dict[data_index] = param
+    # whether entry exists or not, param is updated in ppost_dict
+    processed_postpositions_dict[data_index] = param
 
 def postposition_finalization(processed_nouns, processed_pronouns, words_info):
     for data in words_info:
@@ -2167,19 +2170,22 @@ def get_main_verb(term):
 
     pass
 
-def find_match_with_same_head(term, words_info, data_head, index):
-    for dataele in words_info:
+def find_match_with_same_head(data_head, term, words_info, index):
+     for dataele in words_info:
         dataele_index = dataele[0]
         dep_head = dataele[index].strip().split(':')[0]
         dep_value = dataele[index].strip().split(':')[1]
-        if data_head == dep_head and term == dep_value:
+        if str(data_head) == dep_head and term == dep_value:
             return True, dataele_index
-    return False, -1
+     return False, -1
 
-def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
+def preprocess_postposition_new(concept_type, np_data, words_info, verb_data):
     '''Calculates postposition to words wherever applicable according to rules.'''
     cp_verb_list = ['prayAsa+kara']
-    root_main = main_verb[1].strip().split('-')[0].split('_')[0]
+    if len(verb_data) > 0:
+        verb_term = verb_data[1]
+        if len(verb_term) > 0:
+            root_main = verb_term.strip().split('-')[0].split('_')[0]
     if np_data != ():
         data_case = np_data[4].strip().split(':')[1]
         data_head = np_data[4].strip().split(':')[0]
@@ -2188,13 +2194,13 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
     ppost = ''
     new_case = 'o'
     if data_case in ('k1', 'pk1'):
-        if is_tam_ya(main_verb): # has TAM "yA" or "yA_hE" or "yA_WA" marA WA
-            k2exists, k2_index = find_match_with_same_head('k2', words_info, data_head, index=4) # or if CP_present, then also ne - add #get exact k2, not k2x
-            vk2exists, vk2_index = find_match_with_same_head('vk2', words_info, data_head, index=4)
+        if is_tam_ya(verb_data): # has TAM "yA" or "yA_hE" or "yA_WA" marA WA
+            k2exists, k2_index = find_match_with_same_head(data_head, 'k2', words_info, index=4) # or if CP_present, then also ne - add #get exact k2, not k2x
+            vk2exists, vk2_index = find_match_with_same_head(data_head, 'vk2', words_info, index=4)
             if k2exists:
                 ppost = 'ne'
-                if is_CP(main_verb[1]):
-                    cp_parts = main_verb[1].strip().split('+')
+                if is_CP(verb_term):
+                    cp_parts = verb_term.strip().split('+')
                     clean_cp_term = ''
                     for part in cp_parts:
                         part = part.split("-")[0]
@@ -2209,7 +2215,7 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
                 ppost = ''
                 log('Karma k2 not found. Output may be incorrect')
 
-        elif identify_complete_tam_for_verb(main_verb[1]) in nA_list:
+        elif identify_complete_tam_for_verb(verb_term) in nA_list:
         #elif findValue('nA', verbs_data, index=6)[0]: #tam in (nA_list):
             ppost = 'ko'
         else:
@@ -2217,7 +2223,7 @@ def preprocess_postposition_new(concept_type, np_data, words_info, main_verb):
             #new_case = 'd'
 
     elif data_case == 'k2g':
-        ppost = process_dep_k2g(data_case, main_verb)
+        ppost = process_dep_k2g(data_case, verb_data)
     elif data_case == 'k2': #if CP present, and if concept is k2 for verb of CP, and the verb is not in specific list, then kA
         if data_seman in ("anim", "per"):
             if clean(root_main) in kisase_k2_verbs:
