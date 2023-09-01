@@ -1,4 +1,5 @@
 from common import *
+#from common_v2 import *
 HAS_CONSTRUCTION_DATA = False
 HAS_SPKVIEW_DATA = False
 ADD_GNP_DATA = False
@@ -15,7 +16,6 @@ if __name__ == "__main__":
     except IndexError:
         log("No argument given. Please provide path for input file as an argument.", "ERROR")
         sys.exit()
-
 
     file_data = read_file(path) #Reading USR
     rules_info = generate_rulesinfo(file_data) #Extracting Rules from each row of USR
@@ -53,14 +53,11 @@ if __name__ == "__main__":
     # Categorising words as Nouns/Pronouns/Adjectives/..etc.
     indeclinables_data, pronouns_data, nouns_data, adjectives_data, verbs_data, adverbs_data, others_data, nominal_forms_data = analyse_words(
         words_info)
+
     #  Processing Stage
     processed_indeclinables = process_indeclinables(indeclinables_data)
     processed_nouns = process_nouns(nouns_data, words_info, verbs_data)
-    processed_pronouns = process_pronouns(pronouns_data, processed_nouns, processed_indeclinables, words_info,
-                                          verbs_data)
-    # if sentence_type in ('imperative', 'Imperative', 'neg-imperative'):
-    #     processed_pronouns = process_imp_sentence(words_info, processed_pronouns)
-
+    processed_pronouns = process_pronouns(pronouns_data, processed_nouns, processed_indeclinables, words_info, verbs_data)
     processed_others = process_others(others_data)
     processed_verbs, processed_auxverbs = process_verbs(verbs_data, seman_data, depend_data, sentence_type, spkview_data,processed_nouns, processed_pronouns, words_info, False)
     processed_adjectives = process_adjectives(adjectives_data, processed_nouns, processed_verbs)
@@ -69,13 +66,6 @@ if __name__ == "__main__":
     postposition_finalization(processed_nouns, processed_pronouns, words_info)
     if len(additional_words_dict) > 0:
         HAS_ADDITIONAL_WORDS = True
-
-    # Todo : extract nouns / adjectives from Compound verbs with +
-    # Todo : process nouns / adjectives got from verbs and add to processed_noun / processed_adjectives
-
-    # processing postpositions for pronouns and nouns only
-    # processed_pronouns, pp_pronouns = preprocess_postposition_new(processed_pronouns, words_info, processed_verbs) # to get parsarg
-    # positions = pp_nouns | pp_pronouns #merging postpositions of nouns and pronouns in single dict
 
     # Every word is collected into one and sorted by index number.
     processed_words = collect_processed_data(processed_pronouns,processed_nouns,processed_adjectives,
@@ -160,9 +150,9 @@ if __name__ == "__main__":
     # next line code for bulk generation of results. All results are collated in test.csv. Run sh test.sh
     #write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE, path)
 
-    #for masked input -uncomment the following:
-    masked_pup_list = masked_postposition(processed_words, words_info, processed_verbs)
-    masked_pp_fulldata = add_postposition(transformed_data, masked_pup_list)
-    arranged_masked_output = rearrange_sentence(masked_pp_fulldata)
-    masked_hindi_data = collect_hindi_output(arranged_masked_output)
-    write_masked_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, masked_hindi_data, OUTPUT_FILE, path)
+    # #for masked input -uncomment the following:
+    # masked_pup_list = masked_postposition(processed_words, words_info, processed_verbs)
+    # masked_pp_fulldata = add_postposition(transformed_data, masked_pup_list)
+    # arranged_masked_output = rearrange_sentence(masked_pp_fulldata)
+    # masked_hindi_data = collect_hindi_output(arranged_masked_output)
+    # write_masked_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, masked_hindi_data, OUTPUT_FILE, path)
