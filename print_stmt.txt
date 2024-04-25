@@ -1,0 +1,598 @@
+log                                 :  [START]:Program Started
+
+Running read_file
+log                                 :  [OK]:File ~ lion_story/16
+
+log                                 :  [OK]:File data read.
+
+read_file                           :   ['#BApa ke xvArA uwpanna xabAva ke kAraNa gIjara meM garma jala bade vega se PUta padawA hE.\n', 'BApa_1,uwpanna_1,xabAva_1,gIjara_1,garma_1,jala_1,badA_1,vega_1,PUta_1-wA_hE_1\n', '1,2,3,4,5,6,7,8,9\n', ',,,loc,,,,,\n', ',,,,,,,,\n', '2:k3,3:mod,9:rh,9:k7p,6:mod,9:k1,8:mod,9:krvn,0:main\n', ',,,,,,,,\n', ',,,,,,,,[shade:padZa_1]\n', ',,,,,,,,\n', 'affirmative\n', '*nil\n', '</sent_id>']
+
+Running generate_rulesinfo
+log                                 :  [OK]:Rules Info extracted succesfully fom USR.
+
+generate_rulesinfo                  :   ['#BApa ke xvArA uwpanna xabAva ke kAraNa gIjara meM garma jala bade vega se PUta padawA hE.\n', ['BApa_1', 'uwpanna_1', 'xabAva_1', 'gIjara_1', 'garma_1', 'jala_1', 'badA_1', 'vega_1', 'PUta_1-wA_hE_1'], ['1', '2', '3', '4', '5', '6', '7', '8', '9'], ['', '', '', 'loc', '', '', '', '', ''], ['', '', '', '', '', '', '', '', ''], ['2:k3', '3:mod', '9:rh', '9:k7p', '6:mod', '9:k1', '8:mod', '9:krvn', '0:main'], ['', '', '', '', '', '', '', '', ''], ['', '', '', '', '', '', '', '', '[shade:padZa_1]'], ['', '', '', '', '', '', '', '', ''], 'affirmative', '*nil']
+
+Running populate_spkview_dict
+populate_spkview_dict               :   False
+
+Running generate_wordinfo
+generate_wordinfo                   :   ['BApa_1', 'uwpanna_1', 'xabAva_1', 'gIjara_1', 'garma_1', 'jala_1', 'badA_1', 'vega_1', 'PUta_1-wA_hE_1'] [1, 2, 3, 4, 5, 6, 7, 8, 9] ['', '', '', 'loc', '', '', '', '', ''] ['', '', '', '', '', '', '', '', ''] ['2:k3', '3:mod', '9:rh', '9:k7p', '6:mod', '9:k1', '8:mod', '9:krvn', '0:main'] ['', '', '', '', '', '', '', '', ''] ['', '', '', '', '', '', '', '', '[shade:padZa_1]'] ['', '', '', '', '', '', '', '', '']
+
+Running check_USR_format
+check_USR_format                    :   ['BApa_1', 'uwpanna_1', 'xabAva_1', 'gIjara_1', 'garma_1', 'jala_1', 'badA_1', 'vega_1', 'PUta_1-wA_hE_1'] [1, 2, 3, 4, 5, 6, 7, 8, 9] ['', '', '', 'loc', '', '', '', '', ''] ['', '', '', '', '', '', '', '', ''] ['2:k3', '3:mod', '9:rh', '9:k7p', '6:mod', '9:k1', '8:mod', '9:krvn', '0:main'] ['', '', '', '', '', '', '', '', ''] ['', '', '', '', '', '', '', '', '[shade:padZa_1]'] ['', '', '', '', '', '', '', '', '']
+
+Running analyse_words
+Running check_indeclinable
+Running clean
+clean                               :   BApa
+
+Running clean
+clean                               :   BApa
+
+Running check_digit
+Running check_verb
+Running check_adjective
+Running check_pronoun
+Running clean
+clean                               :   BApa
+
+Running check_adverb
+Running check_nominal_verb
+Running check_noun
+Running check_named_entity
+log                                 :  [OK]:BApa_1 identified as other word, but processed as noun with default GNP.
+
+Running check_indeclinable
+Running clean
+clean                               :   uwpanna
+
+Running clean
+clean                               :   uwpanna
+
+Running check_digit
+Running check_verb
+Running check_adjective
+log                                 :  [OK]:uwpanna_1 identified as adjective.
+
+Running check_indeclinable
+Running clean
+clean                               :   xabAva
+
+Running clean
+clean                               :   xabAva
+
+Running check_digit
+Running check_verb
+Running check_adjective
+Running check_pronoun
+Running clean
+clean                               :   xabAva
+
+Running check_adverb
+Running check_nominal_verb
+log                                 :  [OK]:xabAva_1 identified as nominal form.
+
+Running check_indeclinable
+Running clean
+clean                               :   gIjara
+
+Running clean
+clean                               :   gIjara
+
+Running check_digit
+Running check_verb
+Running check_adjective
+Running check_pronoun
+Running clean
+clean                               :   gIjara
+
+Running check_adverb
+Running check_nominal_verb
+log                                 :  [OK]:gIjara_1 identified as nominal form.
+
+Running check_indeclinable
+Running clean
+clean                               :   garma
+
+Running clean
+clean                               :   garma
+
+Running check_digit
+Running check_verb
+Running check_adjective
+log                                 :  [OK]:garma_1 identified as adjective.
+
+Running check_indeclinable
+Running clean
+clean                               :   jala
+
+Running clean
+clean                               :   jala
+
+Running check_digit
+Running check_verb
+Running check_adjective
+Running check_pronoun
+Running clean
+clean                               :   jala
+
+Running check_adverb
+Running check_nominal_verb
+Running check_noun
+Running check_named_entity
+log                                 :  [OK]:jala_1 identified as other word, but processed as noun with default GNP.
+
+Running check_indeclinable
+Running clean
+clean                               :   badA
+
+Running clean
+clean                               :   badA
+
+Running check_digit
+Running check_verb
+Running check_adjective
+log                                 :  [OK]:badA_1 identified as adjective.
+
+Running check_indeclinable
+Running clean
+clean                               :   vega
+
+Running clean
+clean                               :   vega
+
+Running check_digit
+Running check_verb
+Running check_adjective
+Running check_pronoun
+Running clean
+clean                               :   vega
+
+Running check_adverb
+log                                 :  [OK]:vega_1 identified as adverb.
+
+Running check_indeclinable
+Running clean
+clean                               :   PUtawAhE
+
+Running clean
+clean                               :   PUtawAhE
+
+Running check_digit
+Running check_verb
+Running extract_tamdict_hin
+log                                 :  [WARNING]:Verb "PUta_1" not found in TAM dictionary
+
+log                                 :  [OK]:PUta_1-wA_hE_1 identified as verb.
+
+analyse_words                       :   [] [] [(1, 'BApa_1', '', '', '2:k3', '', '', ''), (6, 'jala_1', '', '', '9:k1', '', '', '')] [(2, 'uwpanna_1', '', '', '3:mod', '', '', ''), (5, 'garma_1', '', '', '6:mod', '', '', ''), (7, 'badA_1', '', '', '8:mod', '', '', '')] [(9, 'PUta_1-wA_hE_1', '', '', '0:main', '', '[shade:padZa_1]', '')] [(8, 'vega_1', '', '', '9:krvn', '', '', '')] [] [(3, 'xabAva_1', '', '', '9:rh', '', '', ''), (4, 'gIjara_1', 'loc', '', '9:k7p', '', '', '')]
+
+Running process_indeclinables
+processed_indeclinables             :   []
+
+Running process_nouns
+Running extract_gnp_noun
+Running check_is_digit
+Running clean
+clean                               :   BApa
+
+Running find_tags_from_dix
+Running parse_morph_tags
+parse_morph_tags                    :   {'cat': 'n', 'case': 'o', 'gen': 'f', 'num': 'p', 'form': '^BApa/BApa'}
+
+find_tags_from_dix                  :   {'cat': 'n', 'case': 'o', 'gen': 'f', 'num': 'p', 'form': '^BApa/BApa'}
+
+extract_gnp_noun                    :   f s a
+
+Running preprocess_postposition_new
+preprocess_postposition_new         :   o se
+
+Running check_is_digit
+Running clean
+clean                               :   BApa
+
+log                                 :  [OK]:BApa_1 processed as noun with case:o gen:f num:s noun_type:common postposition: se.
+
+Running extract_gnp_noun
+Running check_is_digit
+Running clean
+clean                               :   jala
+
+Running find_tags_from_dix
+Running parse_morph_tags
+parse_morph_tags                    :   {'cat': 'n', 'gen': 'm', 'num': 'p', 'per': 'a', 'tam': '0', 'case': 'd', 'form': '^jala/jala'}
+
+find_tags_from_dix                  :   {'cat': 'n', 'gen': 'm', 'num': 'p', 'per': 'a', 'tam': '0', 'case': 'd', 'form': '^jala/jala'}
+
+extract_gnp_noun                    :   m s a
+
+Running preprocess_postposition_new
+Running is_tam_ya
+Running identify_complete_tam_for_verb
+identify_complete_tam_for_verb      :   wA_hE
+
+log                                 :  [OK]:inside tam ya else
+
+preprocess_postposition_new         :   d None
+
+Running check_is_digit
+Running clean
+clean                               :   jala
+
+log                                 :  [OK]:jala_1 processed as noun with case:d gen:m num:s noun_type:common postposition: None.
+
+process_nouns                       :   [(1, 'BApa', 'n', 'o', 'f', 's', 'a', 'common', 'se'), (6, 'jala', 'n', 'd', 'm', 's', 'a', 'common', None)]
+
+Running process_pronouns
+process_pronouns                    :   []
+
+Running process_others
+process_others                      :   []
+
+Running process_verbs
+Running is_CP
+is_CP                               :  False
+
+Running identify_verb_type
+identify_verb_type                  :   main
+
+Running process_verb
+Running process_main_verb
+Running identify_main_verb PUta_1-wA_hE_1
+Running clean
+clean                               :   PUta
+
+identify_main_verb                  :   PUta
+
+Running identify_complete_tam_for_verb
+identify_complete_tam_for_verb      :   wA_hE
+
+Running identify_default_tam_for_main_verb
+identify_default_tam_for_main_verb  :   wA
+
+Running is_CP
+is_CP                               :  False
+
+Running getVerbGNP_new
+Running get_default_GNP
+get_default_GNP                     :   m s a o
+
+Running getDataByIndex
+getDataByIndex                      :   (6, 'jala', 'n', 'd', 'm', 's', 'a', 'common', None)
+
+Running getGNP_using_k1
+Running getDataByIndex
+getDataByIndex                      :   (6, 'jala', 'n', 'd', 'm', 's', 'a', 'common', None)
+
+getGNP_using_k1                     :   m s a
+
+getVerbGNP_new                      :   m s a
+
+process_main_verb                   :   <verb.Verb object at 0x7d0dd3aa3e80>
+
+Running process_auxiliary_verbs
+Running clean
+clean                               :   pada
+
+Running identify_default_tam_for_main_verb
+identify_default_tam_for_main_verb  :   wA
+
+Running set_main_verb_tam_zero
+set_main_verb_tam_zero              :  <verb.Verb object at 0x7d0dd3aa3e80>
+
+Running identify_auxillary_verb_terms
+Running clean
+clean                               :   hE
+
+Running clean
+clean                               :   
+
+identify_auxillary_verb_terms       :   ['hE']
+
+Running auxmap_hin
+Running create_auxiliary_verb
+log                                 :  [OK]:pada processed as auxillary verb with index 9.1 gen:m num:s and tam:wA
+
+create_auxiliary_verb               :   <verb.Verb object at 0x7d0dd37dcc70>
+
+Running create_auxiliary_verb
+log                                 :  [OK]:hE processed as auxillary verb with index 9.2 gen:m num:s and tam:hE
+
+create_auxiliary_verb               :   <verb.Verb object at 0x7d0dd37dd1e0>
+
+process_verb                        :   <verb.Verb object at 0x7d0dd3aa3e80> [<verb.Verb object at 0x7d0dd37dcc70>, <verb.Verb object at 0x7d0dd37dd1e0>]
+
+Running to_tuple
+to_tuple                            :   9 PUta v m s a 0 o main
+
+log                                 :  [OK]:PUta processed as main verb with index 9 gen:m num:s case:o, and tam:0
+
+Running to_tuple
+to_tuple                            :   9.1 pada v m s a wA o auxillary
+
+Running to_tuple
+to_tuple                            :   9.2 hE v m s a hE o auxillary
+
+process_verbs                       :   [(9, 'PUta', 'v', 'm', 's', 'a', 0, 'o', 'main')] [(9.1, 'pada', 'v', 'm', 's', 'a', 'wA', 'o', 'auxillary'), (9.2, 'hE', 'v', 'm', 's', 'a', 'hE', 'o', 'auxillary')]
+
+Running process_adjectives
+Running get_default_GNP
+get_default_GNP                     :   m s a o
+
+Running clean
+clean                               :   uwpanna
+
+Running getDataByIndex
+getDataByIndex                      :   False
+
+log                                 :  [OK]:Associated noun/verb not found with the adjective uwpanna_1. Using default m,s,a,o 
+
+log                                 :  [OK]:uwpanna processed as an adjective with case:o gen:m num:s
+
+Running clean
+clean                               :   garma
+
+Running getDataByIndex
+getDataByIndex                      :   (6, 'jala', 'n', 'd', 'm', 's', 'a', 'common', None)
+
+Running get_gnpcase_from_concept
+get_gnpcase_from_concept            :   m s a d
+
+log                                 :  [OK]:garma processed as an adjective with case:d gen:m num:s
+
+Running clean
+clean                               :   badA
+
+Running getDataByIndex
+getDataByIndex                      :   False
+
+log                                 :  [OK]:Associated noun/verb not found with the adjective badA_1. Using default m,s,a,o 
+
+log                                 :  [OK]:badA processed as an adjective with case:d gen:m num:s
+
+process_adjectives                  :   [(2, 'uwpanna', 'adj', 'o', 'm', 's'), (5, 'garma', 'adj', 'd', 'm', 's'), (7, 'badA', 'adj', 'd', 'm', 's')]
+
+Running process_adverbs
+Running clean
+clean                               :   vega
+
+Running find_tags_from_dix_as_list
+Running parse_morph_tags_as_list
+parse_morph_tags_as_list            :   [('cat', 'n'), ('case', 'd'), ('gen', 'm'), ('num', 's'), ('cat', 'n'), ('case', 'd'), ('gen', 'm'), ('num', 'p'), ('cat', 'n'), ('case', 'o'), ('gen', 'm'), ('num', 's'), ('form', '^vega/vega')]
+
+find_tags_from_dix_as_list          :   [('cat', 'n'), ('case', 'd'), ('gen', 'm'), ('num', 's'), ('cat', 'n'), ('case', 'd'), ('gen', 'm'), ('num', 'p'), ('cat', 'n'), ('case', 'o'), ('gen', 'm'), ('num', 's'), ('form', '^vega/vega')]
+
+log                                 :  [OK]:adverb vega_1 processed indeclinable with form vega, no processing done
+
+Running process_nominal_verb
+Running clean
+clean                               :   xabAva
+
+Running preprocess_postposition_new
+preprocess_postposition_new         :   o ke_kAraNa
+
+Running find_tags_from_dix_as_list
+Running parse_morph_tags_as_list
+parse_morph_tags_as_list            :   [('cat', 'n'), ('case', 'd'), ('gen', 'm'), ('num', 's'), ('cat', 'n'), ('case', 'd'), ('gen', 'm'), ('num', 'p'), ('cat', 'n'), ('case', 'o'), ('gen', 'm'), ('num', 's'), ('cat', 'n'), ('case', 'o'), ('gen', 'm'), ('num', 'p'), ('form', '^xabAva/xabAva')]
+
+find_tags_from_dix_as_list          :   [('cat', 'n'), ('case', 'd'), ('gen', 'm'), ('num', 's'), ('cat', 'n'), ('case', 'd'), ('gen', 'm'), ('num', 'p'), ('cat', 'n'), ('case', 'o'), ('gen', 'm'), ('num', 's'), ('cat', 'n'), ('case', 'o'), ('gen', 'm'), ('num', 'p'), ('form', '^xabAva/xabAva')]
+
+log                                 :  [OK]:xabAva identified as nominal, re-identified as other word and processed as common noun with index 3 gen:m num:s person:a noun_type:common case:o and postposition:
+
+Running clean
+clean                               :   gIjara
+
+Running preprocess_postposition_new
+preprocess_postposition_new         :   o meM
+
+Running find_tags_from_dix_as_list
+Running parse_morph_tags_as_list
+parse_morph_tags_as_list            :   [('form', '^gIjara/*gIjara$\n')]
+
+find_tags_from_dix_as_list          :   [('form', '^gIjara/*gIjara$\n')]
+
+log                                 :  [OK]:gIjara identified as nominal, re-identified as other word and processed as common noun with index 4 gen:m num:s person:a noun_type:common case:o and postposition:
+
+process_nominal_verb                :   []
+
+Running postposition_finalization
+Running collect_processed_data
+collect_processed_data combining all processed list in sorted order
+Running process_construction
+process_construction                :   [(1, 'BApa', 'n', 'o', 'f', 's', 'a', 'common', 'se'), (2, 'uwpanna', 'adj', 'o', 'm', 's'), (3, 'xabAva', 'n', 'o', 'm', 's', 'a', 'common', 'ke_kAraNa'), (4, 'gIjara', 'n', 'o', 'm', 's', 'a', 'common', 'meM'), (5, 'garma', 'adj', 'd', 'm', 's'), (6, 'jala', 'n', 'd', 'm', 's', 'a', 'common', None), (7, 'badA', 'adj', 'd', 'm', 's'), (8, 'vega', 'indec'), (9, 'PUta', 'v', 'm', 's', 'a', 0, 'o', 'main'), (9.1, 'pada', 'v', 'm', 's', 'a', 'wA', 'o', 'auxillary'), (9.2, 'hE', 'v', 'm', 's', 'a', 'hE', 'o', 'auxillary')]
+
+Running generate_morph
+Running generate_input_for_morph_generator
+generate_input_for_morph_generator  :   ['^BApa<cat:n><case:o><gen:f><num:s>$', '^uwpanna<cat:adj><case:o><gen:m><num:s>$', '^xabAva<cat:n><case:o><gen:m><num:s>$', '^gIjara<cat:n><case:o><gen:m><num:s>$', '^garma<cat:adj><case:d><gen:m><num:s>$', '^jala<cat:n><case:d><gen:m><num:s>$', '^badA<cat:adj><case:d><gen:m><num:s>$', 'vega', '^PUta<cat:v><gen:m><num:s><per:a><tam:0>$', '^pada<cat:v><gen:m><num:s><per:a><tam:wA>$', '^hE<cat:v><gen:m><num:s><per:a><tam:hE>$']
+
+Running write_data
+Running run_morph_generator
+Running read_output_data
+read_output_data                    :   BApa #uwpanna xabAva #gIjara garma jala badA vega PUta padawA hE
+
+
+Running handle_unprocessed
+log                                 :  [OK]:gIjara reprocessed as noun with gen:f.
+
+handle_unprocessed                  :   True [(1, 'BApa', 'n', 'o', 'f', 's', 'a', 'common', 'se'), (6, 'jala', 'n', 'd', 'm', 's', 'a', 'common', None), (3, 'xabAva', 'n', 'o', 'm', 's', 'a', 'common', 'ke_kAraNa'), (4, 'gIjara', 'n', 'o', 'f', 's', 'a', 'common', 'meM')]
+
+Running process_verbs
+Running is_CP
+is_CP                               :  False
+
+Running identify_verb_type
+identify_verb_type                  :   main
+
+Running process_verb
+Running process_main_verb
+Running identify_main_verb PUta_1-wA_hE_1
+Running clean
+clean                               :   PUta
+
+identify_main_verb                  :   PUta
+
+Running identify_complete_tam_for_verb
+identify_complete_tam_for_verb      :   wA_hE
+
+Running identify_default_tam_for_main_verb
+identify_default_tam_for_main_verb  :   wA
+
+Running is_CP
+is_CP                               :  False
+
+Running getVerbGNP_new
+Running get_default_GNP
+get_default_GNP                     :   m s a o
+
+Running getDataByIndex
+getDataByIndex                      :   (6, 'jala', 'n', 'd', 'm', 's', 'a', 'common', None)
+
+Running getGNP_using_k1
+Running getDataByIndex
+getDataByIndex                      :   (6, 'jala', 'n', 'd', 'm', 's', 'a', 'common', None)
+
+getGNP_using_k1                     :   m s a
+
+getVerbGNP_new                      :   m s a
+
+process_main_verb                   :   <verb.Verb object at 0x7d0dd393d570>
+
+Running process_auxiliary_verbs
+Running clean
+clean                               :   pada
+
+Running identify_default_tam_for_main_verb
+identify_default_tam_for_main_verb  :   wA
+
+Running set_main_verb_tam_zero
+set_main_verb_tam_zero              :  <verb.Verb object at 0x7d0dd393d570>
+
+Running identify_auxillary_verb_terms
+Running clean
+clean                               :   hE
+
+Running clean
+clean                               :   
+
+identify_auxillary_verb_terms       :   ['hE']
+
+Running auxmap_hin
+Running create_auxiliary_verb
+log                                 :  [OK]:pada processed as auxillary verb with index 9.1 gen:m num:s and tam:wA
+
+create_auxiliary_verb               :   <verb.Verb object at 0x7d0dd3aa3e80>
+
+Running create_auxiliary_verb
+log                                 :  [OK]:hE processed as auxillary verb with index 9.2 gen:m num:s and tam:hE
+
+create_auxiliary_verb               :   <verb.Verb object at 0x7d0dd3aa3ee0>
+
+process_verb                        :   <verb.Verb object at 0x7d0dd393d570> [<verb.Verb object at 0x7d0dd3aa3e80>, <verb.Verb object at 0x7d0dd3aa3ee0>]
+
+Running to_tuple
+to_tuple                            :   9 PUta v m s a 0 o main
+
+log                                 :  [OK]:PUta processed as main verb with index 9 gen:m num:s case:o, and tam:0
+
+Running to_tuple
+to_tuple                            :   9.1 pada v m s a wA o auxillary
+
+Running to_tuple
+to_tuple                            :   9.2 hE v m s a hE o auxillary
+
+process_verbs                       :   [(9, 'PUta', 'v', 'm', 's', 'a', 0, 'o', 'main')] [(9.1, 'pada', 'v', 'm', 's', 'a', 'wA', 'o', 'auxillary'), (9.2, 'hE', 'v', 'm', 's', 'a', 'hE', 'o', 'auxillary')]
+
+Running process_adjectives
+Running get_default_GNP
+get_default_GNP                     :   m s a o
+
+Running clean
+clean                               :   uwpanna
+
+Running getDataByIndex
+getDataByIndex                      :   (3, 'xabAva', 'n', 'o', 'm', 's', 'a', 'common', 'ke_kAraNa')
+
+Running get_gnpcase_from_concept
+get_gnpcase_from_concept            :   m s a o
+
+log                                 :  [OK]:uwpanna processed as an adjective with case:o gen:m num:s
+
+Running clean
+clean                               :   garma
+
+Running getDataByIndex
+getDataByIndex                      :   (6, 'jala', 'n', 'd', 'm', 's', 'a', 'common', None)
+
+Running get_gnpcase_from_concept
+get_gnpcase_from_concept            :   m s a d
+
+log                                 :  [OK]:garma processed as an adjective with case:d gen:m num:s
+
+Running clean
+clean                               :   badA
+
+Running getDataByIndex
+getDataByIndex                      :   False
+
+log                                 :  [OK]:Associated noun/verb not found with the adjective badA_1. Using default m,s,a,o 
+
+log                                 :  [OK]:badA processed as an adjective with case:d gen:m num:s
+
+process_adjectives                  :   [(2, 'uwpanna', 'adj', 'o', 'm', 's'), (5, 'garma', 'adj', 'd', 'm', 's'), (7, 'badA', 'adj', 'd', 'm', 's')]
+
+Running process_adverbs
+Running clean
+clean                               :   vega
+
+Running find_tags_from_dix_as_list
+Running parse_morph_tags_as_list
+parse_morph_tags_as_list            :   [('cat', 'n'), ('case', 'd'), ('gen', 'm'), ('num', 's'), ('cat', 'n'), ('case', 'd'), ('gen', 'm'), ('num', 'p'), ('cat', 'n'), ('case', 'o'), ('gen', 'm'), ('num', 's'), ('form', '^vega/vega')]
+
+find_tags_from_dix_as_list          :   [('cat', 'n'), ('case', 'd'), ('gen', 'm'), ('num', 's'), ('cat', 'n'), ('case', 'd'), ('gen', 'm'), ('num', 'p'), ('cat', 'n'), ('case', 'o'), ('gen', 'm'), ('num', 's'), ('form', '^vega/vega')]
+
+log                                 :  [OK]:adverb vega_1 processed indeclinable with form vega, no processing done
+
+Running collect_processed_data
+collect_processed_data combining all processed list in sorted order
+Running process_construction
+process_construction                :   [(1, 'BApa', 'n', 'o', 'f', 's', 'a', 'common', 'se'), (2, 'uwpanna', 'adj', 'o', 'm', 's'), (3, 'xabAva', 'n', 'o', 'm', 's', 'a', 'common', 'ke_kAraNa'), (4, 'gIjara', 'n', 'o', 'f', 's', 'a', 'common', 'meM'), (5, 'garma', 'adj', 'd', 'm', 's'), (6, 'jala', 'n', 'd', 'm', 's', 'a', 'common', None), (7, 'badA', 'adj', 'd', 'm', 's'), (8, 'vega', 'indec'), (8, 'vega', 'indec'), (9, 'PUta', 'v', 'm', 's', 'a', 0, 'o', 'main'), (9.1, 'pada', 'v', 'm', 's', 'a', 'wA', 'o', 'auxillary'), (9.2, 'hE', 'v', 'm', 's', 'a', 'hE', 'o', 'auxillary')]
+
+Running generate_morph
+Running generate_input_for_morph_generator
+generate_input_for_morph_generator  :   ['^BApa<cat:n><case:o><gen:f><num:s>$', '^uwpanna<cat:adj><case:o><gen:m><num:s>$', '^xabAva<cat:n><case:o><gen:m><num:s>$', '^gIjara<cat:n><case:o><gen:f><num:s>$', '^garma<cat:adj><case:d><gen:m><num:s>$', '^jala<cat:n><case:d><gen:m><num:s>$', '^badA<cat:adj><case:d><gen:m><num:s>$', 'vega', 'vega', '^PUta<cat:v><gen:m><num:s><per:a><tam:0>$', '^pada<cat:v><gen:m><num:s><per:a><tam:wA>$', '^hE<cat:v><gen:m><num:s><per:a><tam:hE>$']
+
+Running write_data
+Running run_morph_generator
+Running read_output_data
+read_output_data                    :   BApa #uwpanna xabAva #gIjara garma jala badA vega vega PUta padawA hE
+
+
+Running analyse_output_data
+before combining                    :   ['BApa', '#uwpanna', 'xabAva', '#gIjara', 'garma', 'jala', 'badA', 'vega', 'vega', 'PUta', 'padawA', 'hE'] [(1, 'BApa', 'n', 'o', 'f', 's', 'a', 'common', 'se'), (2, 'uwpanna', 'adj', 'o', 'm', 's'), (3, 'xabAva', 'n', 'o', 'm', 's', 'a', 'common', 'ke_kAraNa'), (4, 'gIjara', 'n', 'o', 'f', 's', 'a', 'common', 'meM'), (5, 'garma', 'adj', 'd', 'm', 's'), (6, 'jala', 'n', 'd', 'm', 's', 'a', 'common', None), (7, 'badA', 'adj', 'd', 'm', 's'), (8, 'vega', 'indec'), (8, 'vega', 'indec'), (9, 'PUta', 'v', 'm', 's', 'a', 0, 'o', 'main'), (9.1, 'pada', 'v', 'm', 's', 'a', 'wA', 'o', 'auxillary'), (9.2, 'hE', 'v', 'm', 's', 'a', 'hE', 'o', 'auxillary')]
+
+analyse_output_data                 :   [(1, 'BApa', 'n', 'o', 'f', 's', 'a', 'common', 'se'), (2, '#uwpanna', 'adj', 'o', 'm', 's'), (3, 'xabAva', 'n', 'o', 'm', 's', 'a', 'common', 'ke_kAraNa'), (4, '#gIjara', 'n', 'o', 'f', 's', 'a', 'common', 'meM'), (5, 'garma', 'adj', 'd', 'm', 's'), (6, 'jala', 'n', 'd', 'm', 's', 'a', 'common', None), (7, 'badA', 'adj', 'd', 'm', 's'), (8, 'vega', 'indec'), (8, 'vega', 'indec'), (9, 'PUta', 'v', 'm', 's', 'a', 0, 'o', 'main'), (9.1, 'padawA', 'v', 'm', 's', 'a', 'wA', 'o', 'auxillary'), (9.2, 'hE', 'v', 'm', 's', 'a', 'hE', 'o', 'auxillary')]
+
+Running join_compounds
+join_compounds                      :   [(1, 'BApa', 'n', 'o', 'f', 's', 'a', 'common', 'se'), (2, '#uwpanna', 'adj', 'o', 'm', 's'), (3, 'xabAva', 'n', 'o', 'm', 's', 'a', 'common', 'ke_kAraNa'), (4, '#gIjara', 'n', 'o', 'f', 's', 'a', 'common', 'meM'), (5, 'garma', 'adj', 'd', 'm', 's'), (6, 'jala', 'n', 'd', 'm', 's', 'a', 'common', None), (7, 'badA', 'adj', 'd', 'm', 's'), (8, 'vega', 'indec'), (8, 'vega', 'indec'), (9, 'PUta', 'v', 'm', 's', 'a', 0, 'o', 'main'), (9.1, 'padawA', 'v', 'm', 's', 'a', 'wA', 'o', 'auxillary'), (9.2, 'hE', 'v', 'm', 's', 'a', 'hE', 'o', 'auxillary')]
+
+Running add_postposition
+add_postposition                    :   [(1, 'BApa se', 'n', 'o', 'f', 's', 'a', 'common', 'se'), (2, '#uwpanna', 'adj', 'o', 'm', 's'), (3, 'xabAva ke_kAraNa', 'n', 'o', 'm', 's', 'a', 'common', 'ke_kAraNa'), (4, '#gIjara meM', 'n', 'o', 'f', 's', 'a', 'common', 'meM'), (5, 'garma', 'adj', 'd', 'm', 's'), (6, 'jala', 'n', 'd', 'm', 's', 'a', 'common', None), (7, 'badA', 'adj', 'd', 'm', 's'), (8, 'vega', 'indec'), (8, 'vega', 'indec'), (9, 'PUta', 'v', 'm', 's', 'a', 0, 'o', 'main'), (9.1, 'padawA', 'v', 'm', 's', 'a', 'wA', 'o', 'auxillary'), (9.2, 'hE', 'v', 'm', 's', 'a', 'hE', 'o', 'auxillary')]
+
+Running add_construction
+add_construction                    :   [(1, 'BApa se', 'n', 'o', 'f', 's', 'a', 'common', 'se'), (2, '#uwpanna', 'adj', 'o', 'm', 's'), (3, 'xabAva ke_kAraNa', 'n', 'o', 'm', 's', 'a', 'common', 'ke_kAraNa'), (4, '#gIjara meM', 'n', 'o', 'f', 's', 'a', 'common', 'meM'), (5, 'garma', 'adj', 'd', 'm', 's'), (6, 'jala', 'n', 'd', 'm', 's', 'a', 'common', None), (7, 'badA', 'adj', 'd', 'm', 's'), (8, 'vega', 'indec'), (8, 'vega', 'indec'), (9, 'PUta', 'v', 'm', 's', 'a', 0, 'o', 'main'), (9.1, 'padawA', 'v', 'm', 's', 'a', 'wA', 'o', 'auxillary'), (9.2, 'hE', 'v', 'm', 's', 'a', 'hE', 'o', 'auxillary')]
+
+Running populate_GNP_dict
+populate_GNP_dict                   :   False
+
+Running rearrange_sentence
+rearrange_sentence                  :   BApa se #uwpanna xabAva ke_kAraNa #gIjara meM garma jala badA vega vega PUta padawA hE
+
+Running has_ques_mark
+Running add_discourse_elements
+add_discourse_elements              :   BApa se #uwpanna xabAva ke_kAraNa #gIjara meM garma jala badA vega vega PUta padawA hE
+
+Running collect_hindi_output
+collect_hindi_output                :   भाप से #उत्पन्न दबाव के_कारण #गीजर में गर्म जल बडा वेग वेग फूट पडता है |
+
+Running write_hindi_text
+log                                 :  [OK]:Output data write successfully
