@@ -681,9 +681,9 @@ def check_noun(word_data):
         # identifying nouns from sem_cat
         if word_data[2] in ('place','Place','ne','NE'):
             return True
-        if word_data[3] != '': # GNP present for a concept- but it is not one of the
-            if word_data[3][1:-1] not in ('superl', 'stative', 'causative', 'double_causative'):
-                return True
+        # GNP present for a concept
+        if word_data[3] in ('sg', 'pl'):
+            return True
         return False
     except IndexError:
         log(f'Index Error for GNP Info. Checking noun for {word_data[1]}', 'ERROR')
@@ -1114,10 +1114,9 @@ def process_adverbs(adverbs, processed_nouns, processed_verbs, processed_indecli
                     return
 
 def has_GNP(gnp_info):
-    gnp_data = gnp_info.strip('][').split(' ')
-    if len(gnp_data) != 3:
-        return False
-    return True
+    if len(gnp_info) and ('sg', 'pl') in gnp_info:
+        return True
+    return False
 
 def get_root_for_kim(relation, anim, gnp):
     # kOna is root for - kisakA, kisakI, kisake, kinakA, kinake, kinakI, kOna, kisa, kisane, kise, kisako,
@@ -1188,51 +1187,79 @@ def process_others(other_words):
         processed_others.append((word[0], clean(word[1]), 'other', gender, number, person))
     return processed_others
 
-def extract_gnp_noun(noun_term, gnp_info):
+def extract_gnp_noun(noun_data):
 
     gender = 'm'
     number = 's'
     person = 'a'
-    if '+' in noun_term:
-        cn_terms = noun_term.strip().split('+')
-        for i in range(len(cn_terms)):
-            if i == len(cn_terms) - 1:
-                noun_term = cn_terms[i]
 
-    gnp_data = gnp_info.strip('][').split(' ')
-    if len(gnp_data) != 3:
-        return 'm', 's', 'a'
-    if gnp_data[0].lower() == 'm':
-        gender = 'm'
-    elif gnp_data[0].lower() == 'f':
-        gender = 'f'
-    elif gnp_data[0] == '-':
-        tags = find_tags_from_dix(noun_term)
-        if '*' not in tags['form']:
-            gender = tags['gen']
+    if len(noun_data):
+        noun_term = noun_data[1]
+        if check_is_digit(noun_term):
+            noun_term = noun_term
+        elif '+' in noun_term:
+            cn_terms = noun_term.strip().split('+')
+            for i in range(len(cn_terms)):
+                if i == len(cn_terms) - 1:
+                    noun_term = clean(cn_terms[i])
         else:
-            gender = 'm'
+            noun_term = clean(noun_term)
 
-    number = 's' if gnp_data[1].lower(
-    ) == 'sg' else 'p' if gnp_data[1].lower() == 'pl' else 's'
-    person = 'a' if gnp_data[2] in ('-', '') else gnp_data[2]
+        #Setting gender
+        seman_data = noun_data[2].strip()
+        #seman_info_lst = seman_data.split()
+        if len(seman_data) > 0:
+            if 'male' in seman_data:
+                gender = 'm'
+            elif 'female' in seman_data:
+                gender = 'f'
+        else:
+            tags = find_tags_from_dix(noun_term)
+            if '*' not in tags['form']:
+                gender = tags['gen']
+
+        #Setting number
+        if len(noun_data[3]):
+            number = noun_data[3].strip()[0]
+
+        #Setting person
+        if noun_term == 'speaker':
+            person = 'u'
+        elif noun_term == 'addressee':
+            person = 'm'
+        else:
+            person = 'a'
 
     return gender, number, person
-def extract_gnp(gnp_info):
-    '''Extract GNP info from string format to tuple (gender,number,person) format.'''
+
+def extract_gnp(data):
     gender = 'm'
     number = 's'
     person = 'a'
 
-    gnp_data = gnp_info.strip('][').split(' ')
-    gnp_data = gnp_info.strip('][').split(' ')
-    if len(gnp_data) != 3:
-        return 'm', 's', 'a'
-    gender = 'm' if gnp_data[0].lower(
-    ) == 'm' else 'f' if gnp_data[0].lower() == 'f' else 'm'
-    number = 's' if gnp_data[1].lower(
-    ) == 'sg' else 'p' if gnp_data[1].lower() == 'pl' else 's'
-    person = 'a' if gnp_data[2] in ('-', '') else gnp_data[2]
+    if len(data):
+        term = clean(data[1])
+
+        # Setting gender
+        seman_data = data[2].strip()
+        # seman_info_lst = seman_data.split()
+        if len(seman_data) > 0:
+            if 'male' in seman_data:
+                gender = 'm'
+            elif 'female' in seman_data:
+                gender = 'f'
+
+        # Setting number
+        if len(data[3]):
+            number = data[3].strip()[0]
+
+        # Setting person
+        if term == 'speaker':
+            person = 'u'
+        elif term == 'addressee':
+            person = 'm'
+        else:
+            person = 'a'
 
     return gender, number, person
 
@@ -1354,7 +1381,7 @@ def process_pronouns(pronouns, processed_nouns, processed_indeclinables, words_i
                 parsarg = postposition
 
             fnum = None
-            gender, number, person = extract_gnp(pronoun[3])
+            gender, number, person = extract_gnp(pronoun)
 
             # pronoun word depends on the pronoun term given in USR
             if term == 'addressee':
@@ -1463,12 +1490,7 @@ def process_nouns(nouns, words_info, verbs_data):
         category = 'n'
         index = noun[0]
         dependency = noun[4].strip().split(':')[1]
-        if check_is_digit(noun[1]):
-            gender, number, person =extract_gnp_noun(noun[1], noun[3])
-        else:
-            gender, number, person = extract_gnp_noun(clean(noun[1]), noun[3])
-
-
+        gender, number, person = extract_gnp_noun(noun)
 
         if noun[6] == 'respect': # respect for nouns
             number = 'p'
