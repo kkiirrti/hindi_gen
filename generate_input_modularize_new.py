@@ -1,4 +1,4 @@
-from common import *
+from common_v3 import *
 #from common_v2 import *
 HAS_CONSTRUCTION_DATA = False
 HAS_SPKVIEW_DATA = False
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     if discourse_data != [] or len(discourse_data) > 0:
         HAS_DISCOURSE_DATA = True
 
-
+    
     # Making a collection of words and its rules as a list of tuples.
     words_info = generate_wordinfo(root_words, index_data, seman_data,
                                    gnp_data, depend_data, discourse_data, spkview_data, scope_data)
@@ -121,7 +121,7 @@ if __name__ == "__main__":
     if HAS_SPKVIEW_DATA:
         PP_fulldata = add_spkview(PP_fulldata, spkview_dict)
 
-    ADD_GNP_DATA = populate_GNP_dict(gnp_data, PP_fulldata)
+    ADD_GNP_DATA,PP_fulldata = populate_GNP_dict(gnp_data, PP_fulldata,words_info)
     if ADD_GNP_DATA:
         PP_fulldata = add_GNP(PP_fulldata, GNP_dict)
 
@@ -129,12 +129,28 @@ if __name__ == "__main__":
         PP_fulldata = add_additional_words(additional_words_dict, PP_fulldata)
 
     POST_PROCESS_OUTPUT = rearrange_sentence(PP_fulldata)  # reaarange by index number
+    
+    POST_PROCESS_OUTPUT=POST_PROCESS_OUTPUT.split()
+    for i in range(len(POST_PROCESS_OUTPUT)):
+        if '#' in POST_PROCESS_OUTPUT[i] and seman_data[i]=='place':
+            POST_PROCESS_OUTPUT[i]=POST_PROCESS_OUTPUT[i].replace('#','').replace('_',' ')
+    POST_PROCESS_OUTPUT=' '.join(POST_PROCESS_OUTPUT)
+    
+    coref_list=process_coref(discourse_data)
+    if coref_list and len(coref_list)==2:
+        adding_coref = POST_PROCESS_OUTPUT.split()
+        coref_word = '(' + clean(coref_list[1]) + ')'
+        adding_coref.insert(int(coref_list[0])+1, coref_word)
+        POST_PROCESS_OUTPUT = ' '.join(adding_coref)
+
+    hindi_output = collect_hindi_output(POST_PROCESS_OUTPUT)
+
 
     if has_ques_mark(sentence_type):
         POST_PROCESS_OUTPUT = POST_PROCESS_OUTPUT + ' ?'
 
     if HAS_DISCOURSE_DATA:
-        POST_PROCESS_OUTPUT = add_discourse_elements(discourse_data, POST_PROCESS_OUTPUT)
+        POST_PROCESS_OUTPUT = add_discourse_elements(discourse_data, POST_PROCESS_OUTPUT,src_sentence)
 
     # for yn_interrogative add kya in the beginning
     if sentence_type in ("yn_interrogative","yn_interrogative_negative", "pass-yn_interrogative"):
@@ -143,12 +159,16 @@ if __name__ == "__main__":
     if sentence_type in ('affirmative', 'Affirmative', 'negative', 'Negative', 'imperative', 'Imperative'):
         POST_PROCESS_OUTPUT = POST_PROCESS_OUTPUT + ' |'
 
+    
+
     hindi_output = collect_hindi_output(POST_PROCESS_OUTPUT)
+
     #next line for single line input
+    
     write_hindi_text(hindi_output, POST_PROCESS_OUTPUT, OUTPUT_FILE)
 
     # next line code for bulk generation of results. All results are collated in test.csv. Run sh test.sh
-    #write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE, path)
+    # write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FILE, path)
 
     # #for masked input -uncomment the following:
     # masked_pup_list = masked_postposition(processed_words, words_info, processed_verbs)

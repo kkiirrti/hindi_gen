@@ -21,7 +21,7 @@ construction_dict = {}
 spkview_dict = {}
 GNP_dict = {}
 additional_words_dict = {}
-discourse_dict = {'vyabhicara': 'paranwu', 'samuccaya': 'Ora', 'karya-karana': 'isase', 'viroXI': 'lekina'}
+discourse_dict = {'vyabhicara': 'paranwu', 'samuccaya': 'Ora', 'kAryakAraNa': ['isase','kyoMki'], 'viroXI': 'lekina'}
 
 
 #pre processing
@@ -80,7 +80,7 @@ def write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FIL
     print('Running write_hindi_test')
     """Append the hindi text into the file"""
     OUTPUT_FILE = 'TestResults.csv'# temporary for presenting
-    str = path.strip('verified_sent/')
+    str = path.strip('lion_story/')
     if str == '1':
         with open(OUTPUT_FILE, 'w') as file:
             file.write("")
@@ -94,74 +94,74 @@ def write_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, OUTPUT_FIL
         log('Output data write successfully')
     return "Output data write successfully"
 
-# def write_masked_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, masked_data, OUTPUT_FILE, path):
-#     print('Running write_masked_hindi_test')
-#     """Append the hindi text into the file"""
-#     OUTPUT_FILE = 'TestResults_masked.csv'  # temporary for presenting
-#     with open(OUTPUT_FILE, 'a') as file:
-#         file.write(path.strip('verified_sent/') + ',')
-#         file.write(src_sentence.strip('#') + ',')
-#         file.write(POST_PROCESS_OUTPUT + ',')
-#         file.write(hindi_output + ',')
-#         file.write(masked_data)
-#         file.write('\n')
-#         log('Output data write successfully')
-#     return "Output data write successfully"
+def write_masked_hindi_test(hindi_output, POST_PROCESS_OUTPUT, src_sentence, masked_data, OUTPUT_FILE, path):
+    print('Running write_masked_hindi_test')
+    """Append the hindi text into the file"""
+    OUTPUT_FILE = 'TestResults_masked.csv'  # temporary for presenting
+    with open(OUTPUT_FILE, 'a') as file:
+        file.write(path.strip('lion_story/') + ',')
+        file.write(src_sentence.strip('#') + ',')
+        file.write(POST_PROCESS_OUTPUT + ',')
+        file.write(hindi_output + ',')
+        file.write(masked_data)
+        file.write('\n')
+        log('Output data write successfully')
+    return "Output data write successfully"
 
-# def masked_postposition(processed_words, words_info, processed_verbs):
-#     print('Running masked_postposition')
-#     '''Calculates masked postposition to words wherever applicable according to rules.'''
-#     masked_PPdata = {}
+def masked_postposition(processed_words, words_info, processed_verbs):
+    print('Running masked_postposition')
+    '''Calculates masked postposition to words wherever applicable according to rules.'''
+    masked_PPdata = {}
 
-#     for data in processed_words:
-#         if data[2] not in ('p', 'n', 'other'):
-#             continue
-#         data_info = getDataByIndex(data[0], words_info)
-#         try:
-#             data_case = False if data_info == False else data_info[4].split(':')[1].strip()
-#         except IndexError:
-#             data_case = False
-#         ppost = ''
-#         ppost_value = '<>'
-#         if data_case in ('k1', 'pk1'):
-#             if findValue('yA', processed_verbs, index=6)[0]:  # has TAM "yA"
-#                 if findValue('k2', words_info, index=4)[0]: # or findExactMatch('k2p', words_info, index=4)[0]:
-#                     ppost = ppost_value
-#         elif data_case in ('r6', 'k3', 'k5', 'k5prk', 'k4', 'k4a', 'k7t', 'jk1','k7', 'k7p','k2g', 'k2','rsk', 'ru' ):
-#             ppost = ppost_value
-#         elif data_case == 'krvn' and data_info[2] == 'abs':  #abstract noun as adverb
-#             ppost = ppost_value
-#         elif data_case in ('k2g', 'k2') and data_info[2] in ("anim", "per"):
-#             ppost = ppost_value #'ko'
-#         elif data_case in ('rsm', 'rsma'):
-#             ppost = ppost_value+ ' ' + ppost_value #ke pAsa
-#         elif data_case == 'rt':
-#             ppost = ppost_value+ ' ' + ppost_value #'ke lie'
-#         elif data_case == 'rv':
-#             ppost = ppost_value+ ' ' + ppost_value + ' ' + ppost_value#'kI tulanA meM'
-#         elif data_case == 'r6':
-#             ppost = ppost_value # 'kI' if data[4] == 'f' else 'kA'
-#             nn_data = nextNounData(data[0], words_info)
-#             if nn_data != False:
-#                 #print('Next Noun data:     ', nn_data)
-#                 if nn_data[4].split(':')[1] in ('k3', 'k4', 'k5', 'k7', 'k7p', 'k7t', 'mk1', 'jk1', 'rt'):
-#                     ppost = ppost_value
-#                 elif nn_data[3][1] != 'f' and nn_data[3][3] == 'p':
-#                     ppost = ppost_value#'ke'
-#                 else:
-#                     pass
-#         else:
-#             pass
-#         if data[2] == 'p':
-#             temp = list(data)
-#             temp[7] = ppost if ppost != '' else 0
-#             data = tuple(temp)
-#         if data[2] == 'n' or data[2] == 'other':
-#             temp = list(data)
-#             temp[8] = ppost if ppost != '' else None
-#             data = tuple(temp)
-#             masked_PPdata[data[0]] = ppost
-#     return masked_PPdata
+    for data in processed_words:
+        if data[2] not in ('p', 'n', 'other'):
+            continue
+        data_info = getDataByIndex(data[0], words_info)
+        try:
+            data_case = False if data_info == False else data_info[4].split(':')[1].strip()
+        except IndexError:
+            data_case = False
+        ppost = ''
+        ppost_value = '<>'
+        if data_case in ('k1', 'pk1'):
+            if findValue('yA', processed_verbs, index=6)[0]:  # has TAM "yA"
+                if findValue('k2', words_info, index=4)[0]: # or findExactMatch('k2p', words_info, index=4)[0]:
+                    ppost = ppost_value
+        elif data_case in ('r6', 'k3', 'k5', 'k5prk', 'k4', 'k4a', 'k7t', 'jk1','k7', 'k7p','k2g', 'k2','rsk', 'ru' ):
+            ppost = ppost_value
+        elif data_case == 'krvn' and data_info[2] == 'abs':  #abstract noun as adverb
+            ppost = ppost_value
+        elif data_case in ('k2g', 'k2') and data_info[2] in ("anim", "per"):
+            ppost = ppost_value #'ko'
+        elif data_case in ('rsm', 'rsma'):
+            ppost = ppost_value+ ' ' + ppost_value #ke pAsa
+        elif data_case == 'rt':
+            ppost = ppost_value+ ' ' + ppost_value #'ke lie'
+        elif data_case == 'rv':
+            ppost = ppost_value+ ' ' + ppost_value + ' ' + ppost_value#'kI tulanA meM'
+        elif data_case == 'r6':
+            ppost = ppost_value # 'kI' if data[4] == 'f' else 'kA'
+            nn_data = nextNounData(data[0], words_info)
+            if nn_data != False:
+                #print('Next Noun data:     ', nn_data)
+                if nn_data[4].split(':')[1] in ('k3', 'k4', 'k5', 'k7', 'k7p', 'k7t', 'mk1', 'jk1', 'rt'):
+                    ppost = ppost_value
+                elif nn_data[3][1] != 'f' and nn_data[3][3] == 'p':
+                    ppost = ppost_value#'ke'
+                else:
+                    pass
+        else:
+            pass
+        if data[2] == 'p':
+            temp = list(data)
+            temp[7] = ppost if ppost != '' else 0
+            data = tuple(temp)
+        if data[2] == 'n' or data[2] == 'other':
+            temp = list(data)
+            temp[8] = ppost if ppost != '' else None
+            data = tuple(temp)
+            masked_PPdata[data[0]] = ppost
+    return masked_PPdata
 
 def clean(word, inplace=''):
     print('Running clean')
@@ -785,8 +785,9 @@ def preprocess_postposition_new(concept_type, np_data, words_info, verb_data):
     elif data_case == 'k2g':
         ppost = process_dep_k2g(data_case, verb_data)
     elif data_case == 'k2': #if CP present, and if concept is k2 for verb of CP, and the verb is not in specific list, then kA
-        data_seman1=data_seman.split()[0]
-        if data_seman1 in ("anim", "per"):
+        # if data_seman and data_seman!='':
+        #     data_seman1=data_seman.split()[0]
+        if data_seman and data_seman!=''and data_seman.split()[0] in ("anim", "per"):
             if clean(root_main) in kisase_k2_verbs:
                 ppost = 'se'
             else:
@@ -963,9 +964,9 @@ def process_adverb_as_verb(concept, processed_verbs):
         if ( tag[0] =='cat' and tag[1] == 'v' ):
             tam = 'kara'
             adverb = (index, term, category, gender, number, person, tam, case, type)
-            processed_verbs.append(to_tuple(adverb))
+            processed_verbs.append(adverb)
             log(f'{term} adverb processed as a verb with index {index} gen:{gender} num:{number} person:{person}, and tam:{tam}')
-    return
+            return
 
 def process_adverbs(adverbs, processed_nouns, processed_verbs, processed_indeclinables, reprocessing):
     print('Running process_adverbs')
@@ -978,8 +979,8 @@ def process_adverbs(adverbs, processed_nouns, processed_verbs, processed_indecli
             tags = find_tags_from_dix_as_list(term)
             for tag in tags:
                 if (tag[0] == 'cat' and tag[1] == 'v'): # term type is verb in morph dix
-                    process_adverb_as_verb(adverb, processed_verbs)
-
+                    return process_adverb_as_verb(adverb, processed_verbs)
+                    
                 elif (tag[0] == 'cat' and tag[1] == 'adj'): # term type is adjective in morph dix
                     term = term + 'rUpa se'
                     processed_indeclinables.append((adverb[0], term, 'indec'))
@@ -991,9 +992,9 @@ def process_adverbs(adverbs, processed_nouns, processed_verbs, processed_indecli
                             log(f'adverb {adverb[1]} already processed indeclinable, no processing done')
                             return
                     # Adverb not found in processed indeclinables, add it
-                    processed_indeclinables.append((adverb[0], term, 'indec'))
+                    processed_indeclinables.append((adverb[0], term, 'indec')) #to be updated, when cases arise.
                     log(f'adverb {adverb[1]} processed indeclinable with form {term}, no processing done')
-
+                    return
 def process_indeclinables(indeclinables):
     print('Running process_indeclinables')
     '''
@@ -1083,7 +1084,18 @@ def process_nouns(nouns, words_info, verbs_data):
         case, postposition = preprocess_postposition_new('noun', noun, words_info, main_verb)
 
         # For Noun compound words
-        if '+' in noun[1]:
+        if noun[2]=='place':
+            # Make the modification
+            if '+' in noun[1]:
+                noun_list = list(noun)
+                noun_list[1] = noun_list[1].replace('+', '_')
+            # Convert the list back to a tuple
+                noun = tuple(noun_list)
+                processed_nouns = if_seman_data_place(noun, processed_nouns, category, case, gender, number, person, postposition)
+            else:
+                processed_nouns = if_seman_data_place(noun, processed_nouns, category, case, gender, number, person, postposition)
+
+        elif '+' in noun[1]:
             processed_nouns = handle_compound_nouns(noun, processed_nouns, category, case, gender, number, person, postposition)
         else:
             term = noun[1]
@@ -1201,7 +1213,9 @@ def process_pronouns(pronouns, processed_nouns, processed_indeclinables, words_i
             elif term == 'speaker':
                 word = 'mEM'
             elif term == 'wyax':
-                if spkview_data == "distal":
+                if gnp =='p' and spkview_data == "distal":
+                    word = 've'
+                elif spkview_data == "distal":
                     word = 'vaha'
                 elif spkview_data == "proximal":
                     word = 'yaha'
@@ -1214,7 +1228,7 @@ def process_pronouns(pronouns, processed_nouns, processed_indeclinables, words_i
             if relation == "r6":
                 fnoun = int(relation_head)
                 fnoun_data = getDataByIndex(fnoun, processed_nouns, index=0)
-                if len(fnoun_data):
+                if fnoun_data:
                     gender = fnoun_data[4]  # To-ask
                     fnum = number = fnoun_data[5]
                     case = fnoun_data[3]
@@ -2470,6 +2484,8 @@ def handle_unprocessed(outputData, processed_nouns):
                         temp[4] = 'f' if processed_nouns[i][4] == 'm' else 'm'
                         processed_nouns[i] = tuple(temp)
                         log(f'{temp[1]} reprocessed as noun with gen:{temp[4]}.')
+                    else:
+                        break
     print('handle_unprocessed : ',has_changes, processed_nouns)
     return has_changes, processed_nouns
 
@@ -2682,7 +2698,7 @@ def add_postposition(transformed_fulldata, processed_postpositions):
     print('add_postposition : ',PPFulldata)
     return PPFulldata
 
-def add_discourse_elements(discourse_data, POST_PROCESS_OUTPUT):
+def add_discourse_elements(discourse_data, POST_PROCESS_OUTPUT,src_sentence):
     print('Running add_discourse_elements')
     # discourse element value added to sentence as per the element
     #
@@ -2692,10 +2708,22 @@ def add_discourse_elements(discourse_data, POST_PROCESS_OUTPUT):
     else:
         word = ''
         for data_values in discourse_data:
+            # print(data_values,'ahhhhh')
             for element in discourse_dict:
                 if element in data_values:
-                    word = discourse_dict[element]
-                    found = True
+                    # print(element,'ahhhhh')
+                    src_sentence=src_sentence.split()[0]
+                    if src_sentence[1:]==discourse_dict[element][0]:
+                        # print(src_sentence)
+                        word = discourse_dict[element][0]
+                        found = True
+                    elif src_sentence[1:]==discourse_dict[element][1]:
+                        word = discourse_dict[element][1]
+                        found = True
+                    else:
+                        word = discourse_dict[element]
+                        found = True
+
         if found:
             POST_PROCESS_OUTPUT = word + " " +POST_PROCESS_OUTPUT
     print('add_discourse_elements : ',POST_PROCESS_OUTPUT)
@@ -2881,9 +2909,9 @@ def collect_processed_data(processed_pronouns, processed_nouns, processed_adject
                            processed_auxverbs, processed_indeclinables, processed_others):
     print('Running collect_processed_data')
     """collect sort and return processed data."""
-    print('collect_processed_data combining all processed list in sorted order',)
-    return sorted(
-        processed_pronouns + processed_nouns + processed_adjectives + processed_verbs + processed_auxverbs + processed_indeclinables + processed_others)
+    sorted_data=sorted(processed_pronouns + processed_nouns + processed_adjectives + processed_verbs + processed_auxverbs + processed_indeclinables + processed_others)
+    print('collect_processed_data combining all processed list in sorted order',sorted_data)
+    return sorted_data
 
 def join_compounds(transformed_data, construction_data):
     print('Running join_compounds')
@@ -2904,10 +2932,10 @@ def join_compounds(transformed_data, construction_data):
     print('join_compounds : ',resultant_data)
     return resultant_data
 
-def populate_GNP_dict(gnp_info, PPfull_data):
+def populate_GNP_dict(gnp_info, PPfull_data,words_info):
     print('Running populate_GNP_dict')
     populate_GNP_dict = False
-    morpho_seman = ['comper_more', 'comper-more', 'comper_less', 'comper-less', 'superl', 'mawupa', 'mawup']
+    morpho_seman = ['comper_more', 'comper-more', 'comper_less', 'comper-less', 'superl', 'mawupa', 'mawup','ditva']
     a = 'after'
     b = 'before'
     for i in range(len(gnp_info)):
@@ -2926,6 +2954,18 @@ def populate_GNP_dict(gnp_info, PPfull_data):
 
                 elif term in ('comper_less', 'comper-less'):
                     temp = (b, 'kama')
+                elif term == 'ditva':
+                    dup_word = clean(words_info[i][1])
+                    if dup_word in PPfull_data[i][1]:
+                        dup_word1 = dup_word + ' '
+                        # Convert the specific element to a list
+                        PPfull_data[i] = list(PPfull_data[i])
+                        # Make the modification
+                        PPfull_data[i][1] = PPfull_data[i][1].replace(dup_word, dup_word1)
+                        # Convert back to a tuple
+                        PPfull_data[i] = tuple(PPfull_data[i])
+
+                        temp = (b, dup_word)
 
                 else:
                     # fetch GNP of next noun
@@ -2946,7 +2986,7 @@ def populate_GNP_dict(gnp_info, PPfull_data):
                 else:
                     GNP_dict[i + 1] = [temp]
     print('populate_GNP_dict : ',populate_GNP_dict)
-    return populate_GNP_dict
+    return populate_GNP_dict,PPfull_data
 
 def join_indeclinables(transformed_data, processed_indeclinables, processed_others):
     
@@ -3005,6 +3045,43 @@ def update_case_and_ppost(data, case, ppost):
     index = temp[0]
 
     pass
+
+def if_seman_data_place(dnouns, processed_nouns, category, case, gender, number, person, postposition):
+    print('Running if_seman_data_place')
+    # dnouns = noun[1].replace('+',' ')
+    index = dnouns[0]
+    noun_type = 'common'
+    processed_nouns.append((index, dnouns[1], category, case, gender, number, person, noun_type, postposition))
+        
+    print('if_seman_data_place : ',processed_nouns)
+    return processed_nouns
+
+
+def process_coref(input_text):
+    coref_list=[]
+    folder_path = 'coref_examples/'
+    file_name_line = None    
+    for i in range(len(input_text)):
+        if 'coref' in input_text[i] and '.' in input_text[i]:
+            coref_list.append(i)
+            file_name_line = input_text[i]
+            file_name = file_name_line.split('.')[0]
+            digit = file_name_line.split('.')[1].split(':')[0]
+            
+            file_path = os.path.join(folder_path, f'{file_name}')
+            # Add .txt to file name if file not found
+            if not os.path.exists(file_path):
+                file_path += '.txt'
+            if not os.path.exists(file_path):
+                raise FileNotFoundError(f"File '{file_path}' not found")
+            with open(file_path, 'r', encoding='utf-8') as file:
+                file_contents = file.readlines()
+
+            coref_word=file_contents[1].split(',')[int(digit)-1]
+            coref_list.append(coref_word)
+            return coref_list
+    else:
+        return None
 
 if __name__ == '__main__':
     import doctest
